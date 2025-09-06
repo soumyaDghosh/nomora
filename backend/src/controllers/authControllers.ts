@@ -17,7 +17,7 @@ export const sendOTP = async (req: Request, res: Response) => {
         const { phone } = req.body ?? {};
         if (!phone) return res.status(400).json({ message: "phone is required" });
 
-        // await createVerification(phone);
+        await createVerification(phone);
 
         return res.status(200).json({ message: "OTP sent successfully" });
     }
@@ -40,10 +40,10 @@ export const verifyOTP = async (req: Request, res: Response) => {
         if (!phone) return res.status(400).json({ message: "phone is required" });
         if (!otp) return res.status(400).json({ message: "otp is required" });
 
-        // const verificationResult = await createVerificationCheck(otp, phone);
-        // if (verificationResult.status !== "approved") {
-        //     return res.status(400).json({ message: "Invalid or expired OTP" });
-        // }
+        const verificationResult = await createVerificationCheck(otp, phone);
+        if (verificationResult.status !== "approved") {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
 
         let result = await pool.query("SELECT * FROM users WHERE phone = $1", [phone]);
         let user = result.rows[0];
