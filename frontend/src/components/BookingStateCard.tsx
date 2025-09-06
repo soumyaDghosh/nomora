@@ -1,0 +1,211 @@
+import { useNavigate, Link } from "react-router-dom";
+import { tripData } from "../data/tripData";
+import { transferData } from "../data/transferData";
+import type { Booking } from "../store/bookStore";
+import { formatPrice } from "../utils/formatPrice";
+import { formatDate } from "../utils/formatDate";
+import { getVehicleSeat } from "../utils/getVehicleSeat";
+
+interface BookingStateCardProps {
+    booking: Booking;
+}
+
+const BookingStateCard = ({ booking }: BookingStateCardProps) => {
+    const navigate = useNavigate();
+
+    const trip = tripData[booking.listing_id ?? ""];
+    const transfer = transferData[booking.listing_id ?? ""];
+    const isAirportTransfer = booking.product_type === "airport_transfer";
+
+    const getStateConfig = (state: string) => {
+        switch (state) {
+            case "ongoing":
+                return {
+                    label: "Ongoing",
+                    bgColor: "bg-blue-100",
+                    textColor: "text-blue-800",
+                    showViewDetails: true
+                };
+            case "completed":
+                return {
+                    label: "Completed",
+                    bgColor: "bg-green-100",
+                    textColor: "text-green-800",
+                    showViewDetails: true
+                };
+            case "cancelled":
+                return {
+                    label: "Cancelled",
+                    bgColor: "bg-red-100",
+                    textColor: "text-red-800",
+                    showViewDetails: false
+                };
+            default:
+                return {
+                    label: "Unknown",
+                    bgColor: "bg-gray-100",
+                    textColor: "text-gray-800",
+                    showViewDetails: false
+                };
+        }
+    };
+
+    const getPaymentStatusConfig = (status: string) => {
+        switch (status) {
+            case "paid":
+                return { label: "Paid", bgColor: "bg-green-100", textColor: "text-green-800" };
+            case "unpaid":
+                return { label: "Unpaid", bgColor: "bg-orange-100", textColor: "text-orange-800" };
+            case "advance-paid":
+                return { label: "Advance Paid", bgColor: "bg-yellow-100", textColor: "text-yellow-800" };
+            case "refunded":
+                return { label: "Refunded", bgColor: "bg-purple-100", textColor: "text-purple-800" };
+            default:
+                return { label: "Unknown", bgColor: "bg-gray-100", textColor: "text-gray-800" };
+        }
+    };
+
+    const stateConfig = getStateConfig(booking.status);
+    const paymentConfig = getPaymentStatusConfig("unpaid");
+
+    const handleCardClick = () => {
+        navigate(`/confirmation/${booking.id}`);
+    };
+
+    return (
+        <div
+            className={`bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden ${stateConfig.showViewDetails ? "cursor-pointer" : ""
+                }`}
+            onClick={handleCardClick}
+        >
+            {/* Single unified card with improved spacing */}
+            <div className="p-5">
+                {/* Status badges at top with proper spacing */}
+                <div className="flex items-center justify-between mb-5">
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${stateConfig.bgColor} ${stateConfig.textColor}`}>
+                        {stateConfig.label}
+                    </span>
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${paymentConfig.bgColor} ${paymentConfig.textColor}`}>
+                        {paymentConfig.label}
+                    </span>
+                </div>
+
+                {/* Trip Image and Title Section */}
+                <div className="flex items-start gap-4 mb-5">
+                    <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100 shadow-sm">
+                        <img
+                            src={isAirportTransfer ? transfer.image : trip.images[0].url}
+                            alt=""
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iNjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+PHBhdGggZD0iTTQwIDI4YzIuMjA5IDAgNC0xLjc5MSA0LTRzLTEuNzkxLTQtNC00LTQgMS43OTEtNCA0IDEuNzkxIDQgNCA0ek0yOCA0MGwxMi0xMiAxMiAxMnYxMkgyOFY0MHoiIGZpbGw9IiM5Q0E5QjMiLz48L3N2Zz4=";
+                            }}
+                        />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 text-base leading-tight mb-2 line-clamp-2">
+                            {isAirportTransfer ? booking.transfer_details?.type : trip.title}
+                        </h3>
+                        <div className="text-lg font-semibold text-gray-900">
+                            {formatPrice(booking.price)}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Trip Details Grid with improved spacing */}
+                <div className="space-y-3 mb-5">
+                    {/* Date and Time Row - Fix hydration with suppressHydrationWarning */}
+                    <div className="flex items-center gap-3 text-gray-600">
+                        <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-calendar-line text-gray-400 text-sm" />
+                        </div>
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <span className="font-medium text-gray-900 text-sm" suppressHydrationWarning={true}>
+                                {formatDate(isAirportTransfer ? booking.transfer_details?.date : booking.trip_details?.date)}
+                            </span>
+                            <span className="text-gray-400">•</span>
+                            <span className="text-gray-600 text-sm">
+                                {isAirportTransfer ? booking.transfer_details?.time : booking.trip_details?.time}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Duration/Terminal Row - UPDATED for airport transfers */}
+                    <div className="flex items-center gap-3 text-gray-600">
+                        <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                            {isAirportTransfer ? (
+                                <i className="ri-flight-takeoff-line text-gray-400 text-sm" />
+                            ) : (
+                                <i className="ri-time-line text-gray-400 text-sm" />
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            {isAirportTransfer ? (
+                                <span className="text-gray-700 text-sm">Terminal {booking.transfer_details?.terminal}</span>
+                            ) : (
+                                <span className="text-gray-700 text-sm">{trip.duration}</span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Car Details Row */}
+                    <div className="flex items-center gap-3 text-gray-600">
+                        <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-car-line text-gray-400 text-sm" />
+                        </div>
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <span className="text-gray-700 text-sm">
+                                {isAirportTransfer ? "Sedan" : booking.trip_details?.car_type}
+                            </span>
+                            <span className="text-gray-400">•</span>
+                            <span className="text-gray-600 text-sm">
+                                {isAirportTransfer ? "4+1 Seats" : getVehicleSeat(booking.trip_details?.car_type)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Location Row - UPDATED: Use hotel icon for airport transfers */}
+                    <div className="flex items-center gap-3 text-gray-600">
+                        <div className="w-4 h-4 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            {isAirportTransfer ? (
+                                <i className="ri-hotel-line text-gray-400 text-sm" />
+                            ) : (
+                                <i className="ri-map-pin-line text-gray-400 text-sm" />
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <span className="text-gray-700 text-sm break-words leading-relaxed" style={{
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                                hyphens: "auto"
+                            }}>
+                                {isAirportTransfer ?
+                                    booking.transfer_details?.type === "Drop to Airport" ? booking.transfer_details.from_location : booking.transfer_details?.to_location
+                                    : booking.hotel_name}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Action Button - Only for Ongoing & Completed states */}
+                {stateConfig.showViewDetails && (
+                    <div className="flex justify-end">
+                        <Link
+                            to={`/confirmation/${booking.id}`}
+                            className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <span>View Details</span>
+                            <i className="ri-arrow-right-line" />
+                        </Link>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}
+
+export default BookingStateCard
