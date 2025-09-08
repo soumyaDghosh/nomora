@@ -66,6 +66,12 @@ export default function Checkout() {
         return dates;
     }, []);
 
+    // Parse YYYY-MM-DD safely into local date (midnight IST)
+    const parseLocalDate = (dateString: string): Date => {
+        const [year, month, day] = dateString.split("-").map(Number);
+        return new Date(year, month - 1, day);
+    };
+
     // Function to get current IST time
     const getCurrentISTTime = useCallback(() => {
         // Create IST time
@@ -81,30 +87,31 @@ export default function Checkout() {
     const isTimeSlotBookable = useCallback((dateString: string, timeSlot: string): boolean => {
         if (!dateString || !timeSlot) return false;
 
-        const selectedDate = new Date(dateString);
+        const selectedDate = parseLocalDate(dateString);
+
         const [time, period] = timeSlot.split(" ");
         const [h, m] = time.split(":").map(Number);
         let hours = h;
-        const minutes = m;
+        const minutes = m || 0;
 
         if (period === "PM" && hours !== 12) hours += 12;
         if (period === "AM" && hours === 12) hours = 0;
 
-        selectedDate.setHours(hours, minutes || 0, 0, 0);
+        selectedDate.setHours(hours, minutes, 0, 0);
 
-        // Use IST time for validation
         const nowIST = getCurrentISTTime();
-        const timeDiff = selectedDate.getTime() - nowIST.getTime();
-        const hoursDiff = timeDiff / (1000 * 60 * 60);
 
-        // FIXED: Improved date comparison logic for T+7 date handling using IST
+        // Normalize dates to midnight for day comparison
         const todayStart = new Date(nowIST.getFullYear(), nowIST.getMonth(), nowIST.getDate());
         const selectedDateStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
         const daysDiff = Math.floor((selectedDateStart.getTime() - todayStart.getTime()) / (1000 * 60 * 60 * 24));
 
-        // FIXED: Allow booking for dates that are exactly 7 days ahead (inclusive) and ensure minimum 8 hours advance notice
-        // The key fix: use <= 7 instead of < 7 to properly include the T+7 date
-        return hoursDiff >= 8 && daysDiff >= 0 && daysDiff <= 7;
+        // Outside booking window (T-1 or >T+7)
+        if (daysDiff < 0 || daysDiff > 7) return false;
+
+        // ✅ Enforce 8-hour lead time for ALL bookings
+        const hoursDiff = (selectedDate.getTime() - nowIST.getTime()) / (1000 * 60 * 60);
+        return hoursDiff >= 8;
     }, [getCurrentISTTime]);
 
     const formatPrice = useCallback((amount: number) => {
@@ -144,7 +151,7 @@ export default function Checkout() {
     const formatDateToDDMMYYYY = useCallback((dateString: string) => {
         if (!dateString) return "";
 
-        const date = new Date(dateString);
+        const date = parseLocalDate(dateString);
         const day = date.getDate().toString().padStart(2, "0");
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const year = date.getFullYear();
@@ -155,7 +162,7 @@ export default function Checkout() {
     const handleCustomDateSelect = useCallback((dateValue: string) => {
         if (!dateValue) return;
 
-        const selectedDateObj = new Date(dateValue);
+        const selectedDateObj = parseLocalDate(dateValue);
         const nowIST = getCurrentISTTime();
         const today = new Date(nowIST.getFullYear(), nowIST.getMonth(), nowIST.getDate());
         const maxDate = new Date(today);
@@ -180,9 +187,8 @@ export default function Checkout() {
 
     const handleDirectDateSelect = useCallback((dateString: string) => {
         setSelectedDate(dateString);
-        setSelectedTimeSlot("");
-        // Clear custom date picker values and collapse it
-        setCustomDateValue("");
+        setSelectedTimeSlot(""); // ✅ clear old slot
+        setCustomDateValue("");  // ✅ clear custom input
         setShowCustomDatePicker(false);
     }, []);
 
@@ -224,7 +230,7 @@ export default function Checkout() {
     const formatSelectedDate = useCallback((dateString: string) => {
         if (!dateString) return "";
 
-        const date = new Date(dateString);
+        const date = parseLocalDate(dateString);
         const nowIST = getCurrentISTTime();
         const isToday = date.toDateString() === nowIST.toDateString();
 
@@ -308,7 +314,7 @@ export default function Checkout() {
                 </div>
             </div>
 
-            <div className="px-4 py-4 space-y-4">
+            <div className="px-4 py-4 flex flex-col gap-4">
                 <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">

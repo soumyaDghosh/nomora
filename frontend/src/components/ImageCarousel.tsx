@@ -1,23 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-
-interface GalleryImage {
-    url: string;
-    label: string;
-    significance?: string;
-    description?: string;
-    dontMiss?: string;
-}
-
-interface ImageData {
-    url: string;
-    label: string;
-    category?: string;
-    timings?: string;
-    duration?: string;
-    entryType?: string;
-    entryFee?: string;
-    gallery?: GalleryImage[];
-}
+import type { ImageData } from "../types";
 
 interface ImageCarouselProps {
     images: ImageData[];
@@ -50,10 +32,14 @@ export default function ImageCarousel({
     const [touchStartX, setTouchStartX] = useState<number | null>(null);
     const [modalTouchStartX, setModalTouchStartX] = useState<number | null>(null);
 
+    // Programmatic-scroll guards
+    const isProgrammaticScroll = useRef(false);
+    const modalIsProgrammaticScroll = useRef(false);
+
     const scrollRef = useRef<HTMLDivElement>(null);
     const modalScrollRef = useRef<HTMLDivElement>(null);
-    const autoPlayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const modalAutoPlayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const modalAutoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const interactionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const modalInteractionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -87,7 +73,7 @@ export default function ImageCarousel({
         }
     }, []);
 
-    // Auto-play functionality for main carousel - FIXED
+    // Auto-play functionality for main carousel
     useEffect(() => {
         if (autoPlayRef.current) {
             clearInterval(autoPlayRef.current);
@@ -108,7 +94,7 @@ export default function ImageCarousel({
         };
     }, [images.length, isAutoPlaying, showModal, isUserInteracting, autoPlayInterval]);
 
-    // Auto-play functionality for modal carousel - FIXED
+    // Auto-play functionality for modal carousel
     useEffect(() => {
         if (modalAutoPlayRef.current) {
             clearInterval(modalAutoPlayRef.current);
@@ -132,56 +118,68 @@ export default function ImageCarousel({
         };
     }, [modalAutoPlay, showModal, selectedItemIndex, images, modalUserInteracting, autoPlayInterval]);
 
-    // Smooth scroll to current item
+    // Smooth scroll to current item (main)
     useEffect(() => {
         if (scrollRef.current) {
             const container = scrollRef.current;
             const itemWidth = container.clientWidth;
             const targetScrollLeft = currentIndex * itemWidth;
 
-            container.scrollTo({
-                left: targetScrollLeft,
-                behavior: "smooth"
-            });
+            isProgrammaticScroll.current = true; // mark as programmatic
+            container.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
+
+            // reset after animation (~500ms)
+            const t = setTimeout(() => {
+                isProgrammaticScroll.current = false;
+            }, 500);
+
+            return () => clearTimeout(t);
         }
     }, [currentIndex]);
 
-    // Modal image scroll - ensure starts at first image
+    // Modal image scroll - ensure starts at the correct image and guard programmatic scroll
     useEffect(() => {
         if (modalScrollRef.current && showModal) {
             const container = modalScrollRef.current;
             const itemWidth = container.clientWidth;
             const targetScrollLeft = selectedImageIndex * itemWidth;
+            const behavior: ScrollBehavior = selectedImageIndex === 0 ? "auto" : "smooth";
 
-            container.scrollTo({
-                left: targetScrollLeft,
-                behavior: selectedImageIndex === 0 ? "auto" : "smooth"
-            });
+            modalIsProgrammaticScroll.current = true;
+            container.scrollTo({ left: targetScrollLeft, behavior });
+
+            const resetAfter = behavior === "smooth" ? 520 : 40;
+            const t = setTimeout(() => {
+                modalIsProgrammaticScroll.current = false;
+            }, resetAfter);
+
+            return () => clearTimeout(t);
         }
     }, [selectedImageIndex, showModal]);
 
     const handleMainScroll = useCallback(() => {
-        if (scrollRef.current && !isUserInteracting) {
-            const scrollLeft = scrollRef.current.scrollLeft;
-            const width = scrollRef.current.clientWidth;
-            const newIndex = Math.round(scrollLeft / width);
+        if (!scrollRef.current || isProgrammaticScroll.current) return;
 
-            if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
-                setCurrentIndex(newIndex);
-            }
+        const scrollLeft = scrollRef.current.scrollLeft;
+        const width = scrollRef.current.clientWidth;
+        const newIndex = Math.round(scrollLeft / width);
+
+        if (newIndex !== currentIndex && newIndex >= 0 && newIndex < images.length) {
+            setCurrentIndex(newIndex);
         }
-    }, [currentIndex, images.length, isUserInteracting]);
+    }, [currentIndex, images.length]);
 
     const handleModalScroll = useCallback(() => {
-        if (modalScrollRef.current && !modalUserInteracting) {
-            const scrollLeft = modalScrollRef.current.scrollLeft;
-            const width = modalScrollRef.current.clientWidth;
-            const newIndex = Math.round(scrollLeft / width);
-            const currentGallery = images[selectedItemIndex]?.gallery || [];
+        // ignore programmatic scrolls
+        if (!modalScrollRef.current || modalIsProgrammaticScroll.current || modalUserInteracting) return;
 
-            if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < currentGallery.length) {
-                setSelectedImageIndex(newIndex);
-            }
+        const scrollLeft = modalScrollRef.current.scrollLeft;
+        const width = modalScrollRef.current.clientWidth;
+        const newIndex = Math.round(scrollLeft / width);
+        const currentGallery = images[selectedItemIndex]?.gallery || [];
+
+        if (newIndex !== selectedImageIndex && newIndex >= 0 && newIndex < currentGallery.length) {
+            setSelectedImageIndex(newIndex);
         }
     }, [selectedImageIndex, selectedItemIndex, images, modalUserInteracting]);
 
@@ -257,14 +255,14 @@ export default function ImageCarousel({
         clearInteractionTimeouts();
     }, [clearAutoPlayIntervals, clearInteractionTimeouts]);
 
-    // FIXED: Outside click to close modal
+    // Outside click to close modal
     const handleBackdropClick = useCallback((e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
             closeModal();
         }
     }, [closeModal]);
 
-    // FIXED: Touch handling for main carousel to prevent multi-scroll
+    // Touch handling for main carousel
     const handleMainTouchStart = useCallback((e: React.TouchEvent) => {
         setTouchStartX(e.touches[0].clientX);
         setIsAutoPlaying(false);
@@ -320,7 +318,7 @@ export default function ImageCarousel({
         }, 2000);
     }, [touchStartX, currentIndex, images.length, goToSlide]);
 
-    // FIXED: Touch handling for modal carousel to prevent multi-scroll
+    // Touch handling for modal carousel
     const handleModalTouchStart = useCallback((e: React.TouchEvent) => {
         setModalTouchStartX(e.touches[0].clientX);
         setModalAutoPlay(false);
@@ -422,7 +420,7 @@ export default function ImageCarousel({
     const currentGallery = currentModalItem?.gallery || [];
     const currentImage = currentGallery[selectedImageIndex];
 
-    // Format "Don"t Miss" into bulleted list with graceful fallbacks
+    // Format "Don't Miss" into bulleted list with graceful fallbacks
     const formatDontMiss = useCallback((text: string) => {
         if (!text) return [];
         if (text.includes(",") || text.includes(";") || text.includes(" and ")) {
@@ -542,7 +540,7 @@ export default function ImageCarousel({
                 )}
             </div>
 
-            {/* FIXED: Bottom Modal - Scrollable with Carousel (NO STICKY POSITIONING) */}
+            {/*  Level 2 - Modal Carousel */}
             {showModal && currentModalItem && (
                 <div
                     className="fixed inset-0 z-50 flex items-end"
@@ -561,7 +559,7 @@ export default function ImageCarousel({
                         onClick={(e) => e.stopPropagation()}
                     >
 
-                        {/* Modal Carousel - REMOVED STICKY POSITIONING */}
+                        {/* Modal Carousel */}
                         <div className="w-full bg-white">
                             <div className="relative w-full h-80">
                                 {/* Close Button Overlay */}
@@ -633,14 +631,14 @@ export default function ImageCarousel({
                                     )}
                                 </div>
 
-                                {/* Gallery Counter - Only show if more than 1 image */}
+                                {/* Gallery Counter */}
                                 {currentGallery.length > 1 && (
                                     <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium border border-white/20">
                                         {selectedImageIndex + 1}/{currentGallery.length}
                                     </div>
                                 )}
 
-                                {/* Gallery Dots - Only show if more than 1 image */}
+                                {/* Gallery Dots */}
                                 {currentGallery.length > 1 && (
                                     <div className="absolute bottom-4 right-4 flex gap-1">
                                         {currentGallery.map((_, idx) => (
@@ -673,7 +671,7 @@ export default function ImageCarousel({
                                 )}
                             </div>
 
-                            {/* Quick Info Grid - Adaptive rendering for optional fields */}
+                            {/* Quick Info Grid */}
                             {(currentModalItem.duration || currentModalItem.entryType || currentModalItem.timings || currentModalItem.entryFee) && (
                                 <div className="bg-gray-50 rounded-xl p-4">
                                     <h3 className="font-semibold text-gray-900 mb-4 text-sm">Essential Information</h3>
@@ -721,7 +719,7 @@ export default function ImageCarousel({
                                 </div>
                             )}
 
-                            {/* Current Image Details - Adaptive rendering */}
+                            {/* Current Image Details */}
                             {currentImage && (
                                 <div className="space-y-4">
                                     {currentImage.significance && (

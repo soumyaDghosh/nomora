@@ -8,9 +8,13 @@ createRoot(document.getElementById("root")!).render(
         <App />
         <Toaster
             duration={5000}
-            position="top-right"
-            richColors
-            closeButton
+            position="bottom-center"
+            toastOptions={{
+                style: {
+                    display: "flex",
+                    justifyContent: "center"
+                }
+            }}
         />
     </BrowserRouter>
 )

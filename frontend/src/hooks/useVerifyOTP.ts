@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { toast } from "sonner";
 
 export default function useVerifyOtp() {
@@ -21,9 +21,7 @@ export default function useVerifyOtp() {
             toast.success(res.data.message || "OTP verified successfully");
             return true;
         }
-        catch (err) {
-            const error = err as AxiosError<{ message?: string }>;
-            toast.error(error.response?.data?.message || "Failed to verify OTP");
+        catch {
             return false;
         }
         finally {

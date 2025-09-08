@@ -19,7 +19,7 @@ export const badgesData = [
     },
     {
         text: "Instant Refunds",
-        icon: "ri-fefund-2-line",
+        icon: "ri-refund-2-line",
         color: "purple",
         tooltip: "Get your refund processed instantly to your original payment method for eligible cancellations."
     }

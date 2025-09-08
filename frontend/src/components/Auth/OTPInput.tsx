@@ -41,6 +41,9 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
         const ok = await verifyOtp(phoneNumber, otp);
         if (ok) {
             await fetchUser();
+        } else {
+            setError("OTP is incorrect");
+            setOtp("");
         }
     };
 
@@ -55,11 +58,6 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
 
         const maskedNumber = formatPhoneNumber(phoneNumber);
         setResendMessage(`OTP is resent to ${maskedNumber}`);
-
-        // Clear the resend message after 3 seconds
-        setTimeout(() => {
-            setResendMessage("");
-        }, 3000);
 
         await sendOtp(phoneNumber);
     };
@@ -81,13 +79,13 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
                     <i className="ri-arrow-left-line text-xl text-gray-700" />
                 </button>
                 <div className="flex-1 text-center">
-                    <h1 className="text-lg font-semibold text-gray-900">Nomora</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900">Nomora</h1>
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col px-6 pt-8">
+            <div className="flex-1 flex flex-col items-center px-6 pt-8">
                 <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter OTP</h2>
+                    <h2 className="text-center text-2xl font-bold text-gray-900 mb-2">Enter OTP</h2>
                     <p className="text-gray-600">
                         {resendMessage || `OTP sent to ${formatPhoneNumber(phoneNumber)}`}
                     </p>
@@ -99,6 +97,7 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
                         length={6}
                         onComplete={handleOTPComplete}
                         error={!!error}
+                        setError={setError}
                         value={otp}
                         onChange={setOtp}
                     />
@@ -114,13 +113,13 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
                     <button
                         disabled={!canResend}
                         onClick={handleResendOTP}
-                        className={`text-sm font-medium ${canResend ? "text-gray-900 cursor-pointer" : "text-gray-600 cursor-not-allowed"}`}
+                        className={`text-sm font-medium ${canResend ? "text-gray-900 underline cursor-pointer" : "text-gray-600 cursor-not-allowed"}`}
                     >
                         {canResend ? "Resend OTP" : `Resend OTP in ${countdown}s`}
                     </button>
                 </div>
 
-                <div className="mb-8">
+                <div className="mb-8 w-full">
                     <button
                         onClick={handleVerifyOTP}
                         disabled={!otp || otp.length !== 6 || loading}
@@ -138,9 +137,9 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
 
                 <div className="flex-1"></div>
 
-                <div className="text-center pb-6 sm:pb-12">
+                <div className="text-center pb-12">
                     <p className="text-sm text-gray-500">
-                        Didn"t receive the code? Check SMS or try again
+                        Didn't receive the code? Check your SMS or try again
                     </p>
                 </div>
             </div>
@@ -152,21 +151,22 @@ interface OTPFieldProps {
     length: number
     onComplete: (otp: string) => void
     error?: boolean
+    setError: React.Dispatch<React.SetStateAction<string>>
     value?: string
     onChange?: (otp: string) => void
 }
 
-const OTPField = ({ length, onComplete, error, value, onChange }: OTPFieldProps) => {
+const OTPField = ({ length, onComplete, error, setError, value, onChange }: OTPFieldProps) => {
     const [otp, setOtp] = useState<string[]>(new Array(length).fill(""));
-    const [shake, setShake] = useState(false);
+    // const [shake, setShake] = useState(false);
     const inputRefs = useRef<HTMLInputElement[]>([]);
 
-    useEffect(() => {
-        if (error) {
-            setShake(true);
-            setTimeout(() => setShake(false), 500);
-        }
-    }, [error]);
+    // useEffect(() => {
+    //     if (error) {
+    //         setShake(true);
+    //         setTimeout(() => setShake(false), 500);
+    //     }
+    // }, [error]);
 
     useEffect(() => {
         if (value === "") {
@@ -192,6 +192,7 @@ const OTPField = ({ length, onComplete, error, value, onChange }: OTPFieldProps)
 
     const handleChange = (element: HTMLInputElement, index: number) => {
         const value = element.value;
+        setError("");
 
         if (value && isNaN(Number(value))) return;
 
@@ -243,7 +244,8 @@ const OTPField = ({ length, onComplete, error, value, onChange }: OTPFieldProps)
     };
 
     return (
-        <div className={`flex justify-center space-x-3 ${shake ? "animate-bounce" : ""}`}>
+        // <div className={`flex justify-center space-x-3 ${shake ? "animate-bounce" : ""}`}>
+        <div className='flex justify-center space-x-3'>
             {otp.map((digit, index) => (
                 <input
                     key={index}
@@ -257,7 +259,13 @@ const OTPField = ({ length, onComplete, error, value, onChange }: OTPFieldProps)
                     onChange={(e) => handleChange(e.target, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     onPaste={handlePaste}
-                    className={`w-12 h-12 text-center text-lg font-medium border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all ${error ? "border-red-400 bg-red-50" : "border-gray-200 focus:border-gray-400"}`}
+                    className={`
+                        w-12 h-12 text-center text-lg font-medium border-2 rounded-xl outline-none transition-all 
+                        ${error
+                            ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-400"
+                            : "border-gray-200 focus:border-gray-400 focus:ring-2 focus:ring-gray-400"
+                        }
+                    `}
                 />
             ))}
         </div>

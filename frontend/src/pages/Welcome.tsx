@@ -27,32 +27,34 @@ export default function Welcome() {
 
     return (
         <div className="min-h-[100svh] bg-white flex flex-col">
-            <div className="flex justify-between items-center p-4 pt-6 sm:pt-12">
+            <div className="flex justify-between items-center p-4 pt-12">
                 <div className="flex space-x-2">
                     {[1, 2, 3, 4, 5].map((step) => (
                         <button key={step} onClick={() => setCurrentStep(step)}>
                             <div
                                 className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${currentStep >= step
-                                    ? "bg-gray-800 w-7"
-                                    : "bg-gray-200 w-4"
+                                    ? "bg-gray-800 w-8"
+                                    : "bg-gray-200 w-2"
                                     }`}
                             />
                         </button>
                     ))}
                 </div>
-                <button
-                    onClick={handleContinue}
-                    className="text-gray-500 text-sm font-medium cursor-pointer"
-                >
-                    Skip
-                </button>
+                {currentStep < 5 && (
+                    <button
+                        onClick={handleContinue}
+                        className="text-gray-500 text-sm font-medium cursor-pointer"
+                    >
+                        Skip
+                    </button>
+                )}
             </div>
 
-            <div className="flex-1 flex justify-center px-6 overflow-y-auto">
+            <div className="flex justify-center px-6 overflow-y-auto">
                 {steps[currentStep - 1]}
             </div>
 
-            <div className="sm:mx-auto sm:max-w-sm w-full pb-6 px-6 sm:pb-12 sm:px-0">
+            <div className="mt-12 sm:mx-auto sm:max-w-sm w-full pb-6 px-6 sm:pb-12 sm:px-0">
                 {currentStep < 5 ? (
                     <button
                         onClick={() => setCurrentStep((prev) => prev + 1)}

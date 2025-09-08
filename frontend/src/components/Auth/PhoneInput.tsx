@@ -51,7 +51,7 @@ const PhoneInput = ({ setTab, phoneNumber, setPhoneNumber }: PhoneInputProps) =>
         <div className="min-h-[100svh] bg-white flex flex-col">
             <div className="flex items-center p-4 pt-12">
                 <div className="flex-1 text-center">
-                    <h1 className="text-lg font-semibold text-gray-900">Nomora</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900">Nomora</h1>
                 </div>
             </div>
 
@@ -106,7 +106,7 @@ const PhoneInput = ({ setTab, phoneNumber, setPhoneNumber }: PhoneInputProps) =>
 
                 <div className="flex-1"></div>
 
-                <div className="text-center pb-6 sm:pb-12">
+                <div className="text-center pb-12">
                     <p className="text-sm text-gray-600">
                         By continuing you agree to our{" "}
                         <Link

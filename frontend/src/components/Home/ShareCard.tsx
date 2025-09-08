@@ -3,7 +3,7 @@ const ShareCard = () => {
         const shareData = {
             title: "Nomora – Last-Minute Travel App",
             text: "Check out Nomora! City tours, day trips, and local experiences with high-quality private chauffeurs in and around your favorite Bangalore city. Safe and comfortable trips.",
-            url: "https://www.nomora.co.in",
+            url: window.location.origin
         };
 
         if (typeof navigator !== "undefined" && navigator.share) {

@@ -35,7 +35,7 @@ export default function Bookings() {
 
             <div className="pt-6 pb-28">
                 {loading ? <LoadingState />
-                    : (bookings && bookings.length >= 0) ? (
+                    : (bookings && bookings.length > 0) ? (
                         <div className="px-4 space-y-5">
                             {bookings.map((booking) => (
                                 <BookingStateCard
@@ -46,8 +46,14 @@ export default function Bookings() {
                         </div>
                     ) : (
                         <div className="px-4">
-                            <div className="text-center py-8">
-                                <p className="text-gray-500">No bookings found</p>
+                            <div className="bg-white rounded-2xl p-6 text-center">
+                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i className="ri-calendar-line text-gray-400 text-2xl"></i>
+                                </div>
+                                <h3 className="font-semibold text-gray-900 mb-2">No bookings yet</h3>
+                                <p className="text-gray-600 text-sm">
+                                    Your upcoming trips and experiences will appear here
+                                </p>
                             </div>
                         </div>
                     )}

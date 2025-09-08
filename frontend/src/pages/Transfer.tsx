@@ -72,7 +72,7 @@ export default function Transfer() {
     }
 
     return (
-        <div className="min-h-[100svh] bg-gray-50 pb-[calc(77px+113px)]">
+        <div className="min-h-[100svh] bg-gray-50 pb-[calc(77px)]">
             {/* Header */}
             <div className="bg-white px-4 pt-6 pb-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -86,7 +86,7 @@ export default function Transfer() {
                 </div>
             </div>
 
-            <div className="px-4 space-y-4">
+            <div className="px-4 space-y-4 mb-4">
                 {/* Transfer Type */}
                 <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
@@ -281,26 +281,25 @@ export default function Transfer() {
                         <p className="text-xs text-gray-500 mt-2">Maximum 4 guests allowed</p>
                     </div>
                 </div>
-            </div>
 
-            {/* Fixed Bottom CTA */}
-            <div className="fixed bottom-[77px] left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
-                <div className="max-w-md mx-auto">
-                    {!isFormValid() && (
-                        <div className="mb-2 text-center">
-                            <p className="text-xs text-gray-500">Select date and time</p>
-                        </div>
-                    )}
-                    <button
-                        onClick={handleCheckFare}
-                        disabled={!isFormValid()}
-                        className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${isFormValid()
-                            ? "bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}
-                    >
-                        Check Fare
-                    </button>
+                <div className="bg-white border border-gray-200 p-4 rounded-lg">
+                    <div className="max-w-md mx-auto">
+                        {!isFormValid() && (
+                            <div className="mb-2 text-center">
+                                <p className="text-xs text-gray-500">Select date and time</p>
+                            </div>
+                        )}
+                        <button
+                            onClick={handleCheckFare}
+                            disabled={!isFormValid()}
+                            className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${isFormValid()
+                                ? "bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                }`}
+                        >
+                            Check Fare
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
