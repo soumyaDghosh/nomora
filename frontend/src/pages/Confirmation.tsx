@@ -87,7 +87,7 @@ export default function Confirmation() {
                     </div>
                 </div>
 
-                <div className="px-4 pt-6 space-y-6 pb-[calc(77px)] mb-6">
+                <div className="px-4 pt-6 space-y-6">
                     {/* Success Message */}
                     <div className="bg-gray-100 border border-gray-200 rounded-xl p-4">
                         <div className="flex items-center gap-3 mb-3">
@@ -96,7 +96,10 @@ export default function Confirmation() {
                             </div>
                             <div>
                                 <h2 className="text-lg font-semibold text-gray-900">Booking Confirmed</h2>
-                                <p className="text-xs sm:text-sm text-gray-700">Booking ID:<br />{bookingId}</p>
+                                <p className="flex flex-col sm:flex-row gap-1 text-xs sm:text-sm text-gray-700">
+                                    <span>Booking ID:</span>
+                                    <span>{bookingId}</span>
+                                </p>
                             </div>
                         </div>
 

@@ -16,12 +16,13 @@ const BottomNavigation = () => {
         { href: "/profile", icon: "ri-user-line", label: "Profile" },
     ];
 
-    const allowedRoutes = ["/", "/bookings", "/profile"];
-    const isAllowedStatic = allowedRoutes.includes(location.pathname);
-    const path = location.pathname.replace(/\/$/, "");
-    const isTransferPage = path.startsWith("/transfer/") && path.split("/").length === 3;
+    const allowedRoutes = ["/", "/explore", "/bookings", "/profile"];
 
-    if (!(isAllowedStatic || isTransferPage)) {
+    const isAllowed =
+        allowedRoutes.includes(location.pathname) ||
+        location.pathname.startsWith("/transfer");
+
+    if (!isAllowed) {
         return null;
     }
 

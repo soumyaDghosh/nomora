@@ -35,7 +35,9 @@ export default function Profile() {
                         <div>
                             <h3 className="font-semibold text-gray-900">{user?.name || "User"}</h3>
                             <div className="flex items-center gap-2">
-                                <p className="text-gray-600 text-sm">+91 {user?.phone}</p>
+                                <p className="text-gray-600 text-sm">
+                                    +91 {user?.phone ? `XXXXX${user.phone.toString().slice(5)}` : ""}
+                                </p>
                                 <div className="flex items-center justify-center w-5 h-5 bg-gray-900 rounded-full">
                                     <i className="ri-check-line text-white text-xs" />
                                 </div>

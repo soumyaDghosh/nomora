@@ -8,7 +8,7 @@ export const formatDate = (dateStr?: string): string => {
         return new Intl.DateTimeFormat("en-GB", {
             weekday: "short",
             day: "numeric",
-            month: "long",
+            month: "short",
             year: "numeric"
         }).format(date);
     }
