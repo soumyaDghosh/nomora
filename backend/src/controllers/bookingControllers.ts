@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { DatabaseError } from "pg";
 import { pool } from "../config/db";
+import sendMail from "../services/mailer";
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -90,6 +91,40 @@ const validateTransferDetails = (transfer_details: any) => {
 
     return null;
 };
+
+function formatDate(dateStr?: string): string {
+    if (!dateStr) return "";
+
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+
+    try {
+        return new Intl.DateTimeFormat("en-GB", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }).format(date);
+    }
+    catch {
+        return dateStr;
+    }
+};
+
+function formatKeyValue(obj: Record<string, any>): string {
+    return Object.entries(obj)
+        .map(([key, value]) => {
+            if (key === "date" && typeof value === "string") {
+                return `${capitalize(key)}: ${formatDate(value)}`;
+            }
+            return `${capitalize(key)}: ${value}`;
+        })
+        .join("\n");
+}
+
+function capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1).replace(/_/g, " ");
+}
 
 export const createBooking = async (req: Request, res: Response) => {
     const client = await pool.connect();
@@ -205,6 +240,25 @@ export const createBooking = async (req: Request, res: Response) => {
             transfer_details: product_type === "airport_transfer" ? transfer_details : null,
             hotel_name,
         };
+
+        await sendMail({
+            from: `${process.env.EMAIL_USER} <${process.env.EMAIL_ADDRESS}>`,
+            to: process.env.ADMIN_EMAIL,
+            subject: "New Booking",
+            text: `
+User ID: ${req.user?.id}
+User Phone: ${req.user?.phone}
+Booking ID: ${newBookingId}
+Product Type: ${product_type}
+Listing ID: ${listing_id}
+${trip_details?.hotel_id ? `Hotel: ${hotel_name}` : ""}
+Price: ₹${price}
+
+${product_type === "airport_transfer"
+                    ? `Transfer Details:\n${formatKeyValue(transfer_details)}`
+                    : `Trip Details:\n${formatKeyValue(trip_details)}`}
+`,
+        });
 
         await client.query("COMMIT");
 

@@ -276,7 +276,7 @@ export default function Checkout() {
         })
 
         if (success) {
-            navigate(`/confirmation/${bookingId}`);
+            navigate(`/confirmation/${bookingId}`, { replace: true });
         }
     };
 

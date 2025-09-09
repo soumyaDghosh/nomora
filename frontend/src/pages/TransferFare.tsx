@@ -91,7 +91,7 @@ export default function TransferFare() {
         });
 
         if (success) {
-            navigate(`/confirmation/${bookingId}`);
+            navigate(`/confirmation/${bookingId}`, { replace: true });
         }
     };
 
