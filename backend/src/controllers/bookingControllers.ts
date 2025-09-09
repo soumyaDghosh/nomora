@@ -241,7 +241,7 @@ export const createBooking = async (req: Request, res: Response) => {
             hotel_name,
         };
 
-        await sendMail({
+        sendMail({
             from: `${process.env.EMAIL_USER} <${process.env.EMAIL_ADDRESS}>`,
             to: process.env.ADMIN_EMAIL,
             subject: "New Booking",
@@ -258,7 +258,7 @@ ${product_type === "airport_transfer"
                     ? `Transfer Details:\n${formatKeyValue(transfer_details)}`
                     : `Trip Details:\n${formatKeyValue(trip_details)}`}
 `,
-        });
+        }).catch(err => console.error("Failed to send booking mail:", err));
 
         await client.query("COMMIT");
 
