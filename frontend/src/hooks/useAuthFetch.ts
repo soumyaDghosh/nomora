@@ -16,11 +16,14 @@ export default function useAuthFetch() {
 
             setUser(res.data.user);
             setAuthenticated(true);
+            localStorage.setItem("hasDoneAuth", "true");
 
             return true;
         }
         catch {
             clearUser();
+            localStorage.removeItem("hasDoneAuth");
+
             return false;
         }
         finally {

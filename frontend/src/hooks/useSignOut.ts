@@ -15,6 +15,8 @@ export default function useSignOut() {
             );
 
             toast.info("Logged out");
+            localStorage.removeItem("hasDoneAuth");
+
             return true;
         }
         catch (err) {
