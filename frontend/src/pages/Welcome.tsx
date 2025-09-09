@@ -2,15 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface StepProps {
-    setCurrentStep: React.Dispatch<React.SetStateAction<number>>
+    setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
 }
 interface Step5Props {
-    handleContinue: () => void
+    handleContinue: () => void;
 }
 
 export default function Welcome() {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(1);
+    const [startX, setStartX] = useState<number | null>(null);
 
     const handleContinue = () => {
         localStorage.setItem("hasSeenWelcome", "true");
@@ -25,17 +26,39 @@ export default function Welcome() {
         <Step5 handleContinue={handleContinue} />,
     ];
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setStartX(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (startX === null) return;
+
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+
+        if (Math.abs(diff) > 50) {
+            if (diff > 0 && currentStep < steps.length) {
+                setCurrentStep((prev) => prev + 1);
+            } else if (diff < 0 && currentStep > 1) {
+                setCurrentStep((prev) => prev - 1);
+            }
+        }
+
+        setStartX(null);
+    };
+
     return (
-        <div className="min-h-[100svh] bg-white flex flex-col">
+        <div
+            className="min-h-[100svh] bg-white flex flex-col"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
             <div className="flex justify-between items-center p-4 pt-12">
                 <div className="flex space-x-2">
                     {[1, 2, 3, 4, 5].map((step) => (
                         <button key={step} onClick={() => setCurrentStep(step)}>
                             <div
-                                className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${currentStep >= step
-                                    ? "bg-gray-800 w-8"
-                                    : "bg-gray-200 w-2"
-                                    }`}
+                                className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${currentStep >= step ? "bg-gray-800 w-8" : "bg-gray-200 w-2"}`}
                             />
                         </button>
                     ))}
@@ -89,7 +112,7 @@ const Step1: React.FC<StepProps> = () => (
 
         <div className="text-center max-w-sm">
             <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                Explore Bangalore with Nomora
+                Explore Bangalore with <span className="text-gray-900">Nomora</span>
             </h1>
             <p className="text-gray-600 text-base leading-relaxed">
                 Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.

@@ -111,7 +111,7 @@ export default function TransferFare() {
 
             <div className="px-4 py-4 space-y-4">
                 {/* Fare Breakdown with integrated trust & flexibility */}
-                <div className="bg-white rounded-lg border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-money-rupee-circle-line text-lg text-green-600" />
@@ -153,7 +153,7 @@ export default function TransferFare() {
                 </div>
 
                 {/* Trip Summary */}
-                <div className="bg-white rounded-lg border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-file-list-3-line text-lg text-blue-600" />
@@ -238,7 +238,7 @@ export default function TransferFare() {
                 </div>
 
                 {/* Vehicle Information - FIXED: New white sedan image */}
-                <div className="bg-white rounded-lg border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-car-line text-lg text-purple-600" />
@@ -262,7 +262,7 @@ export default function TransferFare() {
                 </div>
 
                 {/* Payment Information */}
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
                     <div className="flex items-start gap-3">
                         <i className="ri-money-rupee-circle-line text-green-600 text-lg mt-0.5" />
                         <div>

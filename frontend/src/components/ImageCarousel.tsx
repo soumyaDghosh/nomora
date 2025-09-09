@@ -11,7 +11,7 @@ interface ImageCarouselProps {
     lazyLoad?: boolean;
 }
 
-export default function ImageCarousel({
+const ImageCarousel = ({
     images,
     // onImageClick,
     aspectRatio = "aspect-[3/2]",
@@ -19,7 +19,7 @@ export default function ImageCarousel({
     showCounter = true,
     autoPlayInterval = 4000,
     lazyLoad = true
-}: ImageCarouselProps) {
+}: ImageCarouselProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -767,3 +767,5 @@ export default function ImageCarousel({
         </>
     )
 }
+
+export default ImageCarousel

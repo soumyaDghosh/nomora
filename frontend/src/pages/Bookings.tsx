@@ -63,9 +63,9 @@ export default function Bookings() {
 }
 
 const LoadingState = () => (
-    <div className="px-4 space-y-5">
+    <div className="px-4 pt-6 space-y-5 pb-28">
         {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden animate-pulse">
+            <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
                 <div className="px-6 py-4 border-b border-gray-100">
                     <div className="flex items-center justify-between">
                         <div className="w-16 h-6 bg-gray-200 rounded-full"></div>
@@ -74,7 +74,7 @@ const LoadingState = () => (
                 </div>
                 <div className="p-6">
                     <div className="flex gap-4 mb-5">
-                        <div className="w-24 h-24 bg-gray-200 rounded-2xl"></div>
+                        <div className="w-24 h-24 bg-gray-200 rounded-xl"></div>
                         <div className="flex-1 space-y-2">
                             <div className="w-3/4 h-5 bg-gray-200 rounded"></div>
                             <div className="w-1/2 h-7 bg-gray-200 rounded"></div>

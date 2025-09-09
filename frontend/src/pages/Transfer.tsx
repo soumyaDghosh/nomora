@@ -88,7 +88,7 @@ export default function Transfer() {
 
             <div className="px-4 space-y-4 mb-4">
                 {/* Transfer Type */}
-                <div className="bg-white rounded-lg border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-exchange-line text-lg text-purple-600" />
@@ -125,7 +125,7 @@ export default function Transfer() {
 
                             <button
                                 onClick={() => setTransferType("pickup")}
-                                className={`p-4 rounded-lg border text-left transition-colors cursor-pointer ${transferType === "pickup"
+                                className={`p-4 rounded-xl border text-left transition-colors cursor-pointer ${transferType === "pickup"
                                     ? "border-gray-900 bg-gray-50"
                                     : "border-gray-200 hover:border-gray-300"
                                     }`}
@@ -153,7 +153,7 @@ export default function Transfer() {
                 </div>
 
                 {/* Locations */}
-                <div className="bg-white rounded-lg border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-map-pin-line text-lg text-red-600" />
@@ -232,7 +232,7 @@ export default function Transfer() {
                 </div>
 
                 {/* Date & Time Selection */}
-                <div className="bg-white rounded-lg border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-calendar-line text-lg text-orange-600" />
@@ -249,7 +249,7 @@ export default function Transfer() {
                 </div>
 
                 {/* Guest Count */}
-                <div className="bg-white rounded-lg border border-gray-200 mb-4">
+                <div className="bg-white rounded-xl border border-gray-200 mb-4">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-group-line text-lg text-cyan-600" />
