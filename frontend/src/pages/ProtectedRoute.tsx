@@ -1,26 +1,20 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuthStore from "../store/authStore";
-import Home from "./Home";
+import AppLoader from "../components/Loader/AppLoader";
 
 export default function ProtectedRoute() {
     const location = useLocation();
     const { isAuthenticated, isAuthenticating } = useAuthStore();
 
-    const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
-    const hasDoneAuth = localStorage.getItem("hasDoneAuth");
+    if (isAuthenticating) {
+        return <AppLoader />;
+    }
 
+    const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
     const authPages = ["/auth", "/welcome"];
     const isAuthPage = authPages.some((path) =>
         location.pathname.startsWith(path)
     );
-
-    if (isAuthenticating) {
-        if (hasDoneAuth) {
-            return <Home />;
-        } else {
-            return null;
-        }
-    }
 
     // Prevent /welcome after seen
     if (!isAuthenticated && location.pathname === "/welcome" && hasSeenWelcome) {
@@ -29,7 +23,7 @@ export default function ProtectedRoute() {
 
     // If authenticated and visiting /auth or /welcome - redirect back or to "/"
     if (isAuthenticated && isAuthPage) {
-        let redirectTo = location.state?.from?.pathname;
+        const redirectTo = location.state?.from?.pathname;
 
         // prevent redirecting back to /profile after login
         if (redirectTo === "/profile") {
