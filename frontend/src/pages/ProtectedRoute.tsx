@@ -1,14 +1,10 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuthStore from "../store/authStore";
-import AppLoader from "../components/Loader/AppLoader";
 
 export default function ProtectedRoute() {
     const location = useLocation();
-    const { isAuthenticated, isAuthenticating } = useAuthStore();
 
-    if (isAuthenticating) {
-        return <AppLoader />;
-    }
+    const { isAuthenticated, isAuthenticating } = useAuthStore();
 
     const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
     const authPages = ["/auth", "/welcome"];
@@ -34,7 +30,7 @@ export default function ProtectedRoute() {
     }
 
     // If NOT authenticated and NOT on authPages - save intended route
-    if (!isAuthenticated && !isAuthPage) {
+    if (!isAuthenticating && !isAuthenticated && !isAuthPage) {
         if (!hasSeenWelcome) {
             return (
                 <Navigate

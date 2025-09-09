@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 
 interface StepProps {
     setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -10,12 +11,21 @@ interface Step5Props {
 
 export default function Welcome() {
     const navigate = useNavigate();
+
+    const { isAuthenticated } = useAuthStore();
+
     const [currentStep, setCurrentStep] = useState(1);
     const [startX, setStartX] = useState<number | null>(null);
 
     const handleContinue = () => {
         localStorage.setItem("hasSeenWelcome", "true");
-        navigate("/auth", { replace: true });
+
+        if (isAuthenticated) {
+            navigate("/");
+        }
+        else {
+            navigate("/auth", { replace: true });
+        }
     };
 
     const steps = [
@@ -23,7 +33,7 @@ export default function Welcome() {
         <Step2 setCurrentStep={setCurrentStep} />,
         <Step3 setCurrentStep={setCurrentStep} />,
         <Step4 setCurrentStep={setCurrentStep} />,
-        <Step5 handleContinue={handleContinue} />,
+        <Step5 handleContinue={handleContinue} />
     ];
 
     const handleTouchStart = (e: React.TouchEvent) => {

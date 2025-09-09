@@ -75,6 +75,7 @@ function App() {
           <Route path="/transfer/:transferId" element={<Transfer />} />
           <Route path="/transfer/:transferId/fare" element={<TransferFare />} />
           <Route path="/confirmation/:bookingId" element={<Confirmation />} />
+          <Route path="/hotel/:hotelId" element={<Welcome />} />
           <Route path="/support" element={<Support />} />
           <Route path="/bookings" element={<Bookings />} />
           <Route path="/profile" element={<Profile />} />

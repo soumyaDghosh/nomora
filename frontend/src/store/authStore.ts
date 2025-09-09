@@ -20,7 +20,7 @@ interface AuthState {
 
 const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  isAuthenticating: false,
+  isAuthenticating: true,
   isAuthenticated: false,
 
   setUser: (userData) => set({ user: userData }),

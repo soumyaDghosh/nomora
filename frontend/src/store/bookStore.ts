@@ -40,7 +40,7 @@ interface BookState {
 const useBookStore = create<BookState>((set) => ({
   shortBookings: [],
   setShortBookings: (data: MyBooking[]) => set({ shortBookings: data }),
-  loadingBookings: false,
+  loadingBookings: true,
   setLoadingBookings: (state: boolean) => set({ loadingBookings: state }),
 
   longBookings: [],

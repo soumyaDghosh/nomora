@@ -7,8 +7,6 @@ export default function useAuthFetch() {
 
     const fetchUser = useCallback(async (): Promise<boolean> => {
         try {
-            setAuthenticating(true);
-
             const res = await axios.get(
                 `${import.meta.env.VITE_SERVER_URL}/api/auth/user`,
                 { withCredentials: true }
@@ -16,14 +14,11 @@ export default function useAuthFetch() {
 
             setUser(res.data.user);
             setAuthenticated(true);
-            localStorage.setItem("hasDoneAuth", "true");
 
             return true;
         }
         catch {
             clearUser();
-            localStorage.removeItem("hasDoneAuth");
-
             return false;
         }
         finally {
