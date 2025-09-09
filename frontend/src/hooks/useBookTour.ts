@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
+import useBookStore from "../store/bookStore";
 
 interface BookTourProps {
     product_type: string;
@@ -21,6 +22,8 @@ interface BookTourResult {
 }
 
 export default function useBookTour() {
+    const { shortBookings, setShortBookings } = useBookStore();
+
     const [loading, setLoading] = useState(false);
 
     const bookTour = async ({
@@ -42,12 +45,14 @@ export default function useBookTour() {
                 },
                 { withCredentials: true }
             );
+            const newBooking = response.data.booking;
 
+            setShortBookings([newBooking, ...shortBookings]);
             toast.success(response.data.message);
 
             return {
                 success: true,
-                bookingId: response.data.bookingId ?? null
+                bookingId: newBooking.id
             };
         }
         catch (err) {

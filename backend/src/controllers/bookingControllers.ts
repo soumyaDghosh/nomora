@@ -138,7 +138,7 @@ export const createBooking = async (req: Request, res: Response) => {
             });
         }
 
-        const result = await client.query(
+        const insertResult = await client.query(
             `
   INSERT INTO bookings (
     user_id, status, product_type, trip_details, transfer_details,
@@ -184,11 +184,33 @@ export const createBooking = async (req: Request, res: Response) => {
             ]
         );
 
+        const newBookingId = insertResult.rows[0].id;
+
+        let hotel_name: string | null = null;
+        if (trip_details?.hotel_id) {
+            const hotelResult = await client.query(
+                `SELECT name FROM hotels WHERE id = $1 LIMIT 1`,
+                [trip_details.hotel_id]
+            );
+            hotel_name = hotelResult.rows[0]?.name ?? null;
+        }
+
+        const booking = {
+            id: newBookingId,
+            status: "ongoing",
+            product_type,
+            listing_id,
+            price,
+            trip_details: product_type === "airport_transfer" ? null : trip_details,
+            transfer_details: product_type === "airport_transfer" ? transfer_details : null,
+            hotel_name,
+        };
+
         await client.query("COMMIT");
 
         return res.status(201).json({
             message: "Booked successfully",
-            bookingId: result.rows[0].id
+            booking,
         });
     }
     catch (error) {
@@ -243,7 +265,7 @@ export const listBookings = async (req: Request, res: Response) => {
         if (error instanceof DatabaseError) {
             console.error("Postgres error:", error.message);
             return res.status(500).json({ message: "Database error" });
-        } 
+        }
         else {
             console.error("Unexpected error:", error);
             return res.status(500).json({ message: "Server error" });

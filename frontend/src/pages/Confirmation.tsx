@@ -1,23 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import useBookStore from "../store/bookStore";
 import useFetchBooking from "../hooks/useFetchBooking";
 import AppLoader from "../components/Loader/AppLoader";
 import { formatDate } from "../utils/formatDate";
 import { formatPrice } from "../utils/formatPrice";
 import { getVehicleSeat } from "../utils/getVehicleSeat";
+import { tripData } from "../data/tripData";
+import { transferData } from "../data/transferData";
 
 export default function Confirmation() {
+    const { longBookings } = useBookStore();
+
     const { bookingId } = useParams<{ bookingId: string }>();
     const navigate = useNavigate();
 
-    const {
-        loading,
-        booking,
-        isAirportTransfer,
-        trip,
-        transfer,
-        fetchBooking
-    } = useFetchBooking();
+    const { loading, fetchBooking } = useFetchBooking();
 
     const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
@@ -60,13 +58,22 @@ export default function Confirmation() {
     }, [activeTooltip]);
 
     useEffect(() => {
-        fetchBooking(bookingId);
-    }, [bookingId, fetchBooking]);
+        if (!bookingId) return;
+
+        const exists = longBookings.some(b => b.id === bookingId);
+        if (!exists) fetchBooking(bookingId);
+    }, [bookingId, longBookings, fetchBooking]);
+
+    const booking = longBookings.find(b => b.id === bookingId) ?? null;
+    const isAirportTransfer = booking?.product_type === "airport_transfer";
+    const trip = tripData[booking?.listing_id ?? ""];
+    const transfer = transferData[booking?.listing_id ?? ""];
 
     if (loading) {
         return <AppLoader />
     }
-    else if (booking) {
+
+    if (booking) {
         return (
             <div className="min-h-screen bg-gray-50 pb-24">
                 {/* Header */}
@@ -283,11 +290,14 @@ export default function Confirmation() {
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Payment Status</span>
-                                <span className={`text-sm font-medium px-2 py-1 rounded-full 
-                            ${false ? "bg-green-100 text-green-800" :
+                                {/* <span className={`
+                                    text-sm font-medium px-2 py-1 rounded-full 
+                                    ${false ? "bg-green-100 text-green-800" :
                                         false ? "bg-yellow-100 text-yellow-800" :
                                             "bg-orange-100 text-orange-800"
-                                    }`}>
+                                    }`}
+                                > */}
+                                <span className="text-sm font-medium px-2 py-1 rounded-full bg-orange-100 text-orange-800">
                                     Unpaid
                                 </span>
                             </div>
@@ -298,20 +308,20 @@ export default function Confirmation() {
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-gray-600">Base Fare</span>
                                             <span className="text-gray-900">
-                                                {formatPrice(transfer?.baseFare!)}
+                                                {formatPrice(transfer?.baseFare || "")}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-gray-600">Airport Toll</span>
                                             <span className="text-gray-900">
-                                                {formatPrice(transfer?.airportToll!)}
+                                                {formatPrice(transfer?.airportToll || "")}
                                             </span>
                                         </div>
                                         <div className="border-t border-gray-200 pt-2">
                                             <div className="flex items-center justify-between">
                                                 <span className="font-medium text-gray-900">Total Fare</span>
                                                 <span className="font-semibold text-gray-900">
-                                                    {formatPrice(transfer?.baseFare! + transfer?.airportToll!)}
+                                                    {formatPrice(transfer?.baseFare || "" + transfer?.airportToll || "")}
                                                 </span>
                                             </div>
                                         </div>
@@ -349,7 +359,7 @@ export default function Confirmation() {
                                     <span className="text-gray-600">Balance Due</span>
                                     <span className="font-medium text-orange-600">
                                         {isAirportTransfer ?
-                                            formatPrice(transfer?.baseFare! + transfer?.airportToll!)
+                                            formatPrice(transfer?.baseFare || "" + transfer?.airportToll || "")
                                             : formatPrice(booking.price)}
                                     </span>
                                 </div>
@@ -372,19 +382,19 @@ export default function Confirmation() {
                                 </div>
                             )}
 
-                            {true && (
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
-                                    <div className="flex items-start gap-2">
-                                        <i className="ri-information-line text-blue-600 text-sm mt-0.5"></i>
-                                        <p className="text-sm text-blue-800">
-                                            Please pay {
-                                                isAirportTransfer ? formatPrice(transfer?.baseFare! + transfer?.airportToll!)
-                                                    : formatPrice(booking.price)
-                                            } in cash/UPI directly to your chauffeur at trip completion.
-                                        </p>
-                                    </div>
+                            {/* {true && ( */}
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+                                <div className="flex items-start gap-2">
+                                    <i className="ri-information-line text-blue-600 text-sm mt-0.5"></i>
+                                    <p className="text-sm text-blue-800">
+                                        Please pay {
+                                            isAirportTransfer ? formatPrice(transfer?.baseFare || "" + transfer?.airportToll || "")
+                                                : formatPrice(booking.price)
+                                        } in cash/UPI directly to your chauffeur at trip completion.
+                                    </p>
                                 </div>
-                            )}
+                            </div>
+                            {/* )} */}
                         </div>
                     </div>
 
@@ -541,20 +551,19 @@ export default function Confirmation() {
             </div>
         )
     }
-    else {
-        return (
-            <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2">Booking Details Not Found</h2>
-                    <p className="text-gray-600 mb-4">The requested booking could not be found.</p>
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="bg-gray-800 text-white px-4 py-2 rounded-xl cursor-pointer"
-                    >
-                        Go Back
-                    </button>
-                </div>
+
+    return (
+        <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
+            <div className="text-center">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Booking Details Not Found</h2>
+                <p className="text-gray-600 mb-4">The requested booking could not be found.</p>
+                <button
+                    onClick={() => navigate(-1)}
+                    className="bg-gray-800 text-white px-4 py-2 rounded-xl cursor-pointer"
+                >
+                    Go Back
+                </button>
             </div>
-        )
-    }
+        </div>
+    )
 }

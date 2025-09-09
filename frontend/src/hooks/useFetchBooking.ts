@@ -1,15 +1,11 @@
 import { useCallback, useState } from "react";
 import axios, { AxiosError } from "axios";
-import type { Booking } from "../store/bookStore";
-import { tripData, type Trip } from "../data/tripData";
-import { transferData, type Transfer } from "../data/transferData";
+import useBookStore from "../store/bookStore";
 
 export default function useFetchBooking() {
+    const { longBookings, setLongBookings } = useBookStore();
+
     const [loading, setLoading] = useState(false);
-    const [booking, setBooking] = useState<Booking | null>(null);
-    const [isAirportTransfer, setAirportTransfer] = useState(false);
-    const [trip, setTrip] = useState<Trip | null>(null);
-    const [transfer, setTransfer] = useState<Transfer | null>(null);
 
     const fetchBooking = useCallback(async (bookingId?: string) => {
         if (!bookingId) return;
@@ -21,17 +17,8 @@ export default function useFetchBooking() {
                 `${import.meta.env.VITE_SERVER_URL}/api/book/${bookingId}`,
                 { withCredentials: true }
             );
-            const booking = response.data.booking;
 
-            setBooking(booking);
-            setAirportTransfer(booking.product_type === "airport_transfer");
-
-            if (booking.product_type === "airport_transfer") {
-                setTransfer(transferData[response.data.booking.listing_id ?? ""])
-            }
-            else {
-                setTrip(tripData[response.data.booking.listing_id ?? ""])
-            }
+            setLongBookings([response.data.booking, ...longBookings]);
         }
         catch (err) {
             const error = err as AxiosError<{ message?: string }>;
@@ -40,14 +27,7 @@ export default function useFetchBooking() {
         finally {
             setLoading(false);
         }
-    }, []);
+    }, [longBookings, setLongBookings]);
 
-    return {
-        loading,
-        booking,
-        isAirportTransfer,
-        trip,
-        transfer,
-        fetchBooking
-    };
+    return { loading, fetchBooking };
 }

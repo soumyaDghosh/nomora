@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import useAuthStore from "../store/authStore";
 import QuickAccessCard from "../components/Home/QuickAccessCard";
 import TripCard from "../components/Home/TripCard";
 import ShareCard from "../components/Home/ShareCard";
@@ -8,8 +7,6 @@ import ServiceModal from "../components/Home/ServiceModal";
 
 export default function Home() {
   const navigate = useNavigate();
-
-  const { user } = useAuthStore();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"sightseeing" | "daytrips">("sightseeing");
@@ -22,7 +19,7 @@ export default function Home() {
 
     if (hour >= 0 && hour < 12) return "Good morning!";
     if (hour >= 12 && hour < 16) return "Good afternoon!";
-    return `Good evening${user?.name ? ` ${user.name}` : ''}!`;
+    return "Good evening!";
   }
 
   const handleCitySightseeingClick = () => {
@@ -188,20 +185,18 @@ export default function Home() {
         </div>
         {allTrips.map(trip => (
           <Link key={trip.id} to={`/trip/${trip.id}`} className="block">
-            <div className="cursor-pointer hover:shadow-md transition-shadow">
-              <TripCard
-                key={trip.id}
-                id={trip.id}
-                title={trip.title}
-                description={trip.description}
-                imageUrl={trip.imageUrl}
-                price={trip.price}
-                duration={trip.duration}
-                pickup={trip.pickup}
-                chauffeur={trip.chauffeur}
-                tag={trip.tag}
-              />
-            </div>
+            <TripCard
+              key={trip.id}
+              id={trip.id}
+              title={trip.title}
+              description={trip.description}
+              imageUrl={trip.imageUrl}
+              price={trip.price}
+              duration={trip.duration}
+              pickup={trip.pickup}
+              chauffeur={trip.chauffeur}
+              tag={trip.tag}
+            />
           </Link>
         ))}
       </div>

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export interface Booking {
+export interface MyBooking {
   id: string;
   status: "ongoing" | "completed" | "cancelled";
   product_type: "sameday" | "city_sightseeing" | "airport_transfer" | "overnight" | "experiences";
@@ -26,13 +26,17 @@ export interface Booking {
 }
 
 interface BookState {
-  bookings: Booking[]
-  setBookings: (data: Booking[]) => void
+  shortBookings: MyBooking[]
+  setShortBookings: (data: MyBooking[]) => void
+  longBookings: MyBooking[]
+  setLongBookings: (data: MyBooking[]) => void
 }
 
 const useBookStore = create<BookState>((set) => ({
-  bookings: [],
-  setBookings: (data: Booking[]) => set({ bookings: data })
+  shortBookings: [],
+  setShortBookings: (data: MyBooking[]) => set({ shortBookings: data }),
+  longBookings: [],
+  setLongBookings: (data: MyBooking[]) => set({ longBookings: data }),
 }));
 
 export default useBookStore;

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import useBookStore from "../store/bookStore";
 
 export default function useFetchBookings() {
-    const { setBookings } = useBookStore();
+    const { setShortBookings } = useBookStore();
 
     const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ export default function useFetchBookings() {
                 { withCredentials: true }
             );
 
-            setBookings(response.data.bookings);
+            setShortBookings(response.data.bookings);
         }
         catch {
             toast.error("Failed to fetch bookings");
@@ -26,7 +26,7 @@ export default function useFetchBookings() {
         finally {
             setLoading(false);
         }
-    }, [setBookings]);
+    }, [setShortBookings]);
 
     return { loading, fetchBookings };
 }

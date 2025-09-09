@@ -1,13 +1,13 @@
 import { useNavigate, Link } from "react-router-dom";
 import { tripData } from "../data/tripData";
 import { transferData } from "../data/transferData";
-import type { Booking } from "../store/bookStore";
+import type { MyBooking } from "../store/bookStore";
 import { formatPrice } from "../utils/formatPrice";
 import { formatDate } from "../utils/formatDate";
 import { getVehicleSeat } from "../utils/getVehicleSeat";
 
 interface BookingStateCardProps {
-    booking: Booking;
+    booking: MyBooking;
 }
 
 const BookingStateCard = ({ booking }: BookingStateCardProps) => {

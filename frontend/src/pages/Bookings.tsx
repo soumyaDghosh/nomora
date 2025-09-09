@@ -9,11 +9,11 @@ export default function Bookings() {
 
     const { loading, fetchBookings } = useFetchBookings();
 
-    const { bookings } = useBookStore();
+    const { shortBookings } = useBookStore();
 
     useEffect(() => {
-        fetchBookings();
-    }, [fetchBookings]);
+        if (!shortBookings.length) fetchBookings();
+    }, [shortBookings.length, fetchBookings]);
 
     return (
         <div className="min-h-[100svh] bg-gray-50">
@@ -35,9 +35,9 @@ export default function Bookings() {
 
             <div className="pt-6 pb-28">
                 {loading ? <LoadingState />
-                    : (bookings && bookings.length > 0) ? (
+                    : (shortBookings && shortBookings.length > 0) ? (
                         <div className="px-4 space-y-5">
-                            {bookings.map((booking) => (
+                            {shortBookings.map((booking) => (
                                 <BookingStateCard
                                     key={booking.id}
                                     booking={booking}
