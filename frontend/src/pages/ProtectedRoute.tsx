@@ -23,7 +23,7 @@ export default function ProtectedRoute() {
 
     // If authenticated and visiting /auth or /welcome - redirect back or to "/"
     if (isAuthenticated && isAuthPage) {
-        const redirectTo = location.state?.from?.pathname;
+        let redirectTo = location.state?.from?.pathname;
 
         // prevent redirecting back to /profile after login
         if (redirectTo === "/profile") {
