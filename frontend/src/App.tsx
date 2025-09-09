@@ -1,6 +1,10 @@
-import { useEffect } from "react"
+import { useRef, useEffect } from "react"
 import { Routes, Route } from "react-router-dom"
 import useAuthFetch from "./hooks/useAuthFetch"
+import useFetchBookings from "./hooks/useFetchBookings"
+import useFetchBooking from "./hooks/useFetchBooking"
+import useAuthStore from "./store/authStore"
+import useBookStore from "./store/bookStore"
 import ProtectedRoute from "./pages/ProtectedRoute"
 import Home from "./pages/Home"
 import Welcome from "./pages/Welcome"
@@ -19,10 +23,44 @@ import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
   const { fetchUser } = useAuthFetch();
+  const { fetchBookings } = useFetchBookings();
+  const { fetchBooking } = useFetchBooking();
+
+  const { isAuthenticated } = useAuthStore();
+  const { shortBookings, longBookings } = useBookStore();
+  const fetchingRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    const init = async () => {
+      const ok = await fetchUser();
+
+      if (ok) {
+        await fetchBookings();
+      }
+    };
+
+    init();
+  }, [fetchUser, fetchBookings, fetchBooking]);
+
+  useEffect(() => {
+    const init = async () => {
+      if (!isAuthenticated || !shortBookings.length) return;
+
+      const bookingsToFetch = shortBookings.filter(
+        (b) =>
+          !longBookings.some((lb) => lb.id === b.id) &&
+          !fetchingRef.current.has(b.id)
+      );
+
+      if (bookingsToFetch.length) {
+        bookingsToFetch.forEach((b) => fetchingRef.current.add(b.id));
+        await Promise.all(bookingsToFetch.map((b) => fetchBooking(b.id)));
+        bookingsToFetch.forEach((b) => fetchingRef.current.delete(b.id));
+      }
+    };
+
+    init();
+  }, [isAuthenticated, shortBookings, longBookings, fetchBooking]);
 
   return (
     <>

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetchBookings from "../hooks/useFetchBookings";
 import useBookStore from "../store/bookStore";
@@ -7,13 +6,9 @@ import BookingStateCard from "../components/BookingStateCard";
 export default function Bookings() {
     const navigate = useNavigate();
 
-    const { loading, fetchBookings } = useFetchBookings();
+    const { loading } = useFetchBookings();
 
     const { shortBookings } = useBookStore();
-
-    useEffect(() => {
-        if (!shortBookings.length) fetchBookings();
-    }, [shortBookings.length, fetchBookings]);
 
     return (
         <div className="min-h-[100svh] bg-gray-50">

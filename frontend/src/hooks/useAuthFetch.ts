@@ -5,7 +5,7 @@ import useAuthStore from "../store/authStore";
 export default function useAuthFetch() {
     const { setUser, clearUser, setAuthenticating, setAuthenticated } = useAuthStore();
 
-    const fetchUser = useCallback(async () => {
+    const fetchUser = useCallback(async (): Promise<boolean> => {
         try {
             setAuthenticating(true);
 
@@ -16,9 +16,12 @@ export default function useAuthFetch() {
 
             setUser(res.data.user);
             setAuthenticated(true);
+
+            return true;
         }
         catch {
             clearUser();
+            return false;
         }
         finally {
             setAuthenticating(false);

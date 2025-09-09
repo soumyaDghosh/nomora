@@ -8,7 +8,7 @@ export default function useFetchBookings() {
 
     const [loading, setLoading] = useState(false);
 
-    const fetchBookings = useCallback(async () => {
+    const fetchBookings = useCallback(async (): Promise<string[]> => {
         try {
             setLoading(true);
 
@@ -18,10 +18,11 @@ export default function useFetchBookings() {
             );
 
             setShortBookings(response.data.bookings);
+            return response.data.bookings.map((b: { id: string }) => b.id);
         }
         catch {
             toast.error("Failed to fetch bookings");
-            return { success: false };
+            return [];
         }
         finally {
             setLoading(false);
