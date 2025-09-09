@@ -15,7 +15,7 @@ export default function ProtectedRoute() {
     );
 
     if (isAuthenticating) {
-        if (hasDoneAuth && !isAuthPage) {
+        if (hasDoneAuth) {
             return <Home />;
         } else {
             return null;
