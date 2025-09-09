@@ -1,16 +1,14 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import useBookStore from "../store/bookStore";
 
 export default function useFetchBookings() {
-    const { setShortBookings } = useBookStore();
-
-    const [loading, setLoading] = useState(false);
+    const { setShortBookings, setLoadingBookings } = useBookStore();
 
     const fetchBookings = useCallback(async (): Promise<string[]> => {
         try {
-            setLoading(true);
+            setLoadingBookings(true);
 
             const response = await axios.get(
                 `${import.meta.env.VITE_SERVER_URL}/api/book`,
@@ -25,9 +23,9 @@ export default function useFetchBookings() {
             return [];
         }
         finally {
-            setLoading(false);
+            setLoadingBookings(false);
         }
-    }, [setShortBookings]);
+    }, [setLoadingBookings, setShortBookings]);
 
-    return { loading, fetchBookings };
+    return { fetchBookings };
 }

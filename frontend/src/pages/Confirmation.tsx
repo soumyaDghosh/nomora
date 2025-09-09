@@ -59,8 +59,11 @@ export default function Confirmation() {
     const trip = tripData[booking?.listing_id ?? ""];
     const transfer = transferData[booking?.listing_id ?? ""];
 
-    if (loadingBookingId === "" && loadingBookingId === bookingId) return <AppLoader />;
-    else if (loadingBookingId === null) {
+    if (loadingBookingId === "" || loadingBookingId === bookingId) {
+        return <AppLoader />
+    }
+
+    if (loadingBookingId === null) {
         if (booking) {
             return (
                 <div className="min-h-screen bg-gray-50 pb-24">
@@ -104,13 +107,13 @@ export default function Confirmation() {
                                     <div className="flex items-center gap-3">
                                         <i className="ri-calendar-line text-blue-600 w-5 h-5 flex items-center justify-center"></i>
                                         <span className="text-sm text-gray-700">
-                                            {formatDate(isAirportTransfer ? booking.transfer_details?.date : booking.trip_details?.date)}
+                                            {formatDate(isAirportTransfer ? booking.transfer_details?.date : booking?.trip_details?.date)}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <i className="ri-time-line text-blue-600 w-5 h-5 flex items-center justify-center"></i>
                                         <span className="text-sm text-gray-700">
-                                            {isAirportTransfer ? booking.transfer_details?.time : booking.trip_details?.time}
+                                            {isAirportTransfer ? booking.transfer_details?.time : booking?.trip_details?.time}
                                         </span>
                                     </div>
                                 </div>
@@ -186,7 +189,7 @@ export default function Confirmation() {
                                             <div className="flex-1">
                                                 <span className="text-gray-500 font-medium block mb-1">Car Category</span>
                                                 <p className="font-medium text-gray-900">
-                                                    {isAirportTransfer ? "Comfort" : booking.trip_details?.car_type}
+                                                    {isAirportTransfer ? "Comfort" : booking?.trip_details?.car_type}
                                                 </p>
                                             </div>
                                         </div>
@@ -203,7 +206,7 @@ export default function Confirmation() {
                                                     </button>
                                                 </div>
                                                 <p className="font-medium text-gray-900">
-                                                    {isAirportTransfer ? "4+1 Seats" : getVehicleSeat(booking.trip_details?.car_type)}
+                                                    {isAirportTransfer ? "4+1 Seats" : getVehicleSeat(booking?.trip_details?.car_type)}
                                                 </p>
                                             </div>
 
@@ -227,7 +230,7 @@ export default function Confirmation() {
                                             <div className="flex-1">
                                                 <span className="text-gray-500 font-medium block mb-1">Comfort</span>
                                                 <p className="font-medium text-gray-900">
-                                                    {isAirportTransfer ? "AC" : booking.trip_details?.ac_type}
+                                                    {isAirportTransfer ? "AC" : booking?.trip_details?.ac_type}
                                                 </p>
                                             </div>
                                         </div>
@@ -256,7 +259,7 @@ export default function Confirmation() {
                                 {!isAirportTransfer && (
                                     <div className="border-t border-gray-100 pt-4">
                                         <Link
-                                            to={`/trip/${booking.listing_id}`}
+                                            to={`/trip/${booking?.listing_id}`}
                                             className="inline-flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
                                         >
                                             <i className="ri-eye-line"></i>
@@ -319,20 +322,20 @@ export default function Confirmation() {
                                             <div className="flex items-center justify-between text-sm">
                                                 <span className="text-gray-600">Base Price</span>
                                                 <span className="text-gray-900">
-                                                    {getPricePart(Number(booking.price), "base")}
+                                                    {getPricePart(Number(booking?.price), "base")}
                                                 </span>
                                             </div>
                                             <div className="flex items-center justify-between text-sm">
                                                 <span className="text-gray-600">Tax (5%)</span>
                                                 <span className="text-gray-900">
-                                                    {getPricePart(Number(booking.price), "tax")}
+                                                    {getPricePart(Number(booking?.price), "tax")}
                                                 </span>
                                             </div>
                                             <div className="border-t border-gray-200 pt-2">
                                                 <div className="flex items-center justify-between">
                                                     <span className="font-medium text-gray-900">Total Amount</span>
                                                     <span className="font-semibold text-gray-900">
-                                                        {formatPrice(booking.price)}
+                                                        {formatPrice(booking?.price)}
                                                     </span>
                                                 </div>
                                             </div>
@@ -348,7 +351,7 @@ export default function Confirmation() {
                                         <span className="font-medium text-orange-600">
                                             {isAirportTransfer ?
                                                 formatPrice(transfer?.baseFare || "" + transfer?.airportToll || "")
-                                                : formatPrice(booking.price)}
+                                                : formatPrice(booking?.price)}
                                         </span>
                                     </div>
                                 </div>
@@ -377,7 +380,7 @@ export default function Confirmation() {
                                         <p className="text-sm text-blue-800">
                                             Please pay {
                                                 isAirportTransfer ? formatPrice(transfer?.baseFare || "" + transfer?.airportToll || "")
-                                                    : formatPrice(booking.price)
+                                                    : formatPrice(booking?.price)
                                             } in cash/UPI directly to your chauffeur at trip completion.
                                         </p>
                                     </div>

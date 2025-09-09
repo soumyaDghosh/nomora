@@ -1,4 +1,4 @@
-export const formatPrice = (value: string | number): string => {
+export const formatPrice = (value?: string | number): string => {
     if (value === null || value === undefined) return "₹0";
 
     const num = typeof value === "string" ? parseFloat(value) : value;

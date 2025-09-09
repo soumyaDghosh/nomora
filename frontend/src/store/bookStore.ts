@@ -28,6 +28,9 @@ export interface MyBooking {
 interface BookState {
   shortBookings: MyBooking[]
   setShortBookings: (data: MyBooking[]) => void
+  loadingBookings: boolean;
+  setLoadingBookings: (state: boolean) => void;
+
   longBookings: MyBooking[]
   setLongBookings: (updater: MyBooking[] | ((prev: MyBooking[]) => MyBooking[])) => void;
   loadingBookingId: string | null;
@@ -37,6 +40,9 @@ interface BookState {
 const useBookStore = create<BookState>((set) => ({
   shortBookings: [],
   setShortBookings: (data: MyBooking[]) => set({ shortBookings: data }),
+  loadingBookings: false,
+  setLoadingBookings: (state: boolean) => set({ loadingBookings: state }),
+
   longBookings: [],
   setLongBookings: (updater) =>
     set((state) => ({

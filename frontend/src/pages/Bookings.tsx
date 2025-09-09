@@ -1,14 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import useFetchBookings from "../hooks/useFetchBookings";
 import useBookStore from "../store/bookStore";
 import BookingStateCard from "../components/BookingStateCard";
 
 export default function Bookings() {
     const navigate = useNavigate();
 
-    const { loading } = useFetchBookings();
-
-    const { shortBookings } = useBookStore();
+    const { shortBookings, loadingBookings } = useBookStore();
 
     return (
         <div className="min-h-[100svh] bg-gray-50">
@@ -29,7 +26,7 @@ export default function Bookings() {
             </div>
 
             <div className="pt-6 pb-28">
-                {loading ? <LoadingState />
+                {loadingBookings ? <LoadingState />
                     : (shortBookings && shortBookings.length > 0) ? (
                         <div className="px-4 space-y-5">
                             {shortBookings.map((booking) => (
