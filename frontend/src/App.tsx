@@ -40,7 +40,7 @@ function App() {
     };
 
     init();
-  }, [fetchUser, fetchBookings, fetchBooking]);
+  }, [fetchUser, fetchBookings]);
 
   useEffect(() => {
     const init = async () => {

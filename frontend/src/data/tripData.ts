@@ -80,14 +80,14 @@ export type Trip = {
 export const tripData: Record<string, Trip> = {
     "heritage-tour-8hr": {
         supplier: {
-            id: import.meta.env.VITE_SUPPLIER_ID,
+            id: '2ab0348d-13d9-45cc-b14b-12b46fb2f8a4',
             display_name: "Shanti Travels",
             legal_name: "Mukesh Kumar",
             address: "13th Lane Road",
             phone_number: "9163161834"
         },
         hotel: {
-            id: import.meta.env.VITE_HOTEL_ID,
+            id: '0b1ac40f-c47d-4eda-bf7b-0cfb203288c4',
             name: "HSR Layout",
         },
         title: "Full Day Bangalore City Tour in Private Car",

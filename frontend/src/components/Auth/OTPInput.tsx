@@ -3,6 +3,7 @@ import useAuthStore from "../../store/authStore";
 import useVerifyOtp from "../../hooks/useVerifyOTP";
 import useSendOtp from "../../hooks/useSendOTP"
 import useAuthFetch from "../../hooks/useAuthFetch";
+import useFetchBookings from "../../hooks/useFetchBookings";
 
 interface OTPInputProps {
     setTab: React.Dispatch<React.SetStateAction<number>>
@@ -15,6 +16,7 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
     const { loading, verifyOtp } = useVerifyOtp();
     const { sendOtp } = useSendOtp();
     const { fetchUser } = useAuthFetch();
+    const { fetchBookings } = useFetchBookings();
 
     const [otp, setOtp] = useState("");
     const [error, setError] = useState("");
@@ -43,8 +45,12 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
 
         const ok = await verifyOtp(phoneNumber, otp);
         if (ok) {
-            await fetchUser();
-        } else {
+            const ok = await fetchUser();
+            if (ok) {
+                await fetchBookings();
+            }
+        }
+        else {
             setError("OTP is incorrect");
             setOtp("");
         }
