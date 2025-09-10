@@ -285,7 +285,7 @@ export const createBooking = async (req: Request, res: Response) => {
         let hotel_name: string | null = null;
         if (trip_details?.hotel_id) {
             const hotelResult = await client.query(
-                `SELECT name FROM hotels WHERE id = $1 LIMIT 1`,
+                `SELECT display_name FROM hotels WHERE id = $1 LIMIT 1`,
                 [trip_details.hotel_id]
             );
             hotel_name = hotelResult.rows[0]?.name ?? null;
@@ -364,7 +364,7 @@ export const listBookings = async (req: Request, res: Response) => {
                 b.price,
                 to_jsonb(b.trip_details) AS trip_details,
                 to_jsonb(b.transfer_details) AS transfer_details,
-                h.name AS hotel_name
+                h.display_name AS hotel_name
             FROM bookings b
             LEFT JOIN hotels h ON (b.trip_details).hotel_id = h.id
             WHERE b.user_id = $1

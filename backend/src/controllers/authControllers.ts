@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { pool } from "../config/db";
-import { requestOtp, confirmOtp } from "../services/otp";
+import { requestOtp, confirmOtp } from "../services/message";
 
 export const getUser = async (req: Request, res: Response) => {
     const { id, ...rest } = req.user!;

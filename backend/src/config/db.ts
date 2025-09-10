@@ -56,7 +56,11 @@ export const pool = new Pool({
   await pool.query(`
     CREATE TABLE IF NOT EXISTS hotels (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      name VARCHAR(100) NOT NULL
+      display_name VARCHAR(255) NOT NULL,
+      legal_name VARCHAR(255) NOT NULL,
+      address VARCHAR(255) NOT NULL,
+      pincode INTEGER NOT NULL,
+      lat_long VARCHAR(255) NOT NULL
     );
   `);
 

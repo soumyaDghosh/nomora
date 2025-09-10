@@ -4,7 +4,8 @@ import {
     createSupplier,
     createDriver,
     createVehicle,
-    updateBooking
+    updateBooking,
+    createHotel
 } from "../controllers/adminControllers";
 
 const router = Router();
@@ -14,5 +15,7 @@ router.post("/create/driver", verifyAdmin, createDriver);
 router.post("/create/vehicle", verifyAdmin, createVehicle);
 
 router.post("/update/booking", verifyAdmin, updateBooking);
+
+router.post("/create/hotel", verifyAdmin, createHotel);
 
 export default router;

@@ -321,3 +321,70 @@ export const updateBooking = async (req: Request, res: Response) => {
         client.release();
     }
 };
+
+export const createHotel = async (req: Request, res: Response) => {
+    const client = await pool.connect();
+
+    try {
+        const { display_name, legal_name, address, pincode, lat_long } = req.body ?? {};
+
+        if (!display_name) {
+            return res.status(400).json({ message: "display_name is required" });
+        } else if (!legal_name) {
+            return res.status(400).json({ message: "legal_name is required" });
+        } else if (!address) {
+            return res.status(400).json({ message: "address is required" });
+        } else if (!pincode) {
+            return res.status(400).json({ message: "pincode is required" });
+        } else if (!lat_long) {
+            return res.status(400).json({ message: "lat_long is required" });
+        }
+
+        await client.query("BEGIN");
+
+        await client.query(
+            `
+            INSERT INTO hotels (display_name, legal_name, address, pincode, lat_long)
+            VALUES ($1, $2, $3, $4, $5);
+            `,
+            [display_name, legal_name, address, pincode, lat_long]
+        );
+
+        await client.query("COMMIT");
+
+        return res.status(201).json({ message: "Hotel created successfully" });
+    }
+    catch (error) {
+        await client.query("ROLLBACK");
+
+        if (error instanceof DatabaseError) {
+            console.error("Postgres error:", error.message);
+            return res.status(500).json({ message: "Database error" });
+        } else {
+            console.error("Unexpected error:", error);
+            return res.status(500).json({ message: "Server error" });
+        }
+    }
+    finally {
+        client.release();
+    }
+};
+
+export const whatsappMessage = async (req: Request, res: Response) => {
+    try {
+        const { phone, message } = req.body ?? {};
+
+        if (!phone) {
+            return res.status(400).json({ message: "phone is required" });
+        } else if (!message) {
+            return res.status(400).json({ message: "message is required" });
+        }
+
+
+
+        return res.status(201).json({ message: "Message sent successfully" });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server error" });
+    }
+};

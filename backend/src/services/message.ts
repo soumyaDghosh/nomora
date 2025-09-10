@@ -19,7 +19,6 @@ export async function requestOtp(mobile: string): Promise<OTPResponse> {
                 template_id: TEMPLATE_ID,
                 mobile: Number(mobile),
                 authkey: AUTH_KEY
-                // realTimeResponse: 1
             },
             headers: {
                 "content-type": "application/json",
@@ -47,7 +46,7 @@ export async function confirmOtp(
         });
 
         return data;
-    } 
+    }
     catch (error: any) {
         throw new Error(error.response?.data?.message || "Failed to verify OTP");
     }
