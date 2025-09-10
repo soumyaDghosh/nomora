@@ -333,7 +333,6 @@ ${product_type === "airport_transfer"
 
         if (error instanceof DatabaseError) {
             console.error("Postgres error:", error.message);
-            if (error.detail) console.error(error.detail);
             return res.status(500).json({ message: "Database error" });
         }
         else {

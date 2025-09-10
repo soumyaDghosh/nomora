@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import useAuthStore from "../../store/authStore";
 import useVerifyOtp from "../../hooks/useVerifyOTP";
 import useSendOtp from "../../hooks/useSendOTP"
 import useAuthFetch from "../../hooks/useAuthFetch";
@@ -9,6 +10,8 @@ interface OTPInputProps {
 }
 
 const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
+    const { isAuthenticating } = useAuthStore();
+
     const { loading, verifyOtp } = useVerifyOtp();
     const { sendOtp } = useSendOtp();
     const { fetchUser } = useAuthFetch();
@@ -35,7 +38,7 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
     };
 
     const handleVerifyOTP = async () => {
-        if (!otp || otp.length !== 6) return;
+        if (!otp || otp.length !== 4) return;
         setError("");
 
         const ok = await verifyOtp(phoneNumber, otp);
@@ -94,7 +97,7 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
                 <div className="mb-6">
                     <OTPField
                         key={resetKey}
-                        length={6}
+                        length={4}
                         onComplete={handleOTPComplete}
                         error={!!error}
                         setError={setError}
@@ -111,7 +114,7 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
 
                 <div className="mb-8 text-center">
                     <button
-                        disabled={!canResend}
+                        disabled={!canResend || isAuthenticating}
                         onClick={handleResendOTP}
                         className={`text-sm font-medium ${canResend ? "text-gray-900 underline cursor-pointer" : "text-gray-600 cursor-not-allowed"}`}
                     >
@@ -122,13 +125,13 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
                 <div className="mb-8 w-full">
                     <button
                         onClick={handleVerifyOTP}
-                        disabled={!otp || otp.length !== 6 || loading}
-                        className={`w-full py-4 rounded-2xl text-base font-medium transition-all flex items-center justify-center ${!otp || otp.length !== 6 || loading
+                        disabled={!otp || otp.length !== 4 || loading || isAuthenticating}
+                        className={`w-full py-4 rounded-2xl text-base font-medium transition-all flex items-center justify-center ${!otp || otp.length !== 4 || loading
                             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                             : "bg-gray-800 text-white hover:bg-gray-900 cursor-pointer"
                             } `}
                     >
-                        {loading && (
+                        {(loading || isAuthenticating) && (
                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                         )}
                         Verify OTP

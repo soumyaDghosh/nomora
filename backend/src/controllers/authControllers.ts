@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import RestException from "twilio/lib/base/RestException";
 import { pool } from "../config/db";
-import {
-    createVerification,
-    createVerificationCheck
-} from "../services/twilio";
+import { requestOtp, confirmOtp } from "../services/otp";
 
 export const getUser = async (req: Request, res: Response) => {
     const { id, ...rest } = req.user!;
@@ -17,19 +13,14 @@ export const sendOTP = async (req: Request, res: Response) => {
         const { phone } = req.body ?? {};
         if (!phone) return res.status(400).json({ message: "phone is required" });
 
-        await createVerification(phone);
+        const requestResult = await requestOtp(`91${phone}`);
+        if (requestResult.type === "error") {
+            return res.status(400).json({ message: "Failed to send otp" });
+        }
 
         return res.status(200).json({ message: "OTP sent successfully" });
     }
     catch (error) {
-        if (error instanceof RestException) {
-            return res.status(502).json({
-                message: error.message,
-                code: error.code,
-                status: error.status
-            });
-        }
-
         return res.status(500).json({ message: "Server error" });
     }
 };
@@ -40,8 +31,8 @@ export const verifyOTP = async (req: Request, res: Response) => {
         if (!phone) return res.status(400).json({ message: "phone is required" });
         if (!otp) return res.status(400).json({ message: "otp is required" });
 
-        const verificationResult = await createVerificationCheck(otp, phone);
-        if (verificationResult.status !== "approved") {
+        const confirmResult = await confirmOtp(`91${phone}`, otp);
+        if (confirmResult.type === "error") {
             return res.status(400).json({ message: "Invalid or expired OTP" });
         }
 
@@ -74,14 +65,6 @@ export const verifyOTP = async (req: Request, res: Response) => {
         });
     }
     catch (error) {
-        if (error instanceof RestException) {
-            return res.status(502).json({
-                message: error.message,
-                code: error.code,
-                status: error.status,
-            });
-        }
-
         return res.status(500).json({ message: "Server error" });
     }
 };
