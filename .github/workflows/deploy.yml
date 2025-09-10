@@ -31,25 +31,25 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Install sshpass & rsync
-        run: sudo apt-get update && sudo apt-get install -y sshpass rsync
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
         run: |
           # Ensure directories exist on VPS
-          sshpass -p "${{ secrets.VPS_PASS }}" ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /root/Nomora-App/frontend /root/Nomora-App/backend"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /root/Nomora-App/frontend /root/Nomora-App/backend"
 
           # Deploy frontend dist -> /root/Nomora-App/frontend (replace completely)
           rsync -avz --delete \
-            -e "sshpass -p '${{ secrets.VPS_PASS }}' ssh -o StrictHostKeyChecking=no" \
             frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/Nomora-App/frontend/
 
           # Deploy backend folder -> /root/Nomora-App/backend (KEEP node_modules & .env)
           rsync -avz --delete --exclude node_modules --exclude .env \
-            -e "sshpass -p '${{ secrets.VPS_PASS }}' ssh -o StrictHostKeyChecking=no" \
             backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/Nomora-App/backend/
 
-          # Install backend dependencies with nvm (must source nvm.sh, not run it)
-          sshpass -p "${{ secrets.VPS_PASS }}" ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "source /root/.nvm/nvm.sh && cd /root/Nomora-App/backend && npm install"
+          # Install backend dependencies with nvm
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "source /root/.nvm/nvm.sh && cd /root/Nomora-App/backend && npm install"
