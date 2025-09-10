@@ -51,5 +51,5 @@ jobs:
           rsync -avz --delete --exclude node_modules --exclude .env \
             backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/Nomora-App/backend/
 
-          # Install backend dependencies with nvm
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "source /root/.nvm/nvm.sh && cd /root/Nomora-App/backend && npm install"
+          # Install backend dependencies with nvm and restart pm2 app
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd /root/Nomora-App/backend && npm install && pm2 restart ${{ secrets.PM2_APP }}'"
