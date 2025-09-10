@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react"
-import { Routes, Route } from "react-router-dom"
+import { useLocation, Routes, Route } from "react-router-dom"
+import { normalizePath, trackPageView } from "./lib/analytics";
 import useAuthFetch from "./hooks/useAuthFetch"
 import useFetchBookings from "./hooks/useFetchBookings"
 import useFetchBooking from "./hooks/useFetchBooking"
@@ -22,6 +23,8 @@ import NotFound from "./pages/NotFound"
 import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
+  const location = useLocation();
+
   const { fetchUser } = useAuthFetch();
   const { fetchBookings } = useFetchBookings();
   const { fetchBooking } = useFetchBooking();
@@ -29,6 +32,11 @@ function App() {
   const { isAuthenticated } = useAuthStore();
   const { shortBookings, longBookings } = useBookStore();
   const fetchingRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    const normalizedPath = normalizePath(location.pathname);
+    trackPageView(normalizedPath);
+  }, [location.pathname]);
 
   useEffect(() => {
     const init = async () => {
