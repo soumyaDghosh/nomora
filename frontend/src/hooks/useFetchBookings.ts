@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import useBookStore from "../store/bookStore";
 
 export default function useFetchBookings() {
-    const { setShortBookings, setLoadingBookings } = useBookStore();
+    const { setShortBookings, setLoadingBookings, setLoadingBookingId } = useBookStore();
 
     const fetchBookings = useCallback(async (): Promise<string[]> => {
         try {
@@ -14,9 +14,11 @@ export default function useFetchBookings() {
                 `${import.meta.env.VITE_SERVER_URL}/api/book`,
                 { withCredentials: true }
             );
+            const bookings = response.data.bookings;
 
-            setShortBookings(response.data.bookings);
-            return response.data.bookings.map((b: { id: string }) => b.id);
+            if (!bookings.length) setLoadingBookingId(null);
+            setShortBookings(bookings);
+            return bookings.map((b: { id: string }) => b.id);
         }
         catch {
             toast.error("Failed to fetch bookings");
@@ -25,7 +27,7 @@ export default function useFetchBookings() {
         finally {
             setLoadingBookings(false);
         }
-    }, [setLoadingBookings, setShortBookings]);
+    }, [setLoadingBookings, setShortBookings, setLoadingBookingId]);
 
     return { fetchBookings };
 }

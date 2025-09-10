@@ -109,7 +109,7 @@ export default function Checkout() {
         // Outside booking window (T-1 or >T+7)
         if (daysDiff < 0 || daysDiff > 7) return false;
 
-        // ✅ Enforce 8-hour lead time for ALL bookings
+        // Enforce 8-hour lead time for ALL bookings
         const hoursDiff = (selectedDate.getTime() - nowIST.getTime()) / (1000 * 60 * 60);
         return hoursDiff >= 8;
     }, [getCurrentISTTime]);

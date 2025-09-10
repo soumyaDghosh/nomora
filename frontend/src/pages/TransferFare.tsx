@@ -96,7 +96,7 @@ export default function TransferFare() {
     };
 
     return (
-        <div className="min-h-[100svh] bg-gray-50 pb-[calc(77px+89px)]">
+        <div className="min-h-[100svh] bg-gray-50 pb-[calc(89px)]">
             {/* Header */}
             <div className="bg-white border-b border-gray-100 px-4 py-3 pt-6 sticky top-0 z-40">
                 <div className="flex items-center gap-3">
@@ -262,7 +262,7 @@ export default function TransferFare() {
                 </div>
 
                 {/* Payment Information */}
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                     <div className="flex items-start gap-3">
                         <i className="ri-money-rupee-circle-line text-green-600 text-lg mt-0.5" />
                         <div>
@@ -274,7 +274,7 @@ export default function TransferFare() {
             </div>
 
             {/* Fixed Bottom CTA */}
-            <div className="fixed bottom-[77px] left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
                 <div className="max-w-md mx-auto">
                     <button
                         onClick={handleConfirmBooking}

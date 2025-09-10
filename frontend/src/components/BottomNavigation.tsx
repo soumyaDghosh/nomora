@@ -18,9 +18,10 @@ const BottomNavigation = () => {
 
     const allowedRoutes = ["/", "/explore", "/bookings", "/profile"];
 
+    const pathSegments = location.pathname.split("/").filter(Boolean);
     const isAllowed =
         allowedRoutes.includes(location.pathname) ||
-        location.pathname.startsWith("/transfer");
+        (pathSegments[0] === "transfer" && pathSegments.length === 2);
 
     if (!isAllowed) {
         return null;

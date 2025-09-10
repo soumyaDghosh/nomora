@@ -28,8 +28,7 @@ const validateFields = (obj: any, keys: string[]) => {
 };
 
 const validateDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date);
-
-const validateTime = (time: string) => /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/.test(time);
+const validateTime = (time: string) => /^(0?[1-9]|1[0-2])(:[0-5][0-9])? (AM|PM)$/.test(time);
 
 const validateTripDetails = (trip_details: any) => {
     const missing = validateFields(trip_details, [
@@ -92,6 +91,55 @@ const validateTransferDetails = (transfer_details: any) => {
     return null;
 };
 
+function validateTripWindow(date: string, time: string): string | null {
+    try {
+        const bookingDateTime = parseDateTime(date, time);
+        const now = new Date();
+
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const bookingStart = new Date(bookingDateTime.getFullYear(), bookingDateTime.getMonth(), bookingDateTime.getDate());
+
+        const daysDiff = Math.floor((bookingStart.getTime() - todayStart.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysDiff < 0 || daysDiff > 7) {
+            return "Trip can only be booked within 7 days from today";
+        }
+
+        const hoursDiff = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+        if (hoursDiff < 8) {
+            return "Trip must be booked at least 8 hours in advance";
+        }
+
+        return null;
+    }
+    catch (err) {
+        return "Invalid trip date/time";
+    }
+}
+
+function parseDateTime(date: string, time: string): Date {
+    let normalized = time.trim().toUpperCase();
+    if (!normalized.includes(":")) {
+        normalized = normalized.replace(/ (AM|PM)$/, ":00 $1");
+    }
+
+    const [year, month, day] = date.split("-").map(Number);
+
+    const match = normalized.match(/^(\d{1,2})(?::(\d{2}))? (AM|PM)$/);
+    if (!match) {
+        throw new Error(`Invalid time format after normalization: ${normalized}`);
+    }
+
+    let hour = Number(match[1]);
+    const minute = match[2] ? Number(match[2]) : 0;
+    const meridiem = match[3];
+
+    if (meridiem === "PM" && hour !== 12) hour += 12;
+    if (meridiem === "AM" && hour === 12) hour = 0;
+
+    return new Date(year, month - 1, day, hour, minute, 0, 0);
+}
+
 function formatDate(dateStr?: string): string {
     if (!dateStr) return "";
 
@@ -150,10 +198,23 @@ export const createBooking = async (req: Request, res: Response) => {
         else if (["sameday", "city_sightseeing"].includes(product_type)) {
             const errorMsg = validateTripDetails(trip_details);
             if (errorMsg) return res.status(400).json({ message: errorMsg });
+
+            const windowError = validateTripWindow(trip_details.date, trip_details.time);
+            if (windowError) return res.status(400).json({ message: windowError });
         }
         else if (product_type === "airport_transfer") {
             const errorMsg = validateTransferDetails(transfer_details);
             if (errorMsg) return res.status(400).json({ message: errorMsg });
+
+            const bookingDateTime = parseDateTime(transfer_details.date, transfer_details.time);
+            const now = new Date();
+            const fourHoursLater = new Date(now.getTime() + 4 * 60 * 60 * 1000);
+
+            if (bookingDateTime < fourHoursLater) {
+                return res.status(400).json({
+                    message: "Airport transfer must be booked at least 4 hours in advance",
+                });
+            }
         }
 
         await client.query("BEGIN");
