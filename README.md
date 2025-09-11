@@ -1,0 +1,38 @@
+# Nomora App
+
+## Steps to Push
+
+NOTE: *dev* is default branch for any new code.
+
+### 1. Develop features in *dev*
+```
+git checkout dev
+git pull origin dev
+
+# work on feature
+git add .
+git commit -m "your commit message"
+git push origin dev
+```
+
+### 2. Promote to *uat* (for testing)
+```
+git checkout uat
+git pull origin uat
+
+# bring latest dev into uat
+git merge dev
+
+git push origin uat
+```
+
+### 3. Promote to *prod* (for release)
+```
+git checkout prod
+git pull origin prod
+
+# bring tested code into prod
+git merge uat
+
+git push origin prod
+```
