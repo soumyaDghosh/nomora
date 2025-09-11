@@ -40,6 +40,7 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
 
         res.cookie("hotel_id", hotelId, {
             httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         });
 
