@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useBookStore from "../store/bookStore";
 import BookingStateCard from "../components/BookingStateCard";
 
 export default function Bookings() {
+    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
     const { shortBookings, loadingBookings } = useBookStore();
@@ -16,7 +17,7 @@ export default function Bookings() {
                         My Bookings
                     </h1>
                     <button
-                        onClick={() => navigate("/support")}
+                        onClick={() => navigate(`/${hotelId}/support`)}
                         className="flex items-center gap-2 bg-white hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors cursor-pointer"
                     >
                         <i className="ri-headphone-line text-xl text-gray-700" />

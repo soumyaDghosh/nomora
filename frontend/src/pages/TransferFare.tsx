@@ -12,13 +12,13 @@ type FareData = {
 };
 
 export default function TransferFare() {
-    const { transferId } = useParams<{ transferId: string }>();
+    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const { loading, bookTransfer } = useBookTransfer();
 
-    const transfer = transferData[transferId ?? ""];
+    const transfer = transferData;
 
     const [fareData, setFareData] = useState<FareData | null>(null);
 
@@ -57,7 +57,7 @@ export default function TransferFare() {
         });
     };
 
-    if (!transferId || !transfer || !fareData?.type || !fareData?.terminal || !fareData?.date || !fareData?.time || !fareData?.guests) {
+    if (!transfer || !fareData?.type || !fareData?.terminal || !fareData?.date || !fareData?.time || !fareData?.guests) {
         return (
             <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
@@ -76,22 +76,17 @@ export default function TransferFare() {
 
     const handleConfirmBooking = async () => {
         const { success, bookingId } = await bookTransfer({
-            product_type: transfer.product_type,
-            listing_id: transferId,
-            price: transfer.baseFare + transfer.airportToll,
-            transfer_details: {
-                type: fareData.type === "pickup" ? "Pickup from Airport" : "Drop to Airport",
-                from_location: fareData.type === "pickup" ? transfer.airport : transfer.hotel,
-                to_location: fareData.type === "pickup" ? transfer.hotel : transfer.airport,
-                terminal: fareData.terminal,
-                date: fareData.date,
-                time: fareData.time,
-                guest_count: fareData.guests
-            },
+            product_type: "airport_transfer",
+            transfer_type: fareData.type === "pickup" ? "Pickup from Airport" : "Drop to Airport",
+            terminal: fareData.terminal,
+            date: fareData.date,
+            time: fareData.time,
+            guest_count: fareData.guests,
+            price: transfer.baseFare + transfer.airportToll
         });
 
         if (success) {
-            navigate(`/confirmation/${bookingId}`, { replace: true });
+            navigate(`/${hotelId}/confirmation/${bookingId}`, { replace: true });
         }
     };
 
@@ -104,7 +99,7 @@ export default function TransferFare() {
                         <i className="ri-arrow-left-line text-xl text-gray-700" />
                     </button>
                     <h1 className="text-lg font-medium text-gray-900">
-                        {fareData.type === "pickup" ? `Pickup from ${transfer.airport} Airport` : `Drop to ${transfer.airport} Airport`}
+                        {fareData.type === "pickup" ? `Pickup from KIA (BLR) Airport` : `Drop to KIA (BLR) Airport`}
                     </h1>
                 </div>
             </div>

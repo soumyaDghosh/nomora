@@ -4,8 +4,17 @@ import { pool } from "../config/db";
 import { requestOtp, confirmOtp } from "../services/message";
 
 export const getUser = async (req: Request, res: Response) => {
-    const { id, ...rest } = req.user!;
-    res.status(200).json({ user: rest });
+    try {
+        const { id, ...rest } = req.user!;
+
+        res.status(200).json({
+            hotel: req.hotel,
+            user: rest
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server error" });
+    }
 };
 
 export const sendOTP = async (req: Request, res: Response) => {

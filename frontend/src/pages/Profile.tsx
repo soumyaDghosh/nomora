@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import useSignOut from "../hooks/useSignOut";
 
 export default function Profile() {
+    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
     const { setAuthenticated, user, setUser } = useAuthStore();
@@ -13,7 +14,7 @@ export default function Profile() {
         if (ok) {
             setAuthenticated(false);
             setUser(null);
-            navigate("/welcome", { replace: true });
+            navigate(`/${hotelId}/welcome`, { replace: true });
         }
     };
 
@@ -47,7 +48,7 @@ export default function Profile() {
 
                     <div className="space-y-4">
                         <button
-                            onClick={() => navigate("/support")}
+                            onClick={() => navigate(`/${hotelId}/support`)}
                             className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
                         >
                             <div className="flex items-center">

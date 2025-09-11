@@ -5,15 +5,12 @@ import useBookStore from "../store/bookStore";
 
 interface BookTourProps {
     product_type: string;
-    listing_id: string;
+    ac_type: string;
+    car_type: string;
+    date: string;
+    time: string;
     price: number;
-    trip_details: {
-        hotel_id: string;
-        ac_type: string;
-        car_type: string;
-        date: string;
-        time: string;
-    };
+    listing_id: string;
 }
 
 interface BookTourResult {
@@ -28,9 +25,12 @@ export default function useBookTour() {
 
     const bookTour = async ({
         product_type,
-        listing_id,
+        ac_type,
+        car_type,
+        date,
+        time,
         price,
-        trip_details
+        listing_id
     }: BookTourProps): Promise<BookTourResult> => {
         try {
             setLoading(true);
@@ -39,9 +39,12 @@ export default function useBookTour() {
                 `${import.meta.env.VITE_SERVER_URL}/api/book`,
                 {
                     product_type,
-                    listing_id,
+                    ac_type,
+                    car_type,
+                    date,
+                    time,
                     price,
-                    trip_details
+                    listing_id
                 },
                 { withCredentials: true }
             );

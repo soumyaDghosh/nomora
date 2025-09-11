@@ -47,10 +47,8 @@ export const createSupplier = async (req: Request, res: Response) => {
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
-            console.error("Postgres error:", error.message);
             return res.status(500).json({ message: "Database error" });
         } else {
-            console.error("Unexpected error:", error);
             return res.status(500).json({ message: "Server error" });
         }
     }
@@ -113,10 +111,8 @@ export const createDriver = async (req: Request, res: Response) => {
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
-            console.error("Postgres error:", error.message);
             return res.status(500).json({ message: "Database error" });
         } else {
-            console.error("Unexpected error:", error);
             return res.status(500).json({ message: "Server error" });
         }
     }
@@ -193,10 +189,8 @@ export const createVehicle = async (req: Request, res: Response) => {
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
-            console.error("Postgres error:", error.message);
             return res.status(500).json({ message: "Database error" });
         } else {
-            console.error("Unexpected error:", error);
             return res.status(500).json({ message: "Server error" });
         }
     }
@@ -310,10 +304,8 @@ export const updateBooking = async (req: Request, res: Response) => {
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
-            console.error("Postgres error:", error.message);
             return res.status(500).json({ message: "Database error" });
         } else {
-            console.error("Unexpected error:", error);
             return res.status(500).json({ message: "Server error" });
         }
     }
@@ -358,10 +350,8 @@ export const createHotel = async (req: Request, res: Response) => {
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
-            console.error("Postgres error:", error.message);
             return res.status(500).json({ message: "Database error" });
         } else {
-            console.error("Unexpected error:", error);
             return res.status(500).json({ message: "Server error" });
         }
     }

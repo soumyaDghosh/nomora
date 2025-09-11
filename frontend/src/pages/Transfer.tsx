@@ -1,13 +1,13 @@
 import { useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 import DateTimePicker from "../components/DateTimePicker";
-import { transferData } from "../data/transferData";
 
 export default function Transfer() {
-    const { transferId } = useParams<{ transferId: string }>();
+    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
-    const transfer = transferData[transferId ?? ""];
+    const { hotel } = useAuthStore();
 
     const [transferType, setTransferType] = useState<"pickup" | "drop">("drop");
     const [selectedTerminal, setSelectedTerminal] = useState<"T1" | "T2" | "">("T1");
@@ -43,9 +43,9 @@ export default function Transfer() {
             guests: guestCount.toString(),
         });
 
-        navigate(`/transfer/${transferId}/fare?${transferParams.toString()}`);
+        navigate(`/${hotelId}/transfer/fare?${transferParams.toString()}`);
     }, [
-        transferId,
+        hotelId,
         transferType,
         selectedTerminal,
         selectedDateTime,
@@ -53,23 +53,6 @@ export default function Transfer() {
         navigate,
         isFormValid,
     ]);
-
-    if (!transferId || !transfer) {
-        return (
-            <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2">Transfer Not Found</h2>
-                    <p className="text-gray-600 mb-4">The requested transfer could not be found.</p>
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="bg-gray-800 text-white px-4 py-2 rounded-xl cursor-pointer"
-                    >
-                        Go Back
-                    </button>
-                </div>
-            </div>
-        )
-    }
 
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-[calc(77px)]">
@@ -172,7 +155,7 @@ export default function Transfer() {
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm text-gray-600">From</p>
                                 <p className="font-medium text-gray-900 truncate leading-tight">
-                                    {transferType === "pickup" ? transfer.airport : transfer.hotel}
+                                    {transferType === "pickup" ? "KIA (BLR)" : hotel?.display_name}
                                 </p>
                             </div>
                             {transferType === "pickup" && (
@@ -208,7 +191,7 @@ export default function Transfer() {
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm text-gray-600">To</p>
                                 <p className="font-medium text-gray-900 truncate leading-tight">
-                                    {transferType === "pickup" ? transfer.hotel : transfer.airport}
+                                    {transferType === "pickup" ? hotel?.display_name : "KIA (BLR)"}
                                 </p>
                             </div>
                             {transferType === "drop" && (

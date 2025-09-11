@@ -1,6 +1,6 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { tripData } from "../data/tripData";
-import { transferData } from "../data/transferData";
+import useAuthStore from "../store/authStore";
 import type { MyBooking } from "../store/bookStore";
 import { formatPrice } from "../utils/formatPrice";
 import { formatDate } from "../utils/formatDate";
@@ -11,10 +11,12 @@ interface BookingStateCardProps {
 }
 
 const BookingStateCard = ({ booking }: BookingStateCardProps) => {
+    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
+    const { hotel } = useAuthStore();
+
     const trip = tripData[booking.listing_id ?? ""];
-    const transfer = transferData[booking.listing_id ?? ""];
     const isAirportTransfer = booking.product_type === "airport_transfer";
 
     const getStateConfig = (state: string) => {
@@ -69,7 +71,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
     const paymentConfig = getPaymentStatusConfig("unpaid");
 
     const handleCardClick = () => {
-        navigate(`/confirmation/${booking.id}`);
+        navigate(`/${hotelId}/confirmation/${booking.id}`);
     };
 
     return (
@@ -94,7 +96,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                 <div className="flex items-start gap-4 mb-5">
                     <div className="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-gray-100 shadow-sm">
                         <img
-                            src={isAirportTransfer ? transfer.image : trip.images[0].url}
+                            src={!isAirportTransfer ? trip.images[0].url : "https://readdy.ai/api/search-image?query=Bangalore%20BLR%20airport%20terminal%20modern%20architecture%20glass%20building%20aviation%20infrastructure%20Indian%20airport%20departure%20arrival%20gates&width=320&height=240&seq=blr-airport-terminal&orientation=landscape"}
                             alt=""
                             className="w-full h-full object-cover"
                             loading="lazy"
@@ -107,7 +109,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
 
                     <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 text-base leading-tight mb-2 line-clamp-2">
-                            {isAirportTransfer ? booking.transfer_details?.type : trip.title}
+                            {isAirportTransfer ? booking.transfer_type : trip.title}
                         </h3>
                         <div className="text-lg font-semibold text-gray-900">
                             {formatPrice(booking.price)}
@@ -124,11 +126,11 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                         </div>
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                             <span className="font-medium text-gray-900 text-sm" suppressHydrationWarning={true}>
-                                {formatDate(isAirportTransfer ? booking.transfer_details?.date : booking.trip_details?.date)}
+                                {formatDate(booking.date)}
                             </span>
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600 text-sm">
-                                {isAirportTransfer ? booking.transfer_details?.time : booking.trip_details?.time}
+                                {booking.time}
                             </span>
                         </div>
                     </div>
@@ -144,7 +146,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                         </div>
                         <div className="flex-1 min-w-0">
                             {isAirportTransfer ? (
-                                <span className="text-gray-700 text-sm">Terminal {booking.transfer_details?.terminal}</span>
+                                <span className="text-gray-700 text-sm">Terminal {booking?.terminal}</span>
                             ) : (
                                 <span className="text-gray-700 text-sm">{trip.duration}</span>
                             )}
@@ -158,11 +160,11 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                         </div>
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                             <span className="text-gray-700 text-sm">
-                                {isAirportTransfer ? "Sedan" : booking.trip_details?.car_type}
+                                {isAirportTransfer ? "Sedan" : booking?.car_type}
                             </span>
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600 text-sm">
-                                {isAirportTransfer ? "4+1 Seats" : getVehicleSeat(booking.trip_details?.car_type)}
+                                {isAirportTransfer ? "4+1 Seats" : getVehicleSeat(booking?.car_type)}
                             </span>
                         </div>
                     </div>
@@ -182,9 +184,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                                 overflowWrap: "break-word",
                                 hyphens: "auto"
                             }}>
-                                {isAirportTransfer ?
-                                    booking.transfer_details?.type === "Drop to Airport" ? booking.transfer_details.from_location : booking.transfer_details?.to_location
-                                    : booking.hotel_name}
+                                {hotel?.display_name}
                             </span>
                         </div>
                     </div>
@@ -194,7 +194,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                 {stateConfig.showViewDetails && (
                     <div className="flex justify-end">
                         <Link
-                            to={`/confirmation/${booking.id}`}
+                            to={`/${hotelId}/confirmation/${booking.id}`}
                             className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
                             onClick={(e) => e.stopPropagation()}
                         >

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useAuthStore from "../store/authStore";
+import { useParams, useNavigate } from "react-router-dom";
 
 interface StepProps {
     setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -10,9 +9,8 @@ interface Step5Props {
 }
 
 export default function Welcome() {
+    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
-
-    const { isAuthenticated } = useAuthStore();
 
     const [currentStep, setCurrentStep] = useState(1);
     const [startX, setStartX] = useState<number | null>(null);
@@ -20,12 +18,7 @@ export default function Welcome() {
     const handleContinue = () => {
         localStorage.setItem("hasSeenWelcome", "true");
 
-        if (isAuthenticated) {
-            navigate("/");
-        }
-        else {
-            navigate("/auth", { replace: true });
-        }
+        navigate(`/${hotelId}/auth`, { replace: true });
     };
 
     const steps = [

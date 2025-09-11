@@ -3,19 +3,28 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 
 export default function useAuthFetch() {
-    const { setUser, clearUser, setAuthenticating, setAuthenticated } = useAuthStore();
+    const { setHotel, setUser, clearUser, setAuthenticating, setAuthenticated } = useAuthStore();
 
     const fetchUser = useCallback(async (): Promise<boolean> => {
         try {
+            const hotelId = window.location.pathname.split("/")[1];
+
             const res = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL}/api/auth/user`,
+                `${import.meta.env.VITE_SERVER_URL}/api/auth/user/${hotelId}`,
                 { withCredentials: true }
             );
 
-            setUser(res.data.user);
-            setAuthenticated(true);
+            setHotel(res.data.hotel);
 
-            return true;
+            if (res.data.user) {
+                setUser(res.data.user);
+                setAuthenticated(true);
+                return true;
+            }
+            else {
+                clearUser();
+                return false;
+            }
         }
         catch {
             clearUser();
@@ -24,7 +33,7 @@ export default function useAuthFetch() {
         finally {
             setAuthenticating(false);
         }
-    }, [setAuthenticating, setUser, setAuthenticated, clearUser]);
+    }, [setAuthenticating, setHotel, setUser, setAuthenticated, clearUser]);
 
     return { fetchUser };
 }

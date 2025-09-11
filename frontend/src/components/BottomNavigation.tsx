@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
 
 interface NavItem {
     href: string;
@@ -8,24 +8,28 @@ interface NavItem {
 
 const BottomNavigation = () => {
     const location = useLocation();
+    const { hotelId } = useParams<{ hotelId: string }>();
+
+    if (!hotelId) return null;
 
     const navItems: NavItem[] = [
-        { href: "/", icon: "ri-home-line", label: "Home" },
-        { href: "/transfer/airport-leela", icon: "ri-plane-line", label: "Transfer" },
-        { href: "/bookings", icon: "ri-calendar-line", label: "Bookings" },
-        { href: "/profile", icon: "ri-user-line", label: "Profile" },
+        { href: `/${hotelId}`, icon: "ri-home-line", label: "Home" },
+        { href: `/${hotelId}/transfer`, icon: "ri-plane-line", label: "Transfer" },
+        { href: `/${hotelId}/bookings`, icon: "ri-calendar-line", label: "Bookings" },
+        { href: `/${hotelId}/profile`, icon: "ri-user-line", label: "Profile" },
     ];
 
-    const allowedRoutes = ["/", "/explore", "/bookings", "/profile"];
+    const allowedTopRoutes = [
+        `/${hotelId}`,
+        `/${hotelId}/explore`,
+        `/${hotelId}/bookings`,
+        `/${hotelId}/profile`,
+        `/${hotelId}/transfer`,
+    ];
 
-    const pathSegments = location.pathname.split("/").filter(Boolean);
-    const isAllowed =
-        allowedRoutes.includes(location.pathname) ||
-        (pathSegments[0] === "transfer" && pathSegments.length === 2);
+    const isAllowed = allowedTopRoutes.includes(location.pathname);
 
-    if (!isAllowed) {
-        return null;
-    }
+    if (!isAllowed) return null;
 
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-40">

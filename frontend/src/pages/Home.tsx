@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import QuickAccessCard from "../components/Home/QuickAccessCard";
 import TripCard from "../components/Home/TripCard";
 import ShareCard from "../components/Home/ShareCard";
 import ServiceModal from "../components/Home/ServiceModal";
 
 export default function Home() {
+  const { hotelId } = useParams<{ hotelId: string }>();
   const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -33,16 +34,16 @@ export default function Home() {
   };
 
   const handleViewAllClick = () => {
-    navigate("/explore?tab=all");
+    navigate(`/${hotelId}/explore?tab=all`);
   };
 
   const handleModalContinue = (type: "sightseeing" | "daytrips") => {
     setModalOpen(false);
     if (type === "sightseeing") {
-      navigate("/explore?tab=tours");
+      navigate(`/${hotelId}/explore?tab=tours`);
     }
     else {
-      navigate("/explore?tab=sameday");
+      navigate(`/${hotelId}/explore?tab=sameday`);
     }
   };
 
@@ -65,14 +66,14 @@ export default function Home() {
       title: "Overnight Trips",
       description: "Weekend getaways & staycations",
       imageUrl: "https://readdy.ai/api/search-image?query=icon%2C%20Realistic%20resort%20building%2C%20photorealistic%20luxury%20resort%20with%20beautiful%20architecture%2C%20vacation%20destination%2C%20peaceful%20retreat%2C%20high-detail%203D%20rendering%2C%20prominent%20main%20subjects%2C%20clear%20and%20sharp%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20isolated%20on%20white%20background%2C%20centered%20composition%2C%20soft%20lighting&width=100&height=100&seq=overnight1&orientation=squarish",
-      href: "/overnight-trips",
+      href: "overnight-trips",
       available: false
     },
     {
       title: "Local Experiences",
       description: "Short, curated tours and things worth doing",
       imageUrl: "https://readdy.ai/api/search-image?query=icon%2C%20Realistic%20cultural%20activities%2C%20photorealistic%20traditional%20Indian%20cultural%20experience%2C%20local%20crafts%20and%20activities%2C%20authentic%20heritage%2C%20high-detail%203D%20rendering%2C%20prominent%20main%20subjects%2C%20clear%20and%20sharp%2C%20the%20icon%20should%20take%20up%2070%25%20of%20the%20frame%2C%20isolated%20on%20white%20background%2C%20centered%20composition%2C%20soft%20lighting&width=100&height=100&seq=local1&orientation=squarish",
-      href: "/local-experiences",
+      href: "local-experiences",
       available: false
     }
   ];
@@ -184,7 +185,7 @@ export default function Home() {
           </button>
         </div>
         {allTrips.map(trip => (
-          <Link key={trip.id} to={`/trip/${trip.id}`} className="block">
+          <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
             <TripCard
               key={trip.id}
               id={trip.id}

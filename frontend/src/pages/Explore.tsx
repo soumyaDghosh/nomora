@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import TripCard from "../components/Home/TripCard";
 
 export default function Explore() {
+    const { hotelId } = useParams<{ hotelId: string }>();
+
     const [searchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState("all");
 
@@ -101,7 +103,7 @@ export default function Explore() {
             <div className="bg-white px-4 pt-6 pb-4 sticky top-0 z-40 border-b border-gray-100">
                 <div className="flex items-center mb-4">
                     <Link
-                        to="/"
+                        to={`/${hotelId}`}
                         className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors mr-3"
                     >
                         <i className="ri-arrow-left-line text-xl text-gray-700" />
@@ -133,7 +135,7 @@ export default function Explore() {
                 {filteredTrips.length > 0 ? (
                     <div className="space-y-4">
                         {filteredTrips.map((trip) => (
-                            <Link key={trip.id} to={`/trip/${trip.id}`} className="block">
+                            <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
                                 <div className="cursor-pointer hover:shadow-md transition-shadow">
                                     <TripCard
                                         id={trip.id}

@@ -5,17 +5,12 @@ import useBookStore from "../store/bookStore";
 
 interface BookTransferProps {
     product_type: string;
-    listing_id: string;
+    transfer_type: string;
+    terminal: string;
+    date: string;
+    time: string;
+    guest_count: number | string;
     price: number;
-    transfer_details: {
-        type: string;
-        from_location: string;
-        to_location: string;
-        terminal: string;
-        date: string;
-        time: string;
-        guest_count: number | string;
-    };
 }
 
 interface BookTransferResult {
@@ -30,9 +25,12 @@ export default function useBookTransfer() {
 
     const bookTransfer = async ({
         product_type,
-        listing_id,
-        price,
-        transfer_details,
+        transfer_type,
+        terminal,
+        date,
+        time,
+        guest_count,
+        price
     }: BookTransferProps): Promise<BookTransferResult> => {
         try {
             setLoading(true);
@@ -41,9 +39,12 @@ export default function useBookTransfer() {
                 `${import.meta.env.VITE_SERVER_URL}/api/book`,
                 {
                     product_type,
-                    listing_id,
-                    price,
-                    transfer_details
+                    transfer_type,
+                    terminal,
+                    date,
+                    time,
+                    guest_count,
+                    price
                 },
                 { withCredentials: true }
             );

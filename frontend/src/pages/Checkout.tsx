@@ -18,6 +18,7 @@ interface DateOption {
 }
 
 export default function Checkout() {
+    const { hotelId } = useParams<{ hotelId: string }>();
     const { tripId } = useParams<{ tripId: string }>();
     const navigate = useNavigate();
 
@@ -264,19 +265,16 @@ export default function Checkout() {
 
         const { success, bookingId } = await bookTour({
             product_type: trip.product_type,
-            listing_id: tripId!,
+            ac_type: selectedAcType,
+            car_type: trip.carTypes.filter(type => type.id === selectedCarType)[0].name,
+            date: selectedDate,
+            time: selectedTimeSlot,
             price: total,
-            trip_details: {
-                hotel_id: trip.hotel.id,
-                ac_type: selectedAcType,
-                car_type: trip.carTypes.filter(type => type.id === selectedCarType)[0].name,
-                date: selectedDate,
-                time: selectedTimeSlot
-            }
-        })
+            listing_id: tripId!,
+        });
 
         if (success) {
-            navigate(`/confirmation/${bookingId}`, { replace: true });
+            navigate(`/${hotelId}/confirmation/${bookingId}`, { replace: true });
         }
     };
 
@@ -305,7 +303,7 @@ export default function Checkout() {
                         <h1 className="text-lg font-medium text-gray-900">Select Car & Schedule</h1>
                     </div>
                     <button
-                        onClick={() => navigate("/support")}
+                        onClick={() => navigate(`/${hotelId}/support`)}
                         className="flex items-center gap-2 bg-white hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors cursor-pointer"
                     >
                         <i className="ri-headphone-line text-xl text-gray-700" />

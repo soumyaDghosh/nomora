@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react"
-import { useLocation, Routes, Route } from "react-router-dom"
+import { useLocation, Routes, Route, Outlet } from "react-router-dom"
 import { normalizePath, trackPageView } from "./lib/analytics";
 import useAuthFetch from "./hooks/useAuthFetch"
 import useFetchBookings from "./hooks/useFetchBookings"
@@ -19,7 +19,7 @@ import Confirmation from "./pages/Confirmation"
 import Support from "./pages/Support"
 import Bookings from "./pages/Bookings"
 import Profile from "./pages/Profile"
-import NotFound from "./pages/NotFound"
+import { HotelNotFound, NotFound } from "./pages/NotFound"
 import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
@@ -71,26 +71,35 @@ function App() {
   }, [isAuthenticated, shortBookings, longBookings, fetchBooking]);
 
   return (
-    <>
-      <Routes>
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/welcome" element={<Welcome />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/trip/:tripId" element={<Trip />} />
-          <Route path="/checkout/:tripId" element={<Checkout />} />
-          <Route path="/transfer/:transferId" element={<Transfer />} />
-          <Route path="/transfer/:transferId/fare" element={<TransferFare />} />
-          <Route path="/confirmation/:bookingId" element={<Confirmation />} />
-          <Route path="/hotel/:hotelId" element={<Welcome />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="/bookings" element={<Bookings />} />
-          <Route path="/profile" element={<Profile />} />
-        </Route>
+    <Routes>
+      <Route path="/" element={<HotelNotFound />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Route path=":hotelId" element={<ProtectedRoute />}>
+        <Route element={<AppLayout />}>
+          <Route index element={<Home />} />
+          <Route path="welcome" element={<Welcome />} />
+          <Route path="auth" element={<Auth />} />
+          <Route path="explore" element={<Explore />} />
+          <Route path="trip/:tripId" element={<Trip />} />
+          <Route path="checkout/:tripId" element={<Checkout />} />
+          <Route path="transfer" element={<Transfer />} />
+          <Route path="transfer/fare" element={<TransferFare />} />
+          <Route path="confirmation/:bookingId" element={<Confirmation />} />
+          <Route path="support" element={<Support />} />
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  )
+}
+
+const AppLayout = () => {
+  return (
+    <>
+      <Outlet />
       <BottomNavigation />
     </>
   )
