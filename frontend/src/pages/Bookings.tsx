@@ -26,7 +26,7 @@ export default function Bookings() {
                 </div>
             </div>
 
-            <div className="pt-6 pb-28">
+            <div className="mb-6 pt-6 pb-[calc(81px)]">
                 {loadingBookings ? <LoadingState />
                     : (shortBookings && shortBookings.length > 0) ? (
                         <div className="px-4 space-y-5">
@@ -56,9 +56,9 @@ export default function Bookings() {
 }
 
 const LoadingState = () => (
-    <div className="px-4 space-y-5 pb-28">
+    <div className="px-4 space-y-5">
         {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
+            <div key={i} className="bg-white rounded-2xl border border-gray-200 overflow-hidden animate-pulse">
                 <div className="px-6 py-4 border-b border-gray-100">
                     <div className="flex items-center justify-between">
                         <div className="w-16 h-6 bg-gray-200 rounded-full"></div>

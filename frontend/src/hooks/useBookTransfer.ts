@@ -52,7 +52,7 @@ export default function useBookTransfer() {
             );
 
             const result = response.data;
-            if (!result.authenticated) {
+            if (result?.authenticated !== undefined && !result?.authenticated) {
                 clearUser();
                 return { success: false };
             }

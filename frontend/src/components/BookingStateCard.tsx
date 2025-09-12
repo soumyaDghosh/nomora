@@ -76,8 +76,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
 
     return (
         <div
-            className={`bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden ${stateConfig.showViewDetails ? "cursor-pointer" : ""
-                }`}
+            className={`bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden ${stateConfig.showViewDetails ? "cursor-pointer" : ""}`}
             onClick={handleCardClick}
         >
             {/* Single unified card with improved spacing */}
