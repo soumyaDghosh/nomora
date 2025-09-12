@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { DatabaseError } from "pg";
+import axios from "axios";
 import { pool } from "../config/db";
 
 const ALLOWED_PRODUCT_TYPES = [
@@ -205,11 +206,25 @@ export const createBooking = async (req: Request, res: Response) => {
             time
         };
 
-        // `
-        // Booking ID: ${newBookingId}
-        // User ID: ${req.user?.id}
-        // User Phone: ${req.user?.phone}
-        // `
+        await axios.post(
+            "https://api.resend.com/emails",
+            {
+                from: "Acme <onboarding@resend.dev>",
+                to: ["nomoradev@gmail.com"],
+                subject: "New Booking",
+                html: `
+Booking ID: ${newBookingId}
+User ID: ${req.user?.id}
+User Phone: ${req.user?.phone}
+`,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
 
         await client.query("COMMIT");
 

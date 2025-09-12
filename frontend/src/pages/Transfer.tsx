@@ -28,12 +28,17 @@ export default function Transfer() {
             return;
         }
 
-        const formattedDate = selectedDateTime!.toISOString().split("T")[0];
-        const formattedTime = selectedDateTime!.toLocaleTimeString([], {
+        const formattedDate = selectedDateTime!.toLocaleDateString("en-CA", {
+            timeZone: "Asia/Kolkata",
+        });
+
+        let formattedTime = selectedDateTime!.toLocaleTimeString("en-IN", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: true,
+            timeZone: "Asia/Kolkata",
         });
+        formattedTime = formattedTime.toUpperCase();
 
         const transferParams = new URLSearchParams({
             type: transferType,
