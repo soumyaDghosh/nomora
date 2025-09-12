@@ -4,7 +4,7 @@ export function HotelNotFound() {
     return (
         <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Hotel ID Not Found</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Hotel Not Found</h2>
                 <p className="text-gray-600 mb-4">The requested page could not be found.</p>
             </div>
         </div>

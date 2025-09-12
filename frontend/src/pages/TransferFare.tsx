@@ -57,7 +57,7 @@ export default function TransferFare() {
         });
     };
 
-    if (!transfer || !fareData?.type || !fareData?.terminal || !fareData?.date || !fareData?.time || !fareData?.guests) {
+    if (!fareData?.type || !fareData?.terminal || !fareData?.date || !fareData?.time || !fareData?.guests) {
         return (
             <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
