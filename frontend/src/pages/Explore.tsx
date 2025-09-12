@@ -136,19 +136,17 @@ export default function Explore() {
                     <div className="space-y-4">
                         {filteredTrips.map((trip) => (
                             <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
-                                <div className="cursor-pointer hover:shadow-md transition-shadow">
-                                    <TripCard
-                                        id={trip.id}
-                                        title={trip.title}
-                                        description={trip.description}
-                                        imageUrl={trip.imageUrl}
-                                        price={trip.price}
-                                        duration={trip.duration}
-                                        pickup={trip.pickup}
-                                        chauffeur={trip.chauffeur}
-                                        tag={trip.tag}
-                                    />
-                                </div>
+                                <TripCard
+                                    id={trip.id}
+                                    title={trip.title}
+                                    description={trip.description}
+                                    imageUrl={trip.imageUrl}
+                                    price={trip.price}
+                                    duration={trip.duration}
+                                    pickup={trip.pickup}
+                                    chauffeur={trip.chauffeur}
+                                    tag={trip.tag}
+                                />
                             </Link>
                         ))}
                     </div>

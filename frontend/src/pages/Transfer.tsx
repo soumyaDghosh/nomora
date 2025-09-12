@@ -55,7 +55,7 @@ export default function Transfer() {
     ]);
 
     return (
-        <div className="min-h-[100svh] bg-gray-50 pb-[calc(77px)]">
+        <div className="min-h-[100svh] bg-gray-50 pb-[calc(81px)]">
             {/* Header */}
             <div className="bg-white px-4 pt-6 pb-6">
                 <div className="flex items-center gap-3 mb-4">

@@ -45,7 +45,7 @@ const BottomNavigation = () => {
                                 : "text-gray-400 hover:text-gray-600"
                                 }`}
                         >
-                            <i className={`${item.icon} text-lg`} />
+                            <i className={`${item.icon} text-lg mb-1`} />
                             <span className="text-xs font-medium">{item.label}</span>
                         </Link>
                     );
