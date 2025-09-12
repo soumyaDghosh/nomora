@@ -21,6 +21,7 @@ const BottomNavigation = () => {
 
     const allowedTopRoutes = [
         `/${hotelId}`,
+        `/${hotelId}/`,
         `/${hotelId}/explore`,
         `/${hotelId}/bookings`,
         `/${hotelId}/profile`,

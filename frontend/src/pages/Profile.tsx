@@ -6,14 +6,13 @@ export default function Profile() {
     const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
-    const { setAuthenticated, user, setUser } = useAuthStore();
+    const { user, clearUser } = useAuthStore();
     const { loading, signOut } = useSignOut();
 
     const handleSignOut = async () => {
         const ok = await signOut();
         if (ok) {
-            setAuthenticated(false);
-            setUser(null);
+            clearUser();
             navigate(`/${hotelId}/welcome`, { replace: true });
         }
     };

@@ -46,7 +46,11 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
         });
 
         if (!token) {
-            return res.status(200).json({ hotel, user: null });
+            return res.status(200).json({
+                authenticated: false,
+                user: null,
+                hotel
+            });
         }
 
         let decoded: JwtPayload;
@@ -54,14 +58,22 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
             decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
         }
         catch {
-            return res.status(200).json({ hotel, user: null });
+            return res.status(200).json({
+                authenticated: false,
+                user: null,
+                hotel
+            });
         }
 
         const result = await pool.query("SELECT * FROM users WHERE id = $1", [decoded.id]);
         const user = result.rows[0];
 
         if (!user) {
-            return res.status(200).json({ hotel, user: null });
+            return res.status(200).json({
+                authenticated: false,
+                user: null,
+                hotel
+            });
         }
 
         req.user = user;

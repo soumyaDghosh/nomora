@@ -24,8 +24,6 @@ interface BookState {
 
   longBookings: MyBooking[]
   setLongBookings: (updater: MyBooking[] | ((prev: MyBooking[]) => MyBooking[])) => void;
-  loadingBookingId: string | null;
-  setLoadingBookingId: (id: string | null) => void;
 }
 
 const useBookStore = create<BookState>((set) => ({
@@ -39,9 +37,7 @@ const useBookStore = create<BookState>((set) => ({
     set((state) => ({
       longBookings:
         typeof updater === "function" ? updater(state.longBookings) : updater,
-    })),
-  loadingBookingId: "",
-  setLoadingBookingId: (id) => set({ loadingBookingId: id }),
+    }))
 }));
 
 export default useBookStore;

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import useBookStore from "../store/bookStore";
 
 export default function useFetchBookings() {
-    const { setShortBookings, setLoadingBookings, setLoadingBookingId } = useBookStore();
+    const { setShortBookings, setLoadingBookings } = useBookStore();
 
     const fetchBookings = useCallback(async (): Promise<string[]> => {
         try {
@@ -16,7 +16,6 @@ export default function useFetchBookings() {
             );
             const bookings = response.data.bookings;
 
-            if (!bookings.length) setLoadingBookingId(null);
             setShortBookings(bookings);
             return bookings.map((b: { id: string }) => b.id);
         }
@@ -27,7 +26,7 @@ export default function useFetchBookings() {
         finally {
             setLoadingBookings(false);
         }
-    }, [setLoadingBookings, setShortBookings, setLoadingBookingId]);
+    }, [setLoadingBookings, setShortBookings]);
 
     return { fetchBookings };
 }

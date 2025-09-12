@@ -1,16 +1,22 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import useBookStore, { type MyBooking } from "../store/bookStore";
 
 export default function useFetchBooking() {
-    const { setLongBookings, setLoadingBookingId } = useBookStore();
+    const { longBookings, setLongBookings } = useBookStore();
+
+    const [loading, setLoading] = useState(true);
 
     const fetchBooking = useCallback(async (bookingId?: string): Promise<void> => {
         if (!bookingId) return;
 
-        try {
-            setLoadingBookingId(bookingId);
+        const alreadyFetched = longBookings.some((b) => b.id === bookingId);
+        if (alreadyFetched) {
+            setLoading(false);
+            return;
+        }
 
+        try {
             const response = await axios.get<{ booking: MyBooking }>(
                 `${import.meta.env.VITE_SERVER_URL}/api/book/${bookingId}`,
                 { withCredentials: true }
@@ -23,9 +29,9 @@ export default function useFetchBooking() {
             console.log(error.response?.data?.message || "Failed to fetch booking");
         }
         finally {
-            setLoadingBookingId(null);
+            setLoading(false);
         }
-    }, [setLongBookings, setLoadingBookingId]);
+    }, [longBookings, setLongBookings]);
 
-    return { fetchBooking };
+    return { loading, setLoading, fetchBooking };
 }

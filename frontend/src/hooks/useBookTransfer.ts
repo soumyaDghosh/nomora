@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
+import useAuthStore from "../store/authStore";
 import useBookStore from "../store/bookStore";
 
 interface BookTransferProps {
@@ -19,6 +20,7 @@ interface BookTransferResult {
 }
 
 export default function useBookTransfer() {
+    const { clearUser } = useAuthStore();
     const { shortBookings, setShortBookings } = useBookStore();
 
     const [loading, setLoading] = useState(false);
@@ -48,10 +50,16 @@ export default function useBookTransfer() {
                 },
                 { withCredentials: true }
             );
-            const newBooking = response.data.booking;
 
+            const result = response.data;
+            if (!result.authenticated) {
+                clearUser();
+                return { success: false };
+            }
+
+            const newBooking = result.booking;
             setShortBookings([newBooking, ...shortBookings]);
-            toast.success(response.data.message);
+            toast.success(result.message);
 
             return {
                 success: true,

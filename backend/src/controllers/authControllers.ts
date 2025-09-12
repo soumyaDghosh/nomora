@@ -8,8 +8,9 @@ export const getUser = async (req: Request, res: Response) => {
         const { id, ...rest } = req.user!;
 
         res.status(200).json({
-            hotel: req.hotel,
-            user: rest
+            authenticated: true,
+            user: rest,
+            hotel: req.hotel
         });
     }
     catch (error) {
