@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { DatabaseError } from "pg";
 import { pool } from "../config/db";
+import { sendWhatsAppMessage } from "../services/message";
 
 export const createSupplier = async (req: Request, res: Response) => {
     const client = await pool.connect();
@@ -370,9 +371,16 @@ export const whatsappMessage = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "message is required" });
         }
 
+        await sendWhatsAppMessage("notification_five", phone, {
+            body_1: {
+                type: "text",
+                value: message
+            }
+        });
 
-
-        return res.status(201).json({ message: "Message sent successfully" });
+        return res.status(201).json({
+            message: "Message sent successfully",
+        });
     }
     catch (error) {
         return res.status(500).json({ message: "Server error" });

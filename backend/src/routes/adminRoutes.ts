@@ -5,7 +5,8 @@ import {
     createDriver,
     createVehicle,
     updateBooking,
-    createHotel
+    createHotel,
+    whatsappMessage
 } from "../controllers/adminControllers";
 
 const router = Router();
@@ -17,5 +18,7 @@ router.post("/create/vehicle", verifyAdmin, createVehicle);
 router.post("/update/booking", verifyAdmin, updateBooking);
 
 router.post("/create/hotel", verifyAdmin, createHotel);
+
+router.post("/send/message", verifyAdmin, whatsappMessage);
 
 export default router;

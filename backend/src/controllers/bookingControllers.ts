@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { DatabaseError } from "pg";
 import { pool } from "../config/db";
-import sendMail from "../services/mailer";
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -206,16 +205,11 @@ export const createBooking = async (req: Request, res: Response) => {
             time
         };
 
-        sendMail({
-            from: `${process.env.EMAIL_USER} <${process.env.EMAIL_ADDRESS}>`,
-            to: process.env.ADMIN_EMAIL,
-            subject: "New Booking",
-            text: `
-Booking ID: ${newBookingId}
-User ID: ${req.user?.id}
-User Phone: ${req.user?.phone}
-`,
-        }).catch(err => console.error("Failed to send booking mail:", err));
+        // `
+        // Booking ID: ${newBookingId}
+        // User ID: ${req.user?.id}
+        // User Phone: ${req.user?.phone}
+        // `
 
         await client.query("COMMIT");
 
@@ -225,6 +219,7 @@ User Phone: ${req.user?.phone}
         });
     }
     catch (error) {
+        console.log(error)
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {

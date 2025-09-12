@@ -17,6 +17,16 @@ export const getUser = async (req: Request, res: Response) => {
     }
 };
 
+export const getAdmin = async (req: Request, res: Response) => {
+    try {
+        const { id, ...rest } = req.user!;
+        res.status(200).json({ admin: rest });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
 export const sendOTP = async (req: Request, res: Response) => {
     try {
         const { phone } = req.body ?? {};
