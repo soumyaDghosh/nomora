@@ -292,7 +292,7 @@ export default function Checkout() {
     }
 
     return (
-        <div className={`min-h-[100svh] bg-gray-50 pb-[calc(${!isCheckoutReady() ? '113px' : '89px'})]`}>
+        <div className={`min-h-[100svh] bg-gray-50 ${!isCheckoutReady() ? 'mb-[calc(113px)]' : 'mb-[calc(89px)]'}`}>
             {/* Header - Match Dashboard spacing: py-3 pt-6 */}
             <div className="bg-white border-b border-gray-100 px-4 py-3 pt-6 sticky top-0 z-40">
                 <div className="flex items-center justify-between">
@@ -663,7 +663,7 @@ export default function Checkout() {
                                     {!selectedCarType && (!selectedDate || !selectedTimeSlot) && " • "}
                                     {!selectedDate && "Select date"}
                                     {!selectedDate && !selectedTimeSlot && " • "}
-                                    {selectedDate && !selectedTimeSlot && "Select time slot"}
+                                    {!selectedTimeSlot && "Select time slot"}
                                     {selectedDate && selectedTimeSlot && !isTimeSlotBookable(selectedDate, selectedTimeSlot) && "Selected slot unavailable - must be 8+ hours ahead"}
                                 </p>
                             </div>
