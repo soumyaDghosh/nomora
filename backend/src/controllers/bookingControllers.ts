@@ -131,41 +131,43 @@ export const createBooking = async (req: Request, res: Response) => {
 
         await client.query("BEGIN");
 
-        if (product_type === "airport_transfer") {
-            const dupCheck = await client.query(
-                `SELECT 1 
-                 FROM bookings 
-                 WHERE user_id = $1 
-                   AND hotel_id = $2 
-                   AND transfer_type = $3 
-                   AND status = 'ongoing'
-                 LIMIT 1`,
-                [user_id, hotel_id, transfer_type]
-            );
+        if (process.env.NODE_ENV === "production") {
+            if (product_type === "airport_transfer") {
+                const dupCheck = await client.query(
+                    `SELECT 1 
+                    FROM bookings 
+                    WHERE user_id = $1 
+                    AND hotel_id = $2 
+                    AND transfer_type = $3 
+                    AND status = 'ongoing'
+                    LIMIT 1`,
+                    [user_id, hotel_id, transfer_type]
+                );
 
-            if (dupCheck.rows.length > 0) {
-                await client.query("ROLLBACK");
-                return res.status(409).json({
-                    message: `You already have an ongoing ${transfer_type} booking at this hotel`,
-                });
-            }
-        } else {
-            const dupCheck = await client.query(
-                `SELECT 1 
-                 FROM bookings 
-                 WHERE user_id = $1 
-                   AND hotel_id = $2 
-                   AND listing_id = $3 
-                   AND status = 'ongoing'
-                 LIMIT 1`,
-                [user_id, hotel_id, listing_id]
-            );
+                if (dupCheck.rows.length > 0) {
+                    await client.query("ROLLBACK");
+                    return res.status(409).json({
+                        message: `You already have an ongoing ${transfer_type} booking at this hotel`,
+                    });
+                }
+            } else {
+                const dupCheck = await client.query(
+                    `SELECT 1 
+                    FROM bookings 
+                    WHERE user_id = $1 
+                    AND hotel_id = $2 
+                    AND listing_id = $3 
+                    AND status = 'ongoing'
+                    LIMIT 1`,
+                    [user_id, hotel_id, listing_id]
+                );
 
-            if (dupCheck.rows.length > 0) {
-                await client.query("ROLLBACK");
-                return res.status(409).json({
-                    message: `You already have an ongoing booking for this listing at this hotel`,
-                });
+                if (dupCheck.rows.length > 0) {
+                    await client.query("ROLLBACK");
+                    return res.status(409).json({
+                        message: `You already have an ongoing booking for this listing at this hotel`,
+                    });
+                }
             }
         }
 
