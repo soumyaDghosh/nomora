@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 export interface Hotel {
+  id: string
   display_name: number
   address: string
   pincode: string
