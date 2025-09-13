@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useLocation, Routes, Route, Outlet } from "react-router-dom"
-import { normalizePath, trackPageView } from "./lib/analytics";
+import { trackPageView } from "./lib/analytics";
 import useAuthFetch from "./hooks/useAuthFetch"
 import useFetchBookings from "./hooks/useFetchBookings"
 import ProtectedRoute from "./pages/ProtectedRoute"
@@ -17,6 +17,7 @@ import Support from "./pages/Support"
 import Bookings from "./pages/Bookings"
 import Profile from "./pages/Profile"
 import { HotelNotFound, NotFound } from "./pages/NotFound"
+import ScrollToTop from "./components/ScrollToTop";
 import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
@@ -26,8 +27,7 @@ function App() {
   const { fetchBookings } = useFetchBookings();
 
   useEffect(() => {
-    const normalizedPath = normalizePath(location.pathname);
-    trackPageView(normalizedPath);
+    trackPageView(location.pathname);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -71,6 +71,7 @@ function App() {
 const AppLayout = () => {
   return (
     <>
+      <ScrollToTop />
       <Outlet />
       <BottomNavigation />
     </>

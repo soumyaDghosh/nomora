@@ -9,7 +9,3 @@ export const initGA = () => {
 export const trackPageView = (path: string) => {
     ReactGA.send({ hitType: "pageview", page: path });
 };
-
-export const normalizePath = (path: string): string => {
-    return path;
-};
