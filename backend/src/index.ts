@@ -20,7 +20,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/", (req, res) => res.send("Server running..."));
 app.use("/api/auth", authRoutes);
-app.use("/api/book", bookingRoutes);
+app.use("/api/booking", bookingRoutes);
 app.use("/api/admin", adminRoutes);
 
 mongoose.connect(process.env.MONGO_DB_URL as string)

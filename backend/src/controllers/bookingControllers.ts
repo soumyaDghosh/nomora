@@ -67,6 +67,16 @@ function parseDateTime(date: string, time: string): Date {
     return new Date(year, month - 1, day, hour, minute, 0, 0);
 }
 
+function formatDate(dateString: string, timeZone: string = "Asia/Kolkata") {
+    return new Intl.DateTimeFormat("en-US", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone,
+    }).format(new Date(dateString));
+}
+
 export const createBooking = async (req: Request, res: Response) => {
     const client = await pool.connect();
 
@@ -213,9 +223,22 @@ export const createBooking = async (req: Request, res: Response) => {
                 to: ["nomoradev@gmail.com"],
                 subject: "New Booking",
                 html: `
-Booking ID: ${newBookingId}
-User ID: ${req.user?.id}
-User Phone: ${req.user?.phone}
+Booking ID: ${newBookingId}<br /><br />
+Hotel ID: ${hotel_id}<br />
+Hotel Name: ${req.hotel?.display_name}<br /><br />
+User ID: ${req.user?.id}<br />
+User Phone: ${req.user?.phone}<br /><br />
+Product Type: ${product_type}<br />
+${product_type !== "airport_transfer" ? `Listing ID: ${listing_id}<br />` : ""}
+<br />
+${product_type === "airport_transfer" ? `Transfer Type: ${transfer_type}<br />` : ""}
+${product_type === "airport_transfer" ? `Terminal: ${terminal}<br />` : ""}
+${product_type === "airport_transfer" ? `Guest Count: ${guest_count}<br /><br />` : ""}
+Car Type: ${product_type === "airport_transfer" ? 'Comfort' : car_type}<br />
+AC Type: ${product_type === "airport_transfer" ? 'AC' : ac_type}<br /><br />
+Price: ₹${price}<br /><br />
+Date: ${new Date(date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
+Time: ${time}
 `,
             },
             {
