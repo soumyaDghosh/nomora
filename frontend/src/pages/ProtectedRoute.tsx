@@ -1,20 +1,20 @@
 import { useLocation, Navigate, Outlet, useParams } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import { HotelNotFound } from "./NotFound";
-import AppLoader from "../components/AppLoader";
 
 export default function ProtectedRoute() {
     const location = useLocation();
     const { hotelId } = useParams<{ hotelId: string }>();
 
-    const {
-        hotel,
-        isAuthenticated,
-        isAuthenticating
-    } = useAuthStore();
+    const { hotel, isAuthenticating } = useAuthStore();
 
-    const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
+    const doneWelcome = localStorage.getItem("doneWelcome");
+    const doneAuth = localStorage.getItem("doneAuth");
     const authPages = ["/auth", "/welcome"];
+
+    const isAuthPage = authPages.some((path) =>
+        location.pathname.includes(path)
+    );
 
     // Validate hotelId format (UUID check)
     const isValidHotelId =
@@ -25,44 +25,34 @@ export default function ProtectedRoute() {
         return <HotelNotFound />;
     }
 
-    const isAuthPage = authPages.some((path) =>
-        location.pathname.includes(path)
-    );
-
-    if (isAuthenticating) {
-        return <AppLoader />
-    }
-
-    // Prevent /welcome after seen
-    if (!isAuthenticated && location.pathname.endsWith("/welcome") && hasSeenWelcome) {
-        return <Navigate to={`/${hotelId}/auth`} replace />;
-    }
-
-    // If authenticated and visiting /auth or /welcome - redirect back or to "/"
-    if (isAuthenticated && isAuthPage) {
-        let redirectTo = location.state?.from?.pathname;
-        if (redirectTo === `/${hotelId}/profile`) {
-            redirectTo = `/${hotelId}`;
-        }
-        return <Navigate to={redirectTo || `/${hotelId}`} replace />;
-    }
-
     // If hotel not found
-    if (!isAuthenticating && !isAuthenticated && !hotel) {
+    if (!isAuthenticating && !hotel) {
         return <Navigate to="/" replace />
     }
 
-    // If NOT authenticated and NOT on authPages - save intended route
-    if (!isAuthenticating && !isAuthenticated && !isAuthPage) {
-        if (!hasSeenWelcome) {
-            return <Navigate to={`/${hotelId}/welcome`} replace state={{ from: location }} />;
+    if (doneAuth) {
+        // Visiting /auth or /welcome - redirect back or to "/"
+        if (isAuthPage) {
+            let redirectTo = location.state?.from?.pathname;
+            if (redirectTo === `/${hotelId}/profile`) {
+                redirectTo = `/${hotelId}`;
+            }
+            return <Navigate to={redirectTo || `/${hotelId}`} replace />;
         }
-        return <Navigate to={`/${hotelId}/auth`} replace state={{ from: location }} />;
     }
+    else {
+        // Prevent /welcome after seen
+        if (location.pathname.endsWith("/welcome") && doneWelcome) {
+            return <Navigate to={`/${hotelId}/auth`} replace />;
+        }
 
-    // If NOT authenticated and on authPages
-    if (!isAuthenticated && isAuthPage) {
-        return <Outlet />;
+        // NOT on authPages - save intended route
+        if (!isAuthPage) {
+            if (!doneWelcome) {
+                return <Navigate to={`/${hotelId}/welcome`} replace state={{ from: location }} />;
+            }
+            return <Navigate to={`/${hotelId}/auth`} replace state={{ from: location }} />;
+        }
     }
 
     return <Outlet />;

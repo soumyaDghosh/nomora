@@ -32,17 +32,19 @@ export default function Profile() {
                         <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mr-4">
                             <i className="ri-user-line text-gray-600 text-2xl" />
                         </div>
-                        <div>
-                            <h3 className="font-semibold text-gray-900">{user?.name || "User"}</h3>
-                            <div className="flex items-center gap-2">
-                                <p className="text-gray-600 text-sm">
-                                    +91 {user?.phone ? `XXXXX${user.phone.toString().slice(5)}` : ""}
-                                </p>
-                                <div className="flex items-center justify-center w-5 h-5 bg-gray-900 rounded-full">
-                                    <i className="ri-check-line text-white text-xs" />
+                        {user?.phone && (
+                            <div>
+                                <h3 className="font-semibold text-gray-900">{user?.name || "User"}</h3>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-gray-600 text-sm">
+                                        +91 XXXXX{user.phone.toString().slice(5)}
+                                    </p>
+                                    <div className="flex items-center justify-center w-5 h-5 bg-gray-900 rounded-full">
+                                        <i className="ri-check-line text-white text-xs" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="space-y-4">

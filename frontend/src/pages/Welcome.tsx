@@ -16,8 +16,7 @@ export default function Welcome() {
     const [startX, setStartX] = useState<number | null>(null);
 
     const handleContinue = () => {
-        localStorage.setItem("hasSeenWelcome", "true");
-
+        localStorage.setItem("doneWelcome", "true");
         navigate(`/${hotelId}/auth`, { replace: true });
     };
 

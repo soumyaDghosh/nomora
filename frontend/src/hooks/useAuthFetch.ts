@@ -17,6 +17,7 @@ export default function useAuthFetch() {
             setHotel(res.data.hotel);
 
             if (res.data.user) {
+                localStorage.setItem("doneAuth", "true");
                 setUser(res.data.user);
                 setAuthenticated(true);
                 return true;
