@@ -10,12 +10,16 @@ jobs:
   enforce-flow:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Check branch flow
         run: |
           echo "Target branch: ${GITHUB_REF_NAME}"
           echo "Source commit branch: ${GITHUB_HEAD_REF:-"unknown"}"
 
-          # Block direct pushes unless they are merges from the correct branch
           if [[ "${GITHUB_REF_NAME}" == "uat" ]]; then
             git fetch origin dev
             if ! git log origin/uat..origin/dev --oneline | grep .; then
