@@ -8,6 +8,7 @@ interface JwtPayload {
 }
 
 const hotelCache = new NodeCache({ stdTTL: 3600 });
+const userCache = new NodeCache({ stdTTL: 3600 });
 
 export const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies?.token;
@@ -19,7 +20,7 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
             return res.status(400).json({ message: "hotel_id is required" });
         }
 
-        let hotel = hotelCache.get(hotelId) as Express.Hotel | undefined;
+        let hotel = hotelCache.get<Express.Hotel>(hotelId);
 
         if (!hotel) {
             const query = `
@@ -65,15 +66,20 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
             });
         }
 
-        const result = await pool.query("SELECT * FROM users WHERE id = $1", [decoded.id]);
-        const user = result.rows[0];
+        const userId = decoded.id;
+        let user = userCache.get<Express.User>(userId);
 
         if (!user) {
-            return res.status(200).json({
-                authenticated: false,
-                user: null,
-                hotel
-            });
+            const result = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
+            if (result.rows.length === 0) {
+                return res.status(200).json({
+                    authenticated: false,
+                    user: null,
+                    hotel
+                });
+            }
+            user = result.rows[0];
+            userCache.set(userId, user);
         }
 
         req.user = user;

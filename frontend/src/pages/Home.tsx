@@ -18,9 +18,9 @@ export default function Home() {
     const istTime = new Date(now.getTime() + istOffset);
     const hour = istTime.getUTCHours();
 
-    if (hour >= 0 && hour < 12) return "Good morning!";
-    if (hour >= 12 && hour < 16) return "Good afternoon!";
-    return "Good evening!";
+    if (hour >= 0 && hour < 12) return "Good Morning!";
+    if (hour >= 12 && hour < 16) return "Good Afternoon!";
+    return "Good Evening!";
   }
 
   const handleCitySightseeingClick = () => {
@@ -142,7 +142,7 @@ export default function Home() {
       {/* Header - Reduced top padding */}
       <div className="bg-white px-4 py-4 mb-4">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-1">
+          <h1 className="text-xl font-semibold text-gray-900">
             {getGreeting()}
           </h1>
           <p className="text-sm text-gray-600">

@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
+import NodeCache from "node-cache";
 import { DatabaseError } from "pg";
 import axios from "axios";
 import { pool } from "../config/db";
+
+const bookingsCache = new NodeCache({ stdTTL: 3600 });
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -65,16 +68,6 @@ function parseDateTime(date: string, time: string): Date {
     if (meridiem === "AM" && hour === 12) hour = 0;
 
     return new Date(year, month - 1, day, hour, minute, 0, 0);
-}
-
-function formatDate(dateString: string, timeZone: string = "Asia/Kolkata") {
-    return new Intl.DateTimeFormat("en-US", {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        timeZone,
-    }).format(new Date(dateString));
 }
 
 export const createBooking = async (req: Request, res: Response) => {
@@ -216,7 +209,7 @@ export const createBooking = async (req: Request, res: Response) => {
             time
         };
 
-        await axios.post(
+        axios.post(
             "https://api.resend.com/emails",
             {
                 from: "Acme <onboarding@resend.dev>",
@@ -251,13 +244,15 @@ Time: ${time}
 
         await client.query("COMMIT");
 
+        const cacheKey = `bookings:${user_id}:${hotel_id}`;
+        bookingsCache.del(cacheKey);
+
         return res.status(201).json({
             message: "Booked successfully",
             booking,
         });
     }
     catch (error) {
-        console.log(error)
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
@@ -282,6 +277,13 @@ export const listBookings = async (req: Request, res: Response) => {
         if (!user_id) return res.status(401).json({ message: "Unauthorized: user_id missing" });
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
 
+        const cacheKey = `bookings:${user_id}:${hotel_id}`;
+        const cachedBookings = bookingsCache.get(cacheKey);
+
+        if (cachedBookings) {
+            return res.status(200).json({ bookings: cachedBookings });
+        }
+
         const result = await client.query(
             `SELECT id, status, product_type, listing_id, price, ac_type, car_type, 
                     transfer_type, terminal, guest_count, date, time, created_at
@@ -291,7 +293,11 @@ export const listBookings = async (req: Request, res: Response) => {
             [user_id, hotel_id]
         );
 
-        return res.status(200).json({ bookings: result.rows });
+        const bookings = result.rows;
+
+        bookingsCache.set(cacheKey, bookings);
+
+        return res.status(200).json({ bookings });
     }
     catch (error) {
         if (error instanceof DatabaseError) {
