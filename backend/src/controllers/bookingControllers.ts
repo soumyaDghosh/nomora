@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
-import NodeCache from "node-cache";
 import { DatabaseError } from "pg";
 import axios from "axios";
 import { pool } from "../config/db";
-
-const bookingsCache = new NodeCache({ stdTTL: 3600 });
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -244,9 +241,6 @@ Time: ${time}
 
         await client.query("COMMIT");
 
-        const cacheKey = `bookings:${user_id}:${hotel_id}`;
-        bookingsCache.del(cacheKey);
-
         return res.status(201).json({
             message: "Booked successfully",
             booking,
@@ -277,13 +271,6 @@ export const listBookings = async (req: Request, res: Response) => {
         if (!user_id) return res.status(401).json({ message: "Unauthorized: user_id missing" });
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
 
-        const cacheKey = `bookings:${user_id}:${hotel_id}`;
-        const cachedBookings = bookingsCache.get(cacheKey);
-
-        if (cachedBookings) {
-            return res.status(200).json({ bookings: cachedBookings });
-        }
-
         const result = await client.query(
             `SELECT id, status, product_type, listing_id, price, ac_type, car_type, 
                     transfer_type, terminal, guest_count, date, time, created_at
@@ -293,11 +280,7 @@ export const listBookings = async (req: Request, res: Response) => {
             [user_id, hotel_id]
         );
 
-        const bookings = result.rows;
-
-        bookingsCache.set(cacheKey, bookings);
-
-        return res.status(200).json({ bookings });
+        return res.status(200).json({ bookings: result.rows });
     }
     catch (error) {
         if (error instanceof DatabaseError) {
@@ -344,6 +327,10 @@ export const bookingDetails = async (req: Request, res: Response) => {
 
         if (row.user_id !== user_id) {
             return res.status(403).json({ message: "Forbidden: booking does not belong to user" });
+        }
+
+        if (row.status === "cancelled") {
+            return res.status(404).json({ message: "Booking cancelled" });
         }
 
         return res.status(200).json({

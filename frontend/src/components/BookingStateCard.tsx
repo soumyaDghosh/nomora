@@ -71,6 +71,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
     const paymentConfig = getPaymentStatusConfig("unpaid");
 
     const handleCardClick = () => {
+        if (!stateConfig.showViewDetails) return;
         navigate(`/${hotelId}/confirmation/${booking.id}`);
     };
 
@@ -117,7 +118,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                 </div>
 
                 {/* Trip Details Grid with improved spacing */}
-                <div className="space-y-3 mb-5">
+                <div className="space-y-3">
                     {/* Date and Time Row - Fix hydration with suppressHydrationWarning */}
                     <div className="flex items-center gap-3 text-gray-600">
                         <div className="w-4 h-4 flex items-center justify-center flex-shrink-0">
@@ -191,7 +192,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
 
                 {/* Action Button - Only for Ongoing & Completed states */}
                 {stateConfig.showViewDetails && (
-                    <div className="flex justify-end">
+                    <div className="flex justify-end mt-5">
                         <Link
                             to={`/${hotelId}/confirmation/${booking.id}`}
                             className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
