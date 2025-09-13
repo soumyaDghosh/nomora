@@ -163,7 +163,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
                             </span>
                             <span className="text-gray-400">•</span>
                             <span className="text-gray-600 text-sm">
-                                {isAirportTransfer ? "4+1 Seats" : getVehicleSeat(booking?.car_type)}
+                                {isAirportTransfer ? "4+1 AC" : `${getVehicleSeat(booking?.car_type).split(" ")[0]} ${booking.ac_type}`}
                             </span>
                         </div>
                     </div>

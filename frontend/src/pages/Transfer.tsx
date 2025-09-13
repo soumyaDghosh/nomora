@@ -62,8 +62,8 @@ export default function Transfer() {
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-[calc(81px)]">
             {/* Header */}
-            <div className="bg-white px-4 pt-6 pb-6">
-                <div className="flex items-center gap-3 mb-4">
+            <div className="bg-white px-4 py-4 mb-6">
+                <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center">
                         <i className="ri-plane-line text-white text-lg" />
                     </div>
@@ -74,7 +74,7 @@ export default function Transfer() {
                 </div>
             </div>
 
-            <div className="px-4 space-y-4 mb-4">
+            <div className="px-4 space-y-4 mb-6">
                 {/* Transfer Type */}
                 <div className="bg-white rounded-xl border border-gray-200">
                     <div className="p-4 border-b border-gray-100">

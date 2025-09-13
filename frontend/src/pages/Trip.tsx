@@ -93,8 +93,8 @@ export default function Trip() {
 
     return (
         <div className="min-h-[100svh] bg-white pb-[calc(93px)]">
-            {/* Header - Match Dashboard spacing: py-3 pt-6 reduced from pt-12 */}
-            <div className="bg-white border-b border-gray-100 px-4 py-3 pt-6">
+            {/* Header - Match Dashboard spacing */}
+            <div className="bg-white border-b border-gray-100 px-4 py-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <button
@@ -118,7 +118,7 @@ export default function Trip() {
             </div>
 
             {/* Enhanced Image Carousel with Hint Animation */}
-            <div className="px-4 py-4 relative">
+            <div className="px-4 pt-6 pb-4 relative">
                 <ImageCarousel images={trip.images} />
 
                 {/* Image Tap Hint Animation */}

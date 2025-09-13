@@ -108,8 +108,8 @@ Note: +1 refers to the chauffeur.`,
 
     return (
         <div className="min-h-[100svh] bg-gray-50">
-            {/* Header - Match Dashboard spacing: py-3 pt-6 */}
-            <div className="bg-white border-b border-gray-100 px-4 py-3 pt-6 sticky top-0 z-40">
+            {/* Header - Match Dashboard spacing */}
+            <div className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-40">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <button

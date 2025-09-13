@@ -293,8 +293,8 @@ export default function Checkout() {
 
     return (
         <div className={`min-h-[100svh] bg-gray-50 ${!isCheckoutReady() ? 'mb-[calc(113px)]' : 'mb-[calc(89px)]'}`}>
-            {/* Header - Match Dashboard spacing: py-3 pt-6 */}
-            <div className="bg-white border-b border-gray-100 px-4 py-3 pt-6 sticky top-0 z-40">
+            {/* Header - Match Dashboard spacing */}
+            <div className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-40">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center cursor-pointer">
@@ -312,7 +312,7 @@ export default function Checkout() {
                 </div>
             </div>
 
-            <div className="px-4 py-4 flex flex-col gap-4">
+            <div className="px-4 py-6 flex flex-col gap-4">
                 <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">

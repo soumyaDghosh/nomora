@@ -18,7 +18,7 @@ export default function useFetchBooking() {
 
         try {
             const response = await axios.get<{ booking: MyBooking }>(
-                `${import.meta.env.VITE_SERVER_URL}/api/book/${bookingId}`,
+                `${import.meta.env.VITE_SERVER_URL}/api/booking/${bookingId}`,
                 { withCredentials: true }
             );
 

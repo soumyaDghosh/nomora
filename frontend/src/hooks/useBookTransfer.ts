@@ -38,7 +38,7 @@ export default function useBookTransfer() {
             setLoading(true);
 
             const response = await axios.post(
-                `${import.meta.env.VITE_SERVER_URL}/api/book`,
+                `${import.meta.env.VITE_SERVER_URL}/api/booking`,
                 {
                     product_type,
                     transfer_type,
