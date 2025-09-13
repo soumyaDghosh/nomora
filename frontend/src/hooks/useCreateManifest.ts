@@ -6,7 +6,7 @@ export default function useCreateManifest() {
         const origin = window.location.origin;
 
         const manifest = {
-            name: `${hotel.display_name} | Nomora`,
+            name: "Nomora | Tours and Experiences",
             short_name: "Nomora",
             start_url: `${origin}/${hotel.id}`,
             display: "standalone",
