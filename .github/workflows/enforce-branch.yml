@@ -1,0 +1,31 @@
+name: Enforce Branch Flow
+
+on:
+  pull_request:
+    branches:
+      - uat
+      - prod
+
+jobs:
+  enforce-flow:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Check branch flow
+        run: |
+          echo "Target branch: ${GITHUB_BASE_REF}"
+          echo "Source branch: ${GITHUB_HEAD_REF}"
+
+          if [[ "${GITHUB_BASE_REF}" == "uat" && "${GITHUB_HEAD_REF}" != "dev" ]]; then
+            echo "Invalid PR: PRs to 'uat' must come from 'dev'."
+            exit 1
+          fi
+
+          if [[ "${GITHUB_BASE_REF}" == "prod" && "${GITHUB_HEAD_REF}" != "uat" ]]; then
+            echo "Invalid PR: PRs to 'prod' must come from 'uat'."
+            exit 1
+          fi
+
+          echo "Branch flow is valid."
