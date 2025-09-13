@@ -21,17 +21,15 @@ jobs:
           echo "Source commit branch: ${GITHUB_HEAD_REF:-"unknown"}"
 
           if [[ "${GITHUB_REF_NAME}" == "uat" ]]; then
-            git fetch origin dev
-            if ! git log origin/uat..origin/dev --oneline | grep .; then
-              echo "uat was updated without merging from dev."
+            if ! git merge-base --is-ancestor origin/dev origin/uat; then
+              echo "uat must only be updated by merging from dev."
               exit 1
             fi
           fi
 
           if [[ "${GITHUB_REF_NAME}" == "prod" ]]; then
-            git fetch origin uat
-            if ! git log origin/prod..origin/uat --oneline | grep .; then
-              echo "prod was updated without merging from uat."
+            if ! git merge-base --is-ancestor origin/uat origin/prod; then
+              echo "prod must only be updated by merging from uat."
               exit 1
             fi
           fi
