@@ -1,7 +1,7 @@
 name: Enforce Branch Flow
 
 on:
-  pull_request:
+  push:
     branches:
       - uat
       - prod
@@ -9,23 +9,27 @@ on:
 jobs:
   enforce-flow:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
     steps:
       - name: Check branch flow
         run: |
-          echo "Target branch: ${GITHUB_BASE_REF}"
-          echo "Source branch: ${GITHUB_HEAD_REF}"
+          echo "Target branch: ${GITHUB_REF_NAME}"
+          echo "Source commit branch: ${GITHUB_HEAD_REF:-"unknown"}"
 
-          if [[ "${GITHUB_BASE_REF}" == "uat" && "${GITHUB_HEAD_REF}" != "dev" ]]; then
-            echo "Invalid PR: PRs to 'uat' must come from 'dev'."
-            exit 1
+          # Block direct pushes unless they are merges from the correct branch
+          if [[ "${GITHUB_REF_NAME}" == "uat" ]]; then
+            git fetch origin dev
+            if ! git log origin/uat..origin/dev --oneline | grep .; then
+              echo "uat was updated without merging from dev."
+              exit 1
+            fi
           fi
 
-          if [[ "${GITHUB_BASE_REF}" == "prod" && "${GITHUB_HEAD_REF}" != "uat" ]]; then
-            echo "Invalid PR: PRs to 'prod' must come from 'uat'."
-            exit 1
+          if [[ "${GITHUB_REF_NAME}" == "prod" ]]; then
+            git fetch origin uat
+            if ! git log origin/prod..origin/uat --oneline | grep .; then
+              echo "prod was updated without merging from uat."
+              exit 1
+            fi
           fi
 
           echo "Branch flow is valid."
