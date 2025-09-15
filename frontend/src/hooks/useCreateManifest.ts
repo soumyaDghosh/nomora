@@ -1,7 +1,11 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { type Hotel } from "../store/authStore";
+import usePWAStore from "../store/pwaStore";
+import type { BeforeInstallPromptEvent } from "../types";
 
 export default function useCreateManifest() {
+    const { setDeferredPrompt } = usePWAStore();
+
     const createManifest = useCallback((hotel: Hotel) => {
         const origin = window.location.origin;
 
@@ -9,117 +13,118 @@ export default function useCreateManifest() {
             id: `/${hotel.id}`,
             name: "Nomora",
             short_name: "Nomora",
-            description: `Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.`,
+            description:
+                "Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.",
             start_url: `${origin}/${hotel.id}`,
             display: "standalone",
             background_color: "#ffffff",
             theme_color: "#1e293b",
             icons: [
                 {
-                    "src": `${origin}/icons/9.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "maskable"
+                    src: `${origin}/icons/9.png`,
+                    sizes: "192x192",
+                    type: "image/png",
+                    purpose: "maskable",
                 },
                 {
-                    "src": `${origin}/icons/10.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "maskable"
+                    src: `${origin}/icons/10.png`,
+                    sizes: "512x512",
+                    type: "image/png",
+                    purpose: "maskable",
                 },
                 {
-                    "src": `${origin}/icons/1.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "any"
+                    src: `${origin}/icons/1.png`,
+                    sizes: "192x192",
+                    type: "image/png",
+                    purpose: "any",
                 },
                 {
-                    "src": `${origin}/icons/8.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "any"
+                    src: `${origin}/icons/8.png`,
+                    sizes: "512x512",
+                    type: "image/png",
+                    purpose: "any",
                 },
                 {
-                    "src": `${origin}/icons/2.png`,
-                    "sizes": "36x36",
-                    "type": "image/png",
-                    "density": "0.75"
+                    src: `${origin}/icons/2.png`,
+                    sizes: "36x36",
+                    type: "image/png",
+                    density: "0.75",
                 },
                 {
-                    "src": `${origin}/icons/3.png`,
-                    "sizes": "48x48",
-                    "type": "image/png",
-                    "density": "1.0"
+                    src: `${origin}/icons/3.png`,
+                    sizes: "48x48",
+                    type: "image/png",
+                    density: "1.0",
                 },
                 {
-                    "src": `${origin}/icons/4.png`,
-                    "sizes": "72x72",
-                    "type": "image/png",
-                    "density": "1.5"
+                    src: `${origin}/icons/4.png`,
+                    sizes: "72x72",
+                    type: "image/png",
+                    density: "1.5",
                 },
                 {
-                    "src": `${origin}/icons/5.png`,
-                    "sizes": "96x96",
-                    "type": "image/png",
-                    "density": "2.0"
+                    src: `${origin}/icons/5.png`,
+                    sizes: "96x96",
+                    type: "image/png",
+                    density: "2.0",
                 },
                 {
-                    "src": `${origin}/icons/6.png`,
-                    "sizes": "144x144",
-                    "type": "image/png",
-                    "density": "3.0"
+                    src: `${origin}/icons/6.png`,
+                    sizes: "144x144",
+                    type: "image/png",
+                    density: "3.0",
                 },
                 {
-                    "src": `${origin}/icons/7.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "density": "4.0"
+                    src: `${origin}/icons/7.png`,
+                    sizes: "192x192",
+                    type: "image/png",
+                    density: "4.0",
                 },
                 {
-                    "src": `${origin}/icons/8.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "density": "5.0"
-                }
+                    src: `${origin}/icons/8.png`,
+                    sizes: "512x512",
+                    type: "image/png",
+                    density: "5.0",
+                },
             ],
             screenshots: [
                 {
                     src: `${origin}/screenshots/mobile-1.png`,
                     sizes: "800x1600",
-                    type: "image/png"
-                    // form_factor: "narrow"
+                    type: "image/png",
                 },
                 {
                     src: `${origin}/screenshots/mobile-2.png`,
                     sizes: "800x1600",
-                    type: "image/png"
+                    type: "image/png",
                 },
                 {
                     src: `${origin}/screenshots/mobile-3.png`,
                     sizes: "800x1600",
-                    type: "image/png"
+                    type: "image/png",
                 },
                 {
                     src: `${origin}/screenshots/mobile-4.png`,
                     sizes: "800x1600",
-                    type: "image/png"
+                    type: "image/png",
                 },
                 {
                     src: `${origin}/screenshots/mobile-5.png`,
                     sizes: "800x1600",
-                    type: "image/png"
+                    type: "image/png",
                 },
                 {
                     src: `${origin}/screenshots/desktop.png`,
                     sizes: "3840x2160",
                     type: "image/png",
-                    form_factor: "wide"
-                }
-            ]
+                    form_factor: "wide",
+                },
+            ],
         };
 
+        // Inject manifest into <head>
         const blob = new Blob([JSON.stringify(manifest)], {
-            type: "application/json"
+            type: "application/json",
         });
         const manifestURL = URL.createObjectURL(blob);
 
@@ -131,6 +136,19 @@ export default function useCreateManifest() {
         link.href = manifestURL;
         document.head.appendChild(link);
     }, []);
+
+    useEffect(() => {
+        const handler = (e: BeforeInstallPromptEvent) => {
+            // e.preventDefault();
+            setDeferredPrompt(e);
+        };
+
+        window.addEventListener("beforeinstallprompt", handler as EventListener);
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handler as EventListener);
+        };
+    }, [setDeferredPrompt]);
 
     return { createManifest };
 }

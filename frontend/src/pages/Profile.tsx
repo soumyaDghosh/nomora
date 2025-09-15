@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import usePWAStore from "../store/pwaStore";
 import useAuthStore from "../store/authStore";
 import useSignOut from "../hooks/useSignOut";
 
@@ -6,8 +7,21 @@ export default function Profile() {
     const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
+    const { deferredPrompt, isInstallable, clearDeferredPrompt } = usePWAStore();
     const { user, clearUser } = useAuthStore();
     const { loading, signOut } = useSignOut();
+
+    const handleInstall = async () => {
+        if (!deferredPrompt) {
+            alert("App install not available right now. Try from browser menu.");
+            return;
+        }
+
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+
+        clearDeferredPrompt();
+    };
 
     const handleSignOut = async () => {
         const ok = await signOut();
@@ -48,6 +62,21 @@ export default function Profile() {
                     </div>
 
                     <div className="space-y-4">
+                        <button
+                            onClick={handleInstall}
+                            disabled={!isInstallable}
+                            className={`w-full flex items-center justify-between p-4 rounded-xl transition-colors ${isInstallable
+                                ? "bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                                : "bg-gray-100 cursor-not-allowed opacity-60"
+                                }`}
+                        >
+                            <div className="flex items-center">
+                                <i className="ri-download-line text-gray-600 mr-3" />
+                                <span className="text-gray-900">Install App</span>
+                            </div>
+                            <i className="ri-arrow-right-s-line text-gray-400" />
+                        </button>
+
                         <button
                             onClick={() => navigate(`/${hotelId}/support`)}
                             className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
