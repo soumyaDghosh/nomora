@@ -190,22 +190,24 @@ export default function Home() {
             View all
           </button>
         </div>
-        {allTrips.map(trip => (
-          <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
-            <TripCard
-              key={trip.id}
-              id={trip.id}
-              title={trip.title}
-              description={trip.description}
-              imageUrl={trip.imageUrl}
-              price={trip.price}
-              duration={trip.duration}
-              pickup={trip.pickup}
-              chauffeur={trip.chauffeur}
-              tag={trip.tag}
-            />
-          </Link>
-        ))}
+        <div className="flex flex-col gap-4">
+          {allTrips.map(trip => (
+            <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
+              <TripCard
+                key={trip.id}
+                id={trip.id}
+                title={trip.title}
+                description={trip.description}
+                imageUrl={trip.imageUrl}
+                price={trip.price}
+                duration={trip.duration}
+                pickup={trip.pickup}
+                chauffeur={trip.chauffeur}
+                tag={trip.tag}
+              />
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Share Card */}
