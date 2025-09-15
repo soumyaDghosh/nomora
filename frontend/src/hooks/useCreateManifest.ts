@@ -6,7 +6,7 @@ export default function useCreateManifest() {
         const origin = window.location.origin;
 
         const manifest = {
-            name: "Nomora | Tours and Experiences",
+            name: "Nomora",
             short_name: "Nomora",
             start_url: `${origin}/${hotel.id}`,
             display: "standalone",
@@ -14,10 +14,10 @@ export default function useCreateManifest() {
             theme_color: "#1e293b",
             icons: [
                 {
-                    src: `${origin}/icons/4.png`,
-                    sizes: "72x72",
-                    type: "image/png",
-                    purpose: "any"
+                    "src": `${origin}/icons/1.png`,
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any"
                 },
                 {
                     "src": `${origin}/icons/1.png`,
