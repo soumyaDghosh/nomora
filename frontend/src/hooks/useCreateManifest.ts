@@ -14,6 +14,12 @@ export default function useCreateManifest() {
             theme_color: "#1e293b",
             icons: [
                 {
+                    src: `${origin}/icons/4.png`,
+                    sizes: "72x72",
+                    type: "image/png",
+                    purpose: "any"
+                },
+                {
                     "src": `${origin}/icons/1.png`,
                     "sizes": "192x192",
                     "type": "image/png",
