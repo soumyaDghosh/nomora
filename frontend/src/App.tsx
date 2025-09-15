@@ -22,7 +22,7 @@ import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
   const { trackPageView } = useAnalytics();
-  const { fetchUser } = useAuthFetch();
+  const { fetchHotel, fetchUser } = useAuthFetch();
   const { fetchBookings } = useFetchBookings();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ function App() {
 
   useEffect(() => {
     const init = async () => {
-      const ok = await fetchUser();
+      const [, ok] = await Promise.all([fetchHotel(), fetchUser()]);
 
       if (ok) {
         await fetchBookings();
@@ -39,7 +39,7 @@ function App() {
     };
 
     init();
-  }, [fetchUser, fetchBookings]);
+  }, [fetchHotel, fetchUser, fetchBookings]);
 
   return (
     <Routes>

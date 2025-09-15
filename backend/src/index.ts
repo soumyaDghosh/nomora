@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
 import mongoose from "mongoose";
+import hotelRoutes from "./routes/hotelRoutes"
 import authRoutes from "./routes/authRoutes"
 import bookingRoutes from "./routes/bookingRoutes"
 import adminRoutes from "./routes/adminRoutes"
@@ -19,6 +20,7 @@ app.use(cors({
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/", (req, res) => res.send("Server running..."));
+app.use("/api/hotel", hotelRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/admin", adminRoutes);

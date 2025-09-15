@@ -5,27 +5,33 @@ import useAuthStore from "../store/authStore";
 
 export default function useAuthFetch() {
     const { createManifest } = useCreateManifest();
+    const { setHotel, setUser, clearUser, setFetchingHotel, setAuthenticating, setAuthenticated } = useAuthStore();
 
-    const { setHotel, setUser, clearUser, setAuthenticating, setAuthenticated } = useAuthStore();
-
-    const fetchUser = useCallback(async (): Promise<boolean> => {
+    const fetchHotel = useCallback(async () => {
         try {
             const hotelId = window.location.pathname.split("/")[1];
 
-            const res = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL}/api/auth/user?hotel_id=${hotelId}`,
-                { withCredentials: true }
-            );
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/hotel?hotel_id=${hotelId}`, {
+                withCredentials: true,
+            });
 
-            if (res.data.hotel) {
+            if (res.data?.hotel) {
                 setHotel(res.data.hotel);
                 createManifest(res.data.hotel);
             }
-            else {
-                return false;
-            }
+        }
+        finally {
+            setFetchingHotel(false);
+        }
+    }, [setHotel, createManifest, setFetchingHotel]);
 
-            if (res.data.user) {
+    const fetchUser = useCallback(async (): Promise<boolean> => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/auth/user`, {
+                withCredentials: true,
+            });
+
+            if (res.data?.user) {
                 localStorage.setItem("doneAuth", "true");
                 setUser(res.data.user);
                 setAuthenticated(true);
@@ -44,7 +50,7 @@ export default function useAuthFetch() {
         finally {
             setAuthenticating(false);
         }
-    }, [setAuthenticating, setHotel, setUser, setAuthenticated, createManifest, clearUser]);
+    }, [setUser, setAuthenticated, clearUser, setAuthenticating]);
 
-    return { fetchUser };
+    return { fetchHotel, fetchUser };
 }

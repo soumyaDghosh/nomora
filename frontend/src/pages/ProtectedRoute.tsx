@@ -6,7 +6,7 @@ export default function ProtectedRoute() {
     const location = useLocation();
     const { hotelId } = useParams<{ hotelId: string }>();
 
-    const { hotel, isAuthenticating } = useAuthStore();
+    const { hotel, isFetchingHotel } = useAuthStore();
 
     const doneWelcome = localStorage.getItem("doneWelcome");
     const doneAuth = localStorage.getItem("doneAuth");
@@ -26,7 +26,7 @@ export default function ProtectedRoute() {
     }
 
     // If hotel not found
-    if (!isAuthenticating && !hotel) {
+    if (!isFetchingHotel && !hotel) {
         return <Navigate to="/" replace />
     }
 

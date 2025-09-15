@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import useAuthStore from "../store/authStore";
 import useBookStore from "../store/bookStore";
 
 interface BookTourProps {
@@ -20,7 +19,6 @@ interface BookTourResult {
 }
 
 export default function useBookTour() {
-    const { clearUser } = useAuthStore();
     const { shortBookings, setShortBookings } = useBookStore();
 
     const [loading, setLoading] = useState(false);
@@ -50,12 +48,7 @@ export default function useBookTour() {
                 },
                 { withCredentials: true }
             );
-
             const result = response.data;
-            if (result?.authenticated !== undefined && !result?.authenticated) {
-                clearUser();
-                return { success: false };
-            }
 
             const newBooking = result.booking;
             setShortBookings([newBooking, ...shortBookings]);

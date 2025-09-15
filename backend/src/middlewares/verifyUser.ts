@@ -7,51 +7,13 @@ interface JwtPayload {
     id: string;
 }
 
-const hotelCache = new NodeCache({ stdTTL: 3600 });
 const userCache = new NodeCache({ stdTTL: 3600 });
 
 export const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies?.token;
-
     try {
-        const hotelId = req.query.hotel_id || req.cookies?.hotel_id;
-
-        if (!hotelId) {
-            return res.status(400).json({ message: "hotel_id is required" });
-        }
-
-        let hotel = hotelCache.get<Express.Hotel>(hotelId);
-
-        if (!hotel) {
-            const query = `
-                SELECT id, display_name, address, pincode, lat_long
-                FROM hotels
-                WHERE id = $1
-                LIMIT 1;
-            `;
-            const { rows } = await pool.query(query, [hotelId]);
-
-            if (rows.length === 0) {
-                return res.status(404).json({ message: "Hotel not found" });
-            }
-
-            hotel = rows[0] as Express.Hotel;
-            hotelCache.set(hotelId, hotel);
-        }
-
-        res.cookie("hotel_id", hotelId, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 3 * 24 * 60 * 60 * 1000,
-        });
-
+        const token = req.cookies?.token;
         if (!token) {
-            return res.status(200).json({
-                authenticated: false,
-                user: null,
-                hotel
-            });
+            return res.status(404).json({ message: "No token found" });
         }
 
         let decoded: JwtPayload;
@@ -59,11 +21,7 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
             decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
         }
         catch {
-            return res.status(200).json({
-                authenticated: false,
-                user: null,
-                hotel
-            });
+            return res.status(404).json({ message: "Invalid token" });
         }
 
         const userId = decoded.id;
@@ -72,18 +30,13 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
         if (!user) {
             const result = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
             if (result.rows.length === 0) {
-                return res.status(200).json({
-                    authenticated: false,
-                    user: null,
-                    hotel
-                });
+                return res.status(404).json({ message: "User not found" });
             }
             user = result.rows[0];
             userCache.set(userId, user);
         }
 
         req.user = user;
-        req.hotel = hotel;
         next();
     }
     catch (err) {

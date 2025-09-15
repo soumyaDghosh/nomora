@@ -18,11 +18,13 @@ export interface User {
 interface AuthState {
   hotel: Hotel | null
   user: User | null
+  isFetchingHotel: boolean
   isAuthenticating: boolean
   isAuthenticated: boolean
 
   setHotel: (hotelData: Hotel | null) => void
   setUser: (userData: User | null) => void
+  setFetchingHotel: (state: boolean) => void
   setAuthenticating: (state: boolean) => void
   setAuthenticated: (state: boolean) => void
   clearUser: () => void
@@ -34,6 +36,9 @@ const useAuthStore = create<AuthState>((set) => ({
 
   user: null,
   setUser: (userData) => set({ user: userData }),
+
+  isFetchingHotel: true,
+  setFetchingHotel: (state) => set({ isFetchingHotel: state }),
 
   isAuthenticating: true,
   setAuthenticating: (state) => set({ isAuthenticating: state }),

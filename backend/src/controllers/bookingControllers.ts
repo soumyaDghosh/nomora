@@ -72,7 +72,8 @@ export const createBooking = async (req: Request, res: Response) => {
 
     try {
         const user_id = req.user?.id;
-        const hotel_id = req.hotel?.id;
+        const hotel_id = req.cookies?.hotel_id;
+        const hotel_name = req.cookies?.hotel_name;
         const {
             product_type,
             ac_type,
@@ -88,6 +89,7 @@ export const createBooking = async (req: Request, res: Response) => {
 
         if (!user_id) return res.status(401).json({ message: "Unauthorized: user_id missing" });
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
+        if (!hotel_name) return res.status(400).json({ message: "hotel_name is required" });
         if (!product_type) return res.status(400).json({ message: "product_type is required" });
         if (!ALLOWED_PRODUCT_TYPES.includes(product_type))
             return res.status(400).json({ message: `product_type must be one of: ${ALLOWED_PRODUCT_TYPES.join(", ")}` });
@@ -217,7 +219,7 @@ export const createBooking = async (req: Request, res: Response) => {
                     html: `
 Booking ID: ${newBookingId}<br /><br />
 Hotel ID: ${hotel_id}<br />
-Hotel Name: ${req.hotel?.display_name}<br /><br />
+Hotel Name: ${hotel_name}<br /><br />
 User ID: ${req.user?.id}<br />
 User Phone: ${req.user?.phone}<br /><br />
 Product Type: ${product_type}<br />
@@ -269,7 +271,7 @@ export const listBookings = async (req: Request, res: Response) => {
 
     try {
         const user_id = req.user?.id;
-        const hotel_id = req.hotel?.id;
+        const hotel_id = req.cookies?.hotel_id;
 
         if (!user_id) return res.status(401).json({ message: "Unauthorized: user_id missing" });
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
