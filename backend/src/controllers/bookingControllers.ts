@@ -206,13 +206,14 @@ export const createBooking = async (req: Request, res: Response) => {
             time
         };
 
-        axios.post(
-            "https://api.resend.com/emails",
-            {
-                from: "Acme <onboarding@resend.dev>",
-                to: ["nomoradev@gmail.com"],
-                subject: "New Booking",
-                html: `
+        if (process.env.NODE_ENV === "production") {
+            axios.post(
+                "https://api.resend.com/emails",
+                {
+                    from: "Acme <onboarding@resend.dev>",
+                    to: ["nomoradev@gmail.com"],
+                    subject: "New Booking",
+                    html: `
 Booking ID: ${newBookingId}<br /><br />
 Hotel ID: ${hotel_id}<br />
 Hotel Name: ${req.hotel?.display_name}<br /><br />
@@ -230,14 +231,15 @@ Price: ₹${price}<br /><br />
 Date: ${new Date(date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
 Time: ${time}
 `,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-                    "Content-Type": "application/json",
                 },
-            }
-        );
+                {
+                    headers: {
+                        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        }
 
         await client.query("COMMIT");
 

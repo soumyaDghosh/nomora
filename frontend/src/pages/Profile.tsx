@@ -20,7 +20,7 @@ export default function Profile() {
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-20">
             {/* Header - Match Dashboard spacing: pt-6 pb-6 */}
-            <div className="bg-white px-4 py-6 mb-6 border-b border-gray-100">
+            <div className="bg-white px-4 py-6.5 mb-6 shadow-sm shadow-gray-100">
                 <h1 className="text-xl font-semibold text-gray-900">
                     Profile
                 </h1>

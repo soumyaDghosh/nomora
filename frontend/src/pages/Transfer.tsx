@@ -62,7 +62,7 @@ export default function Transfer() {
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-[calc(81px)]">
             {/* Header */}
-            <div className="bg-white px-4 py-4 mb-6">
+            <div className="bg-white px-4 py-4 mb-6 shadow-sm shadow-gray-100">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-900 rounded-full flex items-center justify-center">
                         <i className="ri-plane-line text-white text-lg" />

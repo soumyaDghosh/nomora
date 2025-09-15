@@ -100,7 +100,7 @@ export default function Explore() {
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-20">
             {/* Header - Match Dashboard spacing: pt-6 pb-4 (slightly reduced bottom for pills) */}
-            <div className="bg-white px-4 pt-6 pb-4 sticky top-0 z-40 border-b border-gray-100">
+            <div className="bg-white px-4 py-4 sticky top-0 z-40 shadow-sm shadow-gray-100">
                 <div className="flex items-center mb-4">
                     <Link
                         to={`/${hotelId}`}
@@ -131,25 +131,23 @@ export default function Explore() {
             </div>
 
             {/* Content */}
-            <div className="px-4 pt-4">
+            <div className="px-4 py-6 flex flex-col gap-4">
                 {filteredTrips.length > 0 ? (
-                    <div className="space-y-4">
-                        {filteredTrips.map((trip) => (
-                            <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
-                                <TripCard
-                                    id={trip.id}
-                                    title={trip.title}
-                                    description={trip.description}
-                                    imageUrl={trip.imageUrl}
-                                    price={trip.price}
-                                    duration={trip.duration}
-                                    pickup={trip.pickup}
-                                    chauffeur={trip.chauffeur}
-                                    tag={trip.tag}
-                                />
-                            </Link>
-                        ))}
-                    </div>
+                    filteredTrips.map((trip) => (
+                        <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
+                            <TripCard
+                                id={trip.id}
+                                title={trip.title}
+                                description={trip.description}
+                                imageUrl={trip.imageUrl}
+                                price={trip.price}
+                                duration={trip.duration}
+                                pickup={trip.pickup}
+                                chauffeur={trip.chauffeur}
+                                tag={trip.tag}
+                            />
+                        </Link>
+                    ))
                 ) : (
                     <EmptyState type={activeTab} />
                 )}

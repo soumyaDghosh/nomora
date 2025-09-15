@@ -140,7 +140,7 @@ export default function Home() {
   return (
     <div className="min-h-[100svh] bg-gray-50 pb-20">
       {/* Header - Reduced top padding */}
-      <div className="bg-white px-4 py-4 mb-4">
+      <div className="bg-white px-4 py-4 mb-4 shadow-sm shadow-gray-100">
         <div>
           <h1 className="text-xl font-semibold text-gray-900">
             {getGreeting()}

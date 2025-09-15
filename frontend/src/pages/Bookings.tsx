@@ -11,7 +11,7 @@ export default function Bookings() {
     return (
         <div className="min-h-[100svh] bg-gray-50">
             {/* Header */}
-            <div className="bg-white px-4 py-4 border-b border-gray-100">
+            <div className="bg-white px-4 py-4.5 shadow-sm shadow-gray-100">
                 <div className="flex items-center justify-between">
                     <h1 className="text-xl font-semibold text-gray-900">
                         My Bookings

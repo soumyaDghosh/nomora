@@ -93,7 +93,7 @@ export default function TransferFare() {
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-[calc(89px)]">
             {/* Header */}
-            <div className="bg-white border-b border-gray-100 px-4 py-4 sticky top-0 z-40">
+            <div className="bg-white px-4 py-5 sticky top-0 z-40 shadow-sm shadow-gray-100">
                 <div className="flex items-center gap-3">
                     <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center cursor-pointer">
                         <i className="ri-arrow-left-line text-xl text-gray-700" />
