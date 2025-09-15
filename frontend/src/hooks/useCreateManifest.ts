@@ -9,29 +9,35 @@ export default function useCreateManifest() {
             id: `/${hotel.id}`,
             name: "Nomora",
             short_name: "Nomora",
-            description: `${hotel.display_name} | Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.`,
+            description: `Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.`,
             start_url: `${origin}/${hotel.id}`,
             display: "standalone",
             background_color: "#ffffff",
             theme_color: "#1e293b",
             icons: [
                 {
-                    "purpose": "maskable",
-                    "sizes": "48x48",
                     "src": `${origin}/icons/9.png`,
-                    "type": "image/png"
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "maskable"
                 },
                 {
-                    "purpose": "maskable",
-                    "sizes": "72x72",
                     "src": `${origin}/icons/10.png`,
-                    "type": "image/png"
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "maskable"
                 },
                 {
-                    "purpose": "maskable",
-                    "sizes": "96x96",
-                    "src": `${origin}/icons/11.png`,
-                    "type": "image/png"
+                    "src": `${origin}/icons/1.png`,
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any"
+                },
+                {
+                    "src": `${origin}/icons/8.png`,
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any"
                 },
                 {
                     "src": `${origin}/icons/2.png`,
@@ -63,18 +69,18 @@ export default function useCreateManifest() {
                     "type": "image/png",
                     "density": "3.0"
                 },
-                // {
-                //     "src": `${origin}/icons/7.png`,
-                //     "sizes": "192x192",
-                //     "type": "image/png",
-                //     "density": "4.0"
-                // },
-                // {
-                //     "src": `${origin}/icons/8.png`,
-                //     "sizes": "512x512",
-                //     "type": "image/png",
-                //     "density": "5.0"
-                // }
+                {
+                    "src": `${origin}/icons/7.png`,
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "density": "4.0"
+                },
+                {
+                    "src": `${origin}/icons/8.png`,
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "density": "5.0"
+                }
             ],
             screenshots: [
                 {
@@ -95,6 +101,11 @@ export default function useCreateManifest() {
                 },
                 {
                     src: `${origin}/screenshots/mobile-4.png`,
+                    sizes: "800x1600",
+                    type: "image/png"
+                },
+                {
+                    src: `${origin}/screenshots/mobile-5.png`,
                     sizes: "800x1600",
                     type: "image/png"
                 },
