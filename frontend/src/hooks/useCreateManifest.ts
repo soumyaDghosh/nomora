@@ -16,28 +16,22 @@ export default function useCreateManifest() {
             theme_color: "#1e293b",
             icons: [
                 {
-                    "src": `${origin}/icons/1.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "maskable"
+                    "purpose": "maskable",
+                    "sizes": "48x48",
+                    "src": `${origin}/icons/9.png`,
+                    "type": "image/png"
                 },
                 {
-                    "src": `${origin}/icons/8.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "maskable"
+                    "purpose": "maskable",
+                    "sizes": "72x72",
+                    "src": `${origin}/icons/10.png`,
+                    "type": "image/png"
                 },
                 {
-                    "src": `${origin}/icons/1.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "any"
-                },
-                {
-                    "src": `${origin}/icons/8.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "purpose": "any"
+                    "purpose": "maskable",
+                    "sizes": "96x96",
+                    "src": `${origin}/icons/11.png`,
+                    "type": "image/png"
                 },
                 {
                     "src": `${origin}/icons/2.png`,
@@ -69,25 +63,40 @@ export default function useCreateManifest() {
                     "type": "image/png",
                     "density": "3.0"
                 },
-                {
-                    "src": `${origin}/icons/7.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "density": "4.0"
-                },
-                {
-                    "src": `${origin}/icons/8.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "density": "5.0"
-                }
+                // {
+                //     "src": `${origin}/icons/7.png`,
+                //     "sizes": "192x192",
+                //     "type": "image/png",
+                //     "density": "4.0"
+                // },
+                // {
+                //     "src": `${origin}/icons/8.png`,
+                //     "sizes": "512x512",
+                //     "type": "image/png",
+                //     "density": "5.0"
+                // }
             ],
             screenshots: [
                 {
-                    src: `${origin}/screenshots/mobile.png`,
+                    src: `${origin}/screenshots/mobile-1.png`,
                     sizes: "800x1600",
                     type: "image/png"
                     // form_factor: "narrow"
+                },
+                {
+                    src: `${origin}/screenshots/mobile-2.png`,
+                    sizes: "800x1600",
+                    type: "image/png"
+                },
+                {
+                    src: `${origin}/screenshots/mobile-3.png`,
+                    sizes: "800x1600",
+                    type: "image/png"
+                },
+                {
+                    src: `${origin}/screenshots/mobile-4.png`,
+                    sizes: "800x1600",
+                    type: "image/png"
                 },
                 {
                     src: `${origin}/screenshots/desktop.png`,
