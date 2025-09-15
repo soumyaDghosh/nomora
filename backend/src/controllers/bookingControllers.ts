@@ -197,6 +197,7 @@ export const createBooking = async (req: Request, res: Response) => {
             product_type,
             listing_id,
             price,
+            payment_status: "unpaid",
             ac_type,
             car_type,
             transfer_type,
@@ -274,7 +275,7 @@ export const listBookings = async (req: Request, res: Response) => {
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
 
         const result = await client.query(
-            `SELECT id, status, product_type, listing_id, price, ac_type, car_type, 
+            `SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, 
                     transfer_type, terminal, guest_count, date, time, created_at
              FROM bookings
              WHERE user_id = $1 AND hotel_id = $2
@@ -312,7 +313,7 @@ export const bookingDetails = async (req: Request, res: Response) => {
         }
 
         const result = await client.query(
-            `SELECT id, user_id, hotel_id, status, product_type, listing_id, price,
+            `SELECT id, user_id, hotel_id, status, product_type, listing_id, price, payment_status,
                     ac_type, car_type, transfer_type, terminal, guest_count,
                     date, time, created_at
              FROM bookings
@@ -342,6 +343,7 @@ export const bookingDetails = async (req: Request, res: Response) => {
                 product_type: row.product_type,
                 listing_id: row.listing_id,
                 price: row.price,
+                payment_status: row.payment_status,
                 ac_type: row.ac_type,
                 car_type: row.car_type,
                 transfer_type: row.transfer_type,

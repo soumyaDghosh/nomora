@@ -5,12 +5,13 @@ export interface MyBooking {
   status: "ongoing" | "completed" | "cancelled";
   product_type: "sameday" | "city_sightseeing" | "airport_transfer" | "overnight" | "experiences";
   listing_id?: string;
-  price: string;
   ac_type: "AC" | "Non-AC"
   car_type: "Go" | "Comfort" | "Edge" | "Max"
   transfer_type?: "Drop to Airport" | "Pickup from Airport"
   terminal?: string
   guest_count?: number
+  price: string;
+  payment_status: "paid" | "unpaid" | "advance-paid" | "refunded"
   date: string
   time: string
   created_at: string

@@ -68,7 +68,7 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
     };
 
     const stateConfig = getStateConfig(booking.status);
-    const paymentConfig = getPaymentStatusConfig("unpaid");
+    const paymentConfig = getPaymentStatusConfig(booking.payment_status);
 
     const handleCardClick = () => {
         if (!stateConfig.showViewDetails) return;

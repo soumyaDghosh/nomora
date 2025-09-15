@@ -96,6 +96,9 @@ export const pool = new Pool({
 
       price NUMERIC(10,2) NOT NULL,
 
+      payment_status VARCHAR(20) NOT NULL DEFAULT 'unpaid'
+        CHECK (payment_status IN ('paid', 'unpaid', 'advance-paid', 'refunded')),
+
       user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 
       hotel_id UUID NOT NULL REFERENCES hotels(id) ON DELETE SET NULL,
