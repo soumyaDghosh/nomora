@@ -35,4 +35,8 @@ git pull origin prod
 git merge uat
 
 git push origin prod
+
+# change branch back to dev
+git checkout dev
+git pull origin dev
 ```
