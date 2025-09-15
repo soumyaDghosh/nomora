@@ -6,19 +6,39 @@ export default function useCreateManifest() {
         const origin = window.location.origin;
 
         const manifest = {
+            id: `/${hotel.id}`,
             name: "Nomora",
             short_name: "Nomora",
+            description: `${hotel.display_name} | Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.`,
             start_url: `${origin}/${hotel.id}`,
             display: "standalone",
             background_color: "#ffffff",
             theme_color: "#1e293b",
             icons: [
-                // {
-                //     "src": `${origin}/icons/1.png`,
-                //     "sizes": "192x192",
-                //     "type": "image/png",
-                //     "purpose": "maskable"
-                // },
+                {
+                    "src": `${origin}/icons/1.png`,
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "maskable"
+                },
+                {
+                    "src": `${origin}/icons/8.png`,
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "maskable"
+                },
+                {
+                    "src": `${origin}/icons/1.png`,
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any"
+                },
+                {
+                    "src": `${origin}/icons/8.png`,
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any"
+                },
                 {
                     "src": `${origin}/icons/2.png`,
                     "sizes": "36x36",
@@ -49,29 +69,29 @@ export default function useCreateManifest() {
                     "type": "image/png",
                     "density": "3.0"
                 },
-                // {
-                //     "src": `${origin}/icons/7.png`,
-                //     "sizes": "192x192",
-                //     "type": "image/png",
-                //     "density": "4.0"
-                // },
-                // {
-                //     "src": `${origin}/icons/8.png`,
-                //     "sizes": "512x512",
-                //     "type": "image/png",
-                //     "density": "5.0"
-                // }
+                {
+                    "src": `${origin}/icons/7.png`,
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "density": "4.0"
+                },
+                {
+                    "src": `${origin}/icons/8.png`,
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "density": "5.0"
+                }
             ],
             screenshots: [
                 {
                     src: `${origin}/screenshots/mobile.png`,
-                    sizes: "540x720",
+                    sizes: "800x1600",
                     type: "image/png"
                     // form_factor: "narrow"
                 },
                 {
                     src: `${origin}/screenshots/desktop.png`,
-                    sizes: "1280x720",
+                    sizes: "3840x2160",
                     type: "image/png",
                     form_factor: "wide"
                 }
