@@ -1,3 +1,9 @@
+declare global {
+  interface Navigator {
+    standalone?: boolean;
+  }
+}
+
 export interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   prompt: () => Promise<void>;

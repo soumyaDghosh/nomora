@@ -62,20 +62,18 @@ export default function Profile() {
                     </div>
 
                     <div className="space-y-4">
-                        <button
-                            onClick={handleInstall}
-                            disabled={!isInstallable}
-                            className={`w-full flex items-center justify-between p-4 rounded-xl transition-colors ${isInstallable
-                                ? "bg-gray-50 hover:bg-gray-100 cursor-pointer"
-                                : "bg-gray-100 cursor-not-allowed opacity-60"
-                                }`}
-                        >
-                            <div className="flex items-center">
-                                <i className="ri-download-line text-gray-600 mr-3" />
-                                <span className="text-gray-900">Install App</span>
-                            </div>
-                            <i className="ri-arrow-right-s-line text-gray-400" />
-                        </button>
+                        {isInstallable && (
+                            <button
+                                onClick={handleInstall}
+                                className="w-full flex items-center justify-between p-4 rounded-xl transition-colors bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                            >
+                                <div className="flex items-center">
+                                    <i className="ri-download-line text-gray-600 mr-3" />
+                                    <span className="text-gray-900">Install App</span>
+                                </div>
+                                <i className="ri-arrow-right-s-line text-gray-400" />
+                            </button>
+                        )}
 
                         <button
                             onClick={() => navigate(`/${hotelId}/support`)}

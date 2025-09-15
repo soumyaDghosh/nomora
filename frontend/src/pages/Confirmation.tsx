@@ -4,6 +4,7 @@ import useFetchBooking from "../hooks/useFetchBooking";
 import useAuthStore from "../store/authStore";
 import useBookStore from "../store/bookStore";
 import AppLoader from "../components/AppLoader";
+import PWAPopup from "../components/PWAPopup";
 import { formatDate } from "../utils/formatDate";
 import { formatPrice } from "../utils/formatPrice";
 import { getVehicleSeat } from "../utils/getVehicleSeat";
@@ -76,6 +77,8 @@ export default function Confirmation() {
     if (booking) {
         return (
             <div className="min-h-[100svh] bg-gray-50 pb-24">
+                <PWAPopup />
+
                 {/* Header */}
                 <div className="bg-white px-4 py-4.5 sticky top-0 z-40 shadow-sm shadow-gray-100">
                     <div className="flex items-center justify-between">
