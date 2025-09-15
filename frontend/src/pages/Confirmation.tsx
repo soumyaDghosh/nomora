@@ -77,7 +77,10 @@ export default function Confirmation() {
     if (booking) {
         return (
             <div className="min-h-[100svh] bg-gray-50 pb-24">
-                <PWAPopup />
+                <PWAPopup
+                    bottom={77}
+                    timeout={2000}
+                />
 
                 {/* Header */}
                 <div className="bg-white px-4 py-4.5 sticky top-0 z-40 shadow-sm shadow-gray-100">

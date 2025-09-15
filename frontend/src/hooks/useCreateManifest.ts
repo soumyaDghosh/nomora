@@ -139,7 +139,7 @@ export default function useCreateManifest() {
 
     useEffect(() => {
         const handler = (e: BeforeInstallPromptEvent) => {
-            // e.preventDefault();
+            e.preventDefault();
             setDeferredPrompt(e);
         };
 

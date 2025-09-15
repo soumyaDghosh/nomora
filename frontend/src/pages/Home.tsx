@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import PWAPopup from "../components/PWAPopup";
 import QuickAccessCard from "../components/Home/QuickAccessCard";
 import TripCard from "../components/Home/TripCard";
 import ShareCard from "../components/Home/ShareCard";
@@ -139,6 +140,11 @@ export default function Home() {
 
   return (
     <div className="min-h-[100svh] bg-gray-50 pb-20">
+      <PWAPopup
+        bottom={81}
+        timeout={2000}
+      />
+
       {/* Header - Reduced top padding */}
       <div className="bg-white px-4 py-4 mb-4 shadow-sm shadow-gray-100">
         <div>

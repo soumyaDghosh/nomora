@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import PWAPopup from "../components/PWAPopup";
 
 interface StepProps {
     setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
@@ -55,6 +56,11 @@ export default function Welcome() {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
+            <PWAPopup
+                bottom={0}
+                timeout={2000}
+            />
+
             <div className="flex justify-between items-center p-4 pt-12">
                 <div className="flex space-x-2">
                     {[1, 2, 3, 4, 5].map((step) => (
@@ -101,7 +107,7 @@ export default function Welcome() {
 }
 
 const Step1: React.FC<StepProps> = () => (
-    <div className="flex flex-col items-center pt-8">
+    <div className="flex flex-col items-center">
         <div className="w-full max-w-sm mb-12">
             <div className="relative rounded-3xl overflow-hidden shadow-lg">
                 <img
@@ -124,7 +130,7 @@ const Step1: React.FC<StepProps> = () => (
 );
 
 const Step2: React.FC<StepProps> = () => (
-    <div className="flex flex-col items-center pt-8">
+    <div className="flex flex-col items-center">
         <div className="w-full max-w-sm mb-12">
             <div className="relative rounded-3xl overflow-hidden shadow-lg">
                 <img
@@ -147,7 +153,7 @@ const Step2: React.FC<StepProps> = () => (
 );
 
 const Step3: React.FC<StepProps> = () => (
-    <div className="flex flex-col items-center pt-8">
+    <div className="flex flex-col items-center">
         <div className="w-full max-w-sm mb-12">
             <div className="relative rounded-3xl overflow-hidden shadow-lg">
                 <img
@@ -170,7 +176,7 @@ const Step3: React.FC<StepProps> = () => (
 );
 
 const Step4: React.FC<StepProps> = () => (
-    <div className="flex flex-col items-center pt-8">
+    <div className="flex flex-col items-center">
         <div className="w-full max-w-sm mb-12">
             <div className="relative rounded-3xl overflow-hidden shadow-lg bg-blue-100">
                 <img
@@ -193,7 +199,7 @@ const Step4: React.FC<StepProps> = () => (
 );
 
 const Step5: React.FC<Step5Props> = () => (
-    <div className="flex flex-col items-center pt-8">
+    <div className="flex flex-col items-center">
         <div className="w-full max-w-sm mb-12">
             <div className="relative rounded-3xl overflow-hidden shadow-lg bg-blue-50">
                 <img
