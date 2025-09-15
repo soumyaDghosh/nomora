@@ -26,6 +26,7 @@ export default function Profile() {
     const handleSignOut = async () => {
         const ok = await signOut();
         if (ok) {
+            localStorage.removeItem("doneAuth");
             clearUser();
             navigate(`/${hotelId}/welcome`, { replace: true });
         }

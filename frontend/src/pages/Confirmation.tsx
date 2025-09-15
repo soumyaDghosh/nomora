@@ -79,7 +79,7 @@ export default function Confirmation() {
             <div className="min-h-[100svh] bg-gray-50 pb-24">
                 <PWAPopup
                     bottom={77}
-                    timeout={2000}
+                    timeout={1000}
                 />
 
                 {/* Header */}

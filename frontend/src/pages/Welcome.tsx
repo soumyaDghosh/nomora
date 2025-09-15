@@ -58,10 +58,10 @@ export default function Welcome() {
         >
             <PWAPopup
                 bottom={0}
-                timeout={2000}
+                timeout={1000}
             />
 
-            <div className="flex justify-between items-center p-4 pt-12">
+            <div className="flex justify-between items-center h-[80px] px-4">
                 <div className="flex space-x-2">
                     {[1, 2, 3, 4, 5].map((step) => (
                         <button key={step} onClick={() => setCurrentStep(step)}>
@@ -85,7 +85,7 @@ export default function Welcome() {
                 {steps[currentStep - 1]}
             </div>
 
-            <div className="mt-12 sm:mx-auto sm:max-w-sm w-full pb-6 px-6 sm:pb-12 sm:px-0">
+            <div className="mt-10 sm:mx-auto sm:max-w-sm w-full pb-6 px-6 sm:pb-12 sm:px-0">
                 {currentStep < 5 ? (
                     <button
                         onClick={() => setCurrentStep((prev) => prev + 1)}

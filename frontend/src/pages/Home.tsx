@@ -142,7 +142,7 @@ export default function Home() {
     <div className="min-h-[100svh] bg-gray-50 pb-20">
       <PWAPopup
         bottom={81}
-        timeout={2000}
+        timeout={1000}
       />
 
       {/* Header - Reduced top padding */}
