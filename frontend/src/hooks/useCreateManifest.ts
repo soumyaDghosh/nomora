@@ -17,12 +17,6 @@ export default function useCreateManifest() {
                 //     "src": `${origin}/icons/1.png`,
                 //     "sizes": "192x192",
                 //     "type": "image/png",
-                //     "purpose": "any"
-                // },
-                // {
-                //     "src": `${origin}/icons/1.png`,
-                //     "sizes": "192x192",
-                //     "type": "image/png",
                 //     "purpose": "maskable"
                 // },
                 {
@@ -67,6 +61,20 @@ export default function useCreateManifest() {
                 //     "type": "image/png",
                 //     "density": "5.0"
                 // }
+            ],
+            screenshots: [
+                {
+                    src: `${origin}/screenshots/mobile.png`,
+                    sizes: "540x720",
+                    type: "image/png"
+                    // form_factor: "narrow"
+                },
+                {
+                    src: `${origin}/screenshots/desktop.png`,
+                    sizes: "1280x720",
+                    type: "image/png",
+                    form_factor: "wide"
+                }
             ]
         };
 
