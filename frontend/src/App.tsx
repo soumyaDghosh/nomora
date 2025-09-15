@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { useLocation, Routes, Route, Outlet } from "react-router-dom"
-import { trackPageView } from "./lib/analytics";
+import { Routes, Route, Outlet } from "react-router-dom"
+import useAnalytics from "./hooks/useAnalytics";
 import useAuthFetch from "./hooks/useAuthFetch"
 import useFetchBookings from "./hooks/useFetchBookings"
 import ProtectedRoute from "./pages/ProtectedRoute"
@@ -21,14 +21,13 @@ import ScrollToTop from "./components/ScrollToTop";
 import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
-  const location = useLocation();
-
+  const { trackPageView } = useAnalytics();
   const { fetchUser } = useAuthFetch();
   const { fetchBookings } = useFetchBookings();
 
   useEffect(() => {
-    trackPageView(location.pathname);
-  }, [location.pathname]);
+    trackPageView();
+  }, [trackPageView]);
 
   useEffect(() => {
     const init = async () => {

@@ -3,9 +3,9 @@ import ReactGA from "react-ga4";
 const MEASUREMENT_ID = import.meta.env.VITE_MEASUREMENT_ID;
 
 export const initGA = () => {
-    ReactGA.initialize(MEASUREMENT_ID);
+    ReactGA.initialize(MEASUREMENT_ID, { gaOptions: { send_page_view: false } });
 };
 
-export const trackPageView = (path: string) => {
-    ReactGA.send({ hitType: "pageview", page: path });
+export const sendPageView = (formattedPath: string) => {
+    ReactGA.send({ hitType: "pageview", page: formattedPath });
 };
