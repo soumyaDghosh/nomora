@@ -13,18 +13,18 @@ export default function useCreateManifest() {
             background_color: "#ffffff",
             theme_color: "#1e293b",
             icons: [
-                {
-                    "src": `${origin}/icons/1.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "any"
-                },
-                {
-                    "src": `${origin}/icons/1.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "purpose": "maskable"
-                },
+                // {
+                //     "src": `${origin}/icons/1.png`,
+                //     "sizes": "192x192",
+                //     "type": "image/png",
+                //     "purpose": "any"
+                // },
+                // {
+                //     "src": `${origin}/icons/1.png`,
+                //     "sizes": "192x192",
+                //     "type": "image/png",
+                //     "purpose": "maskable"
+                // },
                 {
                     "src": `${origin}/icons/2.png`,
                     "sizes": "36x36",
@@ -55,18 +55,18 @@ export default function useCreateManifest() {
                     "type": "image/png",
                     "density": "3.0"
                 },
-                {
-                    "src": `${origin}/icons/7.png`,
-                    "sizes": "192x192",
-                    "type": "image/png",
-                    "density": "4.0"
-                },
-                {
-                    "src": `${origin}/icons/8.png`,
-                    "sizes": "512x512",
-                    "type": "image/png",
-                    "density": "5.0"
-                }
+                // {
+                //     "src": `${origin}/icons/7.png`,
+                //     "sizes": "192x192",
+                //     "type": "image/png",
+                //     "density": "4.0"
+                // },
+                // {
+                //     "src": `${origin}/icons/8.png`,
+                //     "sizes": "512x512",
+                //     "type": "image/png",
+                //     "density": "5.0"
+                // }
             ]
         };
 
