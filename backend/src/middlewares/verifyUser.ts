@@ -14,7 +14,7 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
     const token = req.cookies?.token;
 
     try {
-        const hotelId = req.params.hotelId || req.cookies?.hotel_id;
+        const hotelId = req.query.hotel_id || req.cookies?.hotel_id;
 
         if (!hotelId) {
             return res.status(400).json({ message: "hotel_id is required" });

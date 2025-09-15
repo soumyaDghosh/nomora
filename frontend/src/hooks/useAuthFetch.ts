@@ -13,13 +13,16 @@ export default function useAuthFetch() {
             const hotelId = window.location.pathname.split("/")[1];
 
             const res = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL}/api/auth/user/${hotelId}`,
+                `${import.meta.env.VITE_SERVER_URL}/api/auth/user?hotel_id=${hotelId}`,
                 { withCredentials: true }
             );
 
             if (res.data.hotel) {
                 setHotel(res.data.hotel);
                 createManifest(res.data.hotel);
+            }
+            else {
+                return false;
             }
 
             if (res.data.user) {
@@ -29,6 +32,7 @@ export default function useAuthFetch() {
                 return true;
             }
             else {
+                localStorage.removeItem("doneAuth");
                 clearUser();
                 return false;
             }

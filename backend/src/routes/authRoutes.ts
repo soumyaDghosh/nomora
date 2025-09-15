@@ -7,7 +7,7 @@ const router = Router();
 
 router.post("/otp/send", sendOTP);
 router.post("/otp/verify", verifyOTP);
-router.get("/user/:hotelId", verifyUser, getUser);
+router.get("/user", verifyUser, getUser);
 router.get("/admin", verifyAdmin, getAdmin);
 router.get("/logout", verifyUser, logoutUser);
 
