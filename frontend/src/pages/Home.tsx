@@ -203,8 +203,7 @@ export default function Home() {
                 to={`/${hotel?.id}/trip/${trip.id}`}
                 className="absolute inset-0 text-transparent"
               >
-                <p>Hotel Name: {hotel?.display_name}</p>
-                <p>Tour Title: {trip.title}</p>
+                Hotel: {hotel?.display_name}, Tour: {trip.title}
               </Link>
             </div>
           ))}

@@ -55,6 +55,7 @@ const QuickAccessCard = ({
     if (onClick) {
         return (
             <button
+                id="quickAccess"
                 disabled={comingSoon}
                 onClick={onClick}
                 className="w-full h-full cursor-pointer"
