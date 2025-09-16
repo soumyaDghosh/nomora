@@ -168,6 +168,7 @@ export default function Home() {
           {quickAccessItems.map((item, index) => (
             <QuickAccessCard
               key={index}
+              hotel_name={hotel?.display_name}
               title={item.title}
               description={item.description}
               imageUrl={item.imageUrl}

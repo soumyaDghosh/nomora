@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 interface QuickAccessCardProps {
+    hotel_name?: string;
     title: string;
     description: string;
     imageUrl: string;
@@ -10,6 +11,7 @@ interface QuickAccessCardProps {
 }
 
 const QuickAccessCard = ({
+    hotel_name,
     title,
     description,
     imageUrl,
@@ -54,14 +56,17 @@ const QuickAccessCard = ({
 
     if (onClick) {
         return (
-            <button
-                id="quickAccess"
-                disabled={comingSoon}
-                onClick={onClick}
-                className="w-full h-full cursor-pointer"
-            >
+            <div className="relative w-full h-full">
                 <CardContent />
-            </button>
+                <button
+                    id="quickAccess"
+                    disabled={comingSoon}
+                    onClick={onClick}
+                    className="absolute inset-0 text-transparent cursor-pointer"
+                >
+                    Hotel: {hotel_name}, Button: {title}
+                </button>
+            </div>
         );
     }
 
