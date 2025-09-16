@@ -134,26 +134,18 @@ export default function Explore() {
             <div className="px-4 py-6 flex flex-col gap-4">
                 {filteredTrips.length > 0 ? (
                     filteredTrips.map((trip) => (
-                        <Link
-                            id="tripLink"
-                            key={trip.id}
-                            to={`/${hotelId}/trip/${trip.id}`}
-                            className="block"
-                            aria-label={trip.title}
-                        >
-                            <span className="sr-only">{trip.title}</span>
+                        <div className="relative" key={trip.id}>
                             <TripCard
-                                id={trip.id}
-                                title={trip.title}
-                                description={trip.description}
-                                imageUrl={trip.imageUrl}
-                                price={trip.price}
-                                duration={trip.duration}
-                                pickup={trip.pickup}
-                                chauffeur={trip.chauffeur}
-                                tag={trip.tag}
+                                {...trip}
                             />
-                        </Link>
+                            <Link
+                                id="tripLink"
+                                to={`/${hotelId}/trip/${trip.id}`}
+                                className="absolute inset-2 z-0"
+                            >
+                                {trip.title}
+                            </Link>
+                        </div>
                     ))
                 ) : (
                     <EmptyState type={activeTab} />

@@ -192,27 +192,18 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-4">
           {allTrips.map(trip => (
-            <Link
-              id="tripLink"
-              key={trip.id}
-              to={`/${hotelId}/trip/${trip.id}`}
-              className="block"
-              aria-label={trip.title}
-            >
-              <span className="sr-only">{trip.title}</span>
+            <div className="relative" key={trip.id}>
               <TripCard
-                key={trip.id}
-                id={trip.id}
-                title={trip.title}
-                description={trip.description}
-                imageUrl={trip.imageUrl}
-                price={trip.price}
-                duration={trip.duration}
-                pickup={trip.pickup}
-                chauffeur={trip.chauffeur}
-                tag={trip.tag}
+                {...trip}
               />
-            </Link>
+              <Link
+                id="tripLink"
+                to={`/${hotelId}/trip/${trip.id}`}
+                className="absolute inset-2 z-0"
+              >
+                {trip.title}
+              </Link>
+            </div>
           ))}
         </div>
       </div>
