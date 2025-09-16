@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 import ImageCarousel from "../components/ImageCarousel";
 import { tripData } from "../data/tripData";
 import { badgesData } from "../data/badgesData";
@@ -7,9 +8,10 @@ import { inclusionsData } from "../data/inclusionsData";
 import { whyNomoraData } from "../data/nomoraData";
 
 export default function Trip() {
-    const { hotelId } = useParams<{ hotelId: string }>();
     const { tripId } = useParams<{ tripId: string }>();
     const navigate = useNavigate();
+
+    const { hotel } = useAuthStore();
 
     const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
@@ -108,7 +110,7 @@ export default function Trip() {
                         </h1>
                     </div>
                     <button
-                        onClick={() => navigate(`/${hotelId}/support`)}
+                        onClick={() => navigate(`/${hotel?.id}/support`)}
                         className="flex items-center gap-2 bg-white hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors cursor-pointer"
                     >
                         <i className="ri-headphone-line text-xl text-gray-700" />
@@ -403,13 +405,19 @@ export default function Trip() {
                         </p>
                         <p className="text-xs text-gray-500 break-words">Price varies by car type</p>
                     </div>
-                    <button
-                        onClick={() => navigate(`/${hotelId}/checkout/${tripId}`)}
-                        className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 flex-shrink-0 hover:bg-gray-800 transition-colors cursor-pointer"
-                    >
-                        <i className="ri-time-line" />
-                        <span className="whitespace-nowrap">Select Timeslot</span>
-                    </button>
+                    <div className="relative w-fit">
+                        <div className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 flex-shrink-0 hover:bg-gray-800 transition-colors">
+                            <i className="ri-time-line" />
+                            <span className="whitespace-nowrap">Select Timeslot</span>
+                        </div>
+                        <button
+                            id="selectTimeslot"
+                            onClick={() => navigate(`/${hotel?.id}/checkout/${tripId}`)}
+                            className="absolute inset-0 text-transparent cursor-pointer"
+                        >
+                            Select Timeslot ({trip.title}, {hotel?.display_name})
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
