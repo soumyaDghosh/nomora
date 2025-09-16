@@ -197,8 +197,9 @@ export default function Home() {
               key={trip.id}
               to={`/${hotelId}/trip/${trip.id}`}
               className="block"
+              aria-label={trip.title}
             >
-              <p className="sr-only">{trip.title}</p>
+              <span className="sr-only">{trip.title}</span>
               <TripCard
                 key={trip.id}
                 id={trip.id}

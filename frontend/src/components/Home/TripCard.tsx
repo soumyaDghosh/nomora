@@ -41,7 +41,10 @@ const TripCard = ({
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+        <div
+            aria-hidden="true"
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+        >
             {/* Image Container */}
             <div className="relative h-48 overflow-hidden">
                 {tag && (

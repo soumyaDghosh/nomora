@@ -139,8 +139,9 @@ export default function Explore() {
                             key={trip.id}
                             to={`/${hotelId}/trip/${trip.id}`}
                             className="block"
+                            aria-label={trip.title}
                         >
-                            <p className="sr-only">{trip.title}</p>
+                            <span className="sr-only">{trip.title}</span>
                             <TripCard
                                 id={trip.id}
                                 title={trip.title}
