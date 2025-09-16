@@ -1,7 +1,8 @@
 import { useState, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { tripData, type CarType, type TimeSlot } from "../data/tripData";
 import useBookTour from "../hooks/useBookTour";
+import useAuthStore from "../store/authStore";
+import { tripData, type CarType, type TimeSlot } from "../data/tripData";
 
 type EnhancedTimeSlot = TimeSlot & {
     isBookable: boolean;
@@ -18,11 +19,12 @@ interface DateOption {
 }
 
 export default function Checkout() {
-    const { hotelId } = useParams<{ hotelId: string }>();
     const { tripId } = useParams<{ tripId: string }>();
     const navigate = useNavigate();
 
     const { loading, bookTour } = useBookTour();
+
+    const { hotel } = useAuthStore();
 
     const [selectedAcType, setSelectedAcType] = useState<"AC" | "Non-AC">("AC");
     const [selectedCarType, setSelectedCarType] = useState<CarType["id"] | "">("");
@@ -274,7 +276,7 @@ export default function Checkout() {
         });
 
         if (success) {
-            navigate(`/${hotelId}/confirmation/${bookingId}`, { replace: true });
+            navigate(`/${hotel?.id}/confirmation/${bookingId}`, { replace: true });
         }
     };
 
@@ -303,7 +305,7 @@ export default function Checkout() {
                         <h1 className="text-lg font-medium text-gray-900">Select Car & Schedule</h1>
                     </div>
                     <button
-                        onClick={() => navigate(`/${hotelId}/support`)}
+                        onClick={() => navigate(`/${hotel?.id}/support`)}
                         className="flex items-center gap-2 bg-white hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors cursor-pointer"
                     >
                         <i className="ri-headphone-line text-xl text-gray-700" />
@@ -668,19 +670,30 @@ export default function Checkout() {
                                 </p>
                             </div>
                         )}
-                        <button
-                            onClick={handleConfirmBooking}
-                            disabled={!isCheckoutReady() || loading}
-                            className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${(isCheckoutReady() && !loading)
-                                ? "bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                }`}
-                        >
-                            {loading && (
-                                <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
-                            )}
-                            Confirm Booking {total > 0 ? formatPrice(total) : ""}
-                        </button>
+                        <div className="relative w-full">
+                            <div
+                                className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${(isCheckoutReady() && !loading)
+                                    ? "bg-gray-900 text-white hover:bg-gray-800"
+                                    : "bg-gray-300 text-gray-500"
+                                    }`}
+                            >
+                                {loading && (
+                                    <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
+                                )}
+                                Confirm Booking {total > 0 ? formatPrice(total) : ""}
+                            </div>
+                            <button
+                                id="confirmBooking"
+                                onClick={handleConfirmBooking}
+                                disabled={!isCheckoutReady() || loading}
+                                className={`absolute inset-0 text-transparent ${(isCheckoutReady() && !loading)
+                                    ? "cursor-pointer"
+                                    : "cursor-not-allowed"
+                                    }`}
+                            >
+                                Confirm Booking ({trip.title} {hotel?.display_name})
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
