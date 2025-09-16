@@ -140,6 +140,7 @@ export default function Explore() {
                             to={`/${hotelId}/trip/${trip.id}`}
                             className="block"
                         >
+                            <p className="sr-only">{trip.title}</p>
                             <TripCard
                                 id={trip.id}
                                 title={trip.title}
