@@ -1,5 +1,3 @@
-import { useParams, useNavigate } from "react-router-dom";
-
 interface TripCardProps {
     id: string;
     title: string;
@@ -16,7 +14,7 @@ interface TripCardProps {
 }
 
 const TripCard = ({
-    id,
+    // id,
     title,
     description,
     imageUrl,
@@ -26,9 +24,6 @@ const TripCard = ({
     chauffeur,
     tag
 }: TripCardProps) => {
-    const { hotelId } = useParams<{ hotelId: string }>();
-    const navigate = useNavigate();
-
     const tagColors = {
         orange: "bg-orange-500 text-white",
         red: "bg-red-500 text-white",
@@ -45,15 +40,8 @@ const TripCard = ({
         }).format(amount).replace("₹", "₹");
     };
 
-    const handleClick = () => {
-        navigate(`/${hotelId}/trip/${id}`);
-    }
-
     return (
-        <div
-            onClick={handleClick}
-            className="relative z-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
-        >
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
             {/* Image Container */}
             <div className="relative h-48 overflow-hidden">
                 {tag && (

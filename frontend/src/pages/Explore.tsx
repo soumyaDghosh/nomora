@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import TripCard from "../components/Home/TripCard";
+import useAuthStore from "../store/authStore";
 
 export default function Explore() {
-    const { hotelId } = useParams<{ hotelId: string }>();
-
     const [searchParams] = useSearchParams();
+
+    const { hotel } = useAuthStore();
+
     const [activeTab, setActiveTab] = useState("all");
 
     const tabs = useMemo(() => [
@@ -103,7 +105,7 @@ export default function Explore() {
             <div className="bg-white px-4 py-4 sticky top-0 z-40 shadow-sm shadow-gray-100">
                 <div className="flex items-center mb-4">
                     <Link
-                        to={`/${hotelId}`}
+                        to={`/${hotel?.id}`}
                         className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors mr-3"
                     >
                         <i className="ri-arrow-left-line text-xl text-gray-700" />
@@ -140,10 +142,11 @@ export default function Explore() {
                             />
                             <Link
                                 id="tripLink"
-                                to={`/${hotelId}/trip/${trip.id}`}
-                                className="absolute inset-2 z-0"
+                                to={`/${hotel?.id}/trip/${trip.id}`}
+                                className="absolute inset-0 text-transparent"
                             >
-                                {trip.title}
+                                <p>Hotel Name: {hotel?.display_name}</p>
+                                <p>Tour Title: {trip.title}</p>
                             </Link>
                         </div>
                     ))

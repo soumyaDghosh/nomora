@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import PWAPopup from "../components/PWAPopup";
 import QuickAccessCard from "../components/Home/QuickAccessCard";
 import TripCard from "../components/Home/TripCard";
 import ShareCard from "../components/Home/ShareCard";
 import ServiceModal from "../components/Home/ServiceModal";
+import useAuthStore from "../store/authStore";
 
 export default function Home() {
-  const { hotelId } = useParams<{ hotelId: string }>();
   const navigate = useNavigate();
+
+  const { hotel } = useAuthStore();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"sightseeing" | "daytrips">("sightseeing");
@@ -35,16 +37,16 @@ export default function Home() {
   };
 
   const handleViewAllClick = () => {
-    navigate(`/${hotelId}/explore?tab=all`);
+    navigate(`/${hotel?.id}/explore?tab=all`);
   };
 
   const handleModalContinue = (type: "sightseeing" | "daytrips") => {
     setModalOpen(false);
     if (type === "sightseeing") {
-      navigate(`/${hotelId}/explore?tab=tours`);
+      navigate(`/${hotel?.id}/explore?tab=tours`);
     }
     else {
-      navigate(`/${hotelId}/explore?tab=sameday`);
+      navigate(`/${hotel?.id}/explore?tab=sameday`);
     }
   };
 
@@ -198,10 +200,11 @@ export default function Home() {
               />
               <Link
                 id="tripLink"
-                to={`/${hotelId}/trip/${trip.id}`}
-                className="absolute inset-2 z-0"
+                to={`/${hotel?.id}/trip/${trip.id}`}
+                className="absolute inset-0 text-transparent"
               >
-                {trip.title}
+                <p>Hotel Name: {hotel?.display_name}</p>
+                <p>Tour Title: {trip.title}</p>
               </Link>
             </div>
           ))}
