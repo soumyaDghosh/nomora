@@ -3,14 +3,17 @@ import usePWAStore from "../store/pwaStore";
 import useAuthStore from "../store/authStore";
 
 interface PopupProps {
+    top?: number;
     bottom?: number;
     timeout?: number;
+    bookingPage?: boolean;
 }
 
-const PWAPopup = ({ bottom, timeout }: PopupProps) => {
+const PWAPopup = ({ top, bottom, timeout, bookingPage }: PopupProps) => {
     const { hotel } = useAuthStore();
 
     const { deferredPrompt, clearDeferredPrompt, isInstallable } = usePWAStore();
+
     const [show, setShow] = useState(false);
 
     const isStandalone =
@@ -20,16 +23,16 @@ const PWAPopup = ({ bottom, timeout }: PopupProps) => {
     useEffect(() => {
         if (!isInstallable || isStandalone) return;
 
-        const popupClosed = sessionStorage.getItem("popupClosed");
-        if (popupClosed) return;
+        const closed =
+            bookingPage
+                ? sessionStorage.getItem("bookingPopupClosed")
+                : sessionStorage.getItem("bookingPopupClosed") || sessionStorage.getItem("popupClosed");
 
-        const delay = timeout !== undefined ? timeout : 2000;
-        const timer = setTimeout(() => {
-            setShow(true);
-        }, delay);
+        if (closed) return;
 
+        const timer = setTimeout(() => setShow(true), timeout ?? 2000);
         return () => clearTimeout(timer);
-    }, [isInstallable, isStandalone, timeout]);
+    }, [isInstallable, isStandalone, bookingPage, timeout]);
 
     const handleInstallClick = async () => {
         if (!deferredPrompt) return;
@@ -45,14 +48,20 @@ const PWAPopup = ({ bottom, timeout }: PopupProps) => {
 
     const handleClose = () => {
         setShow(false);
-        sessionStorage.setItem("popupClosed", "true");
+        sessionStorage.setItem(
+            bookingPage ? "bookingPopupClosed" : "popupClosed",
+            "true"
+        );
     };
 
     if (!show) return null;
 
     return (
-        <div className="fixed left-0 right-0 z-50" style={{ bottom: bottom || 0 }}>
-            <div className="mx-2 sm:mx-auto sm:max-w-sm sm:w-full relative mb-2 py-4 px-3 flex items-end justify-between bg-white border border-gray-200 shadow-lg rounded-2xl">
+        <div
+            className="fixed left-0 right-0 z-50"
+            style={{ top: top ?? 'auto', bottom: bottom ?? 'auto' }}
+        >
+            <div className="mx-4 sm:mx-auto sm:max-w-sm sm:w-full relative my-2 py-4 px-3 flex items-end justify-between bg-white border border-gray-200 shadow-lg rounded-2xl">
                 <div className="flex items-center gap-2">
                     <img
                         src='/icons/9.png'

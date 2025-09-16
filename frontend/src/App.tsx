@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import { Routes, Route, Outlet } from "react-router-dom"
 import useAnalytics from "./hooks/useAnalytics";
-import useAuthFetch from "./hooks/useAuthFetch"
+import useFetchHotel from "./hooks/useFetchHotel";
+import useFetchUser from "./hooks/useFetchUser";
 import useFetchBookings from "./hooks/useFetchBookings"
 import ProtectedRoute from "./pages/ProtectedRoute"
 import Home from "./pages/Home"
@@ -22,7 +23,8 @@ import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
   const { trackPageView } = useAnalytics();
-  const { fetchHotel, fetchUser } = useAuthFetch();
+  const { fetchHotel } = useFetchHotel();
+  const { fetchUser } = useFetchUser();
   const { fetchBookings } = useFetchBookings();
 
   useEffect(() => {

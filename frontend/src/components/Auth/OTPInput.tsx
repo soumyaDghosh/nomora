@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import useAuthStore from "../../store/authStore";
 import useVerifyOtp from "../../hooks/useVerifyOTP";
 import useSendOtp from "../../hooks/useSendOTP"
-import useAuthFetch from "../../hooks/useAuthFetch";
+import useFetchUser from "../../hooks/useFetchUser";
 import useFetchBookings from "../../hooks/useFetchBookings";
 
 interface OTPInputProps {
@@ -15,7 +15,7 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
 
     const { loading, verifyOtp } = useVerifyOtp();
     const { sendOtp } = useSendOtp();
-    const { fetchUser } = useAuthFetch();
+    const { fetchUser } = useFetchUser();
     const { fetchBookings } = useFetchBookings();
 
     const [otp, setOtp] = useState("");

@@ -1,29 +1,9 @@
 import { useCallback } from "react";
 import axios from "axios";
-import useCreateManifest from "./useCreateManifest";
 import useAuthStore from "../store/authStore";
 
-export default function useAuthFetch() {
-    const { createManifest } = useCreateManifest();
-    const { setHotel, setUser, clearUser, setFetchingHotel, setAuthenticating, setAuthenticated } = useAuthStore();
-
-    const fetchHotel = useCallback(async () => {
-        try {
-            const hotelId = window.location.pathname.split("/")[1];
-
-            const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/hotel?hotel_id=${hotelId}`, {
-                withCredentials: true,
-            });
-
-            if (res.data?.hotel) {
-                setHotel(res.data.hotel);
-                createManifest(res.data.hotel);
-            }
-        }
-        finally {
-            setFetchingHotel(false);
-        }
-    }, [setHotel, createManifest, setFetchingHotel]);
+export default function useFetchUser() {
+    const { setUser, clearUser, setAuthenticating, setAuthenticated } = useAuthStore();
 
     const fetchUser = useCallback(async (): Promise<boolean> => {
         try {
@@ -52,5 +32,5 @@ export default function useAuthFetch() {
         }
     }, [setUser, setAuthenticated, clearUser, setAuthenticating]);
 
-    return { fetchHotel, fetchUser };
+    return { fetchUser };
 }

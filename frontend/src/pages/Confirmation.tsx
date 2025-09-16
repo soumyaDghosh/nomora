@@ -80,6 +80,7 @@ export default function Confirmation() {
                 <PWAPopup
                     bottom={77}
                     timeout={1000}
+                    bookingPage={true}
                 />
 
                 {/* Header */}
