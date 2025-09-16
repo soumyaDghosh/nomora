@@ -134,7 +134,12 @@ export default function Explore() {
             <div className="px-4 py-6 flex flex-col gap-4">
                 {filteredTrips.length > 0 ? (
                     filteredTrips.map((trip) => (
-                        <Link key={trip.id} to={`/${hotelId}/trip/${trip.id}`} className="block">
+                        <Link
+                            id="trip"
+                            key={trip.id}
+                            to={`/${hotelId}/trip/${trip.id}`}
+                            className="block"
+                        >
                             <TripCard
                                 id={trip.id}
                                 title={trip.title}
