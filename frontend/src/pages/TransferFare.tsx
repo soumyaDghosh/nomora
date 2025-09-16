@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { transferData } from "../data/transferData";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useBookTransfer from "../hooks/useBookTransfer";
+import useAuthStore from "../store/authStore";
+import { transferData } from "../data/transferData";
 
 type FareData = {
     type: string;
@@ -12,13 +13,12 @@ type FareData = {
 };
 
 export default function TransferFare() {
-    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const { loading, bookTransfer } = useBookTransfer();
 
-    const transfer = transferData;
+    const { hotel } = useAuthStore();
 
     const [fareData, setFareData] = useState<FareData | null>(null);
 
@@ -57,6 +57,8 @@ export default function TransferFare() {
         });
     };
 
+    const transfer = transferData;
+
     if (!fareData?.type || !fareData?.terminal || !fareData?.date || !fareData?.time || !fareData?.guests) {
         return (
             <div className="min-h-[100svh] bg-gray-50 flex items-center justify-center">
@@ -86,7 +88,7 @@ export default function TransferFare() {
         });
 
         if (success) {
-            navigate(`/${hotelId}/confirmation/${bookingId}`, { replace: true });
+            navigate(`/${hotel?.id}/confirmation/${bookingId}`, { replace: true });
         }
     };
 
@@ -271,19 +273,30 @@ export default function TransferFare() {
             {/* Fixed Bottom CTA */}
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
                 <div className="max-w-md mx-auto">
-                    <button
-                        onClick={handleConfirmBooking}
-                        disabled={loading}
-                        className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${!loading
-                            ? "bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}
-                    >
-                        {loading && (
-                            <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
-                        )}
-                        Book Now • {formatPrice(transfer.baseFare + transfer.airportToll)}
-                    </button>
+                    <div className="relative">
+                        <div
+                            className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${!loading
+                                ? "bg-gray-900 text-white hover:bg-gray-800"
+                                : "bg-gray-300 text-gray-500"
+                                }`}
+                        >
+                            {loading && (
+                                <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
+                            )}
+                            Book Now • {formatPrice(transfer.baseFare + transfer.airportToll)}
+                        </div>
+                        <button
+                            id="bookNow"
+                            disabled={loading}
+                            onClick={handleConfirmBooking}
+                            className={`absolute inset-0 text-transparent ${!loading
+                                ? "cursor-pointer"
+                                : "cursor-not-allowed"
+                                }`}
+                        >
+                            Transfer Book Now ({hotel?.display_name})
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
