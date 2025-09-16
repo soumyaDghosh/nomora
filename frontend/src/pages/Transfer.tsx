@@ -1,10 +1,9 @@
 import { useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import DateTimePicker from "../components/DateTimePicker";
 
 export default function Transfer() {
-    const { hotelId } = useParams<{ hotelId: string }>();
     const navigate = useNavigate();
 
     const { hotel } = useAuthStore();
@@ -23,10 +22,8 @@ export default function Transfer() {
     }, []);
 
     // FIXED: Smooth transition without pause after loading
-    const handleCheckFare = useCallback(async () => {
-        if (!isFormValid()) {
-            return;
-        }
+    const handleCheckFare = async () => {
+        if (!isFormValid()) return;
 
         const formattedDate = selectedDateTime!.toLocaleDateString("en-CA", {
             timeZone: "Asia/Kolkata",
@@ -48,16 +45,8 @@ export default function Transfer() {
             guests: guestCount.toString(),
         });
 
-        navigate(`/${hotelId}/transfer/fare?${transferParams.toString()}`);
-    }, [
-        hotelId,
-        transferType,
-        selectedTerminal,
-        selectedDateTime,
-        guestCount,
-        navigate,
-        isFormValid,
-    ]);
+        navigate(`/${hotel?.id}/transfer/fare?${transferParams.toString()}`);
+    };
 
     return (
         <div className="min-h-[100svh] bg-gray-50 pb-[calc(81px)]">
@@ -277,16 +266,27 @@ export default function Transfer() {
                                 <p className="text-xs text-gray-500">Select date and time</p>
                             </div>
                         )}
-                        <button
-                            onClick={handleCheckFare}
-                            disabled={!isFormValid()}
-                            className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${isFormValid()
-                                ? "bg-gray-900 text-white hover:bg-gray-800 cursor-pointer"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                }`}
-                        >
-                            Check Fare
-                        </button>
+                        <div className="relative">
+                            <div
+                                className={`w-full py-4 rounded-xl font-medium text-base transition-all flex items-center justify-center ${isFormValid()
+                                    ? "bg-gray-900 text-white hover:bg-gray-800"
+                                    : "bg-gray-300 text-gray-500"
+                                    }`}
+                            >
+                                Check Fare
+                            </div>
+                            <button
+                                id="checkFare"
+                                disabled={!isFormValid()}
+                                onClick={handleCheckFare}
+                                className={`absolute inset-0 text-transparent cursor-pointer ${isFormValid()
+                                    ? "cursor-pointer"
+                                    : "cursor-not-allowed"
+                                    }`}
+                            >
+                                Check Fare ({hotel?.display_name})
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
