@@ -1,4 +1,8 @@
+import useAuthStore from "../../store/authStore";
+
 const ShareCard = () => {
+    const { hotel } = useAuthStore();
+
     const handleShare = async () => {
         const shareData = {
             title: "Nomora – Last-Minute Travel App",
@@ -52,12 +56,18 @@ const ShareCard = () => {
                 Share it with friends and family who love making spontaneous travel plans.
             </p>
 
-            <button
-                onClick={handleShare}
-                className="bg-gray-800 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-900 transition-colors cursor-pointer"
-            >
-                Share Nomora
-            </button>
+            <div className="relative w-fit mx-auto">
+                <div className="bg-gray-800 text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-gray-900 transition-colors">
+                    Share Nomora
+                </div>
+                <button
+                    id="shareNomora"
+                    onClick={handleShare}
+                    className="absolute inset-0 text-transparent cursor-pointer"
+                >
+                    Share Nomora ({hotel?.display_name})
+                </button>
+            </div>
         </div>
     )
 }
