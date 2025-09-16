@@ -193,7 +193,7 @@ export default function Home() {
         <div className="flex flex-col gap-4">
           {allTrips.map(trip => (
             <Link
-              id="trip"
+              id="tripLink"
               key={trip.id}
               to={`/${hotelId}/trip/${trip.id}`}
               className="block"

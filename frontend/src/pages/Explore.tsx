@@ -135,7 +135,7 @@ export default function Explore() {
                 {filteredTrips.length > 0 ? (
                     filteredTrips.map((trip) => (
                         <Link
-                            id="trip"
+                            id="tripLink"
                             key={trip.id}
                             to={`/${hotelId}/trip/${trip.id}`}
                             className="block"
