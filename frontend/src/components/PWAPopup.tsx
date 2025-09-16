@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import usePWAStore from "../store/pwaStore";
+import useAuthStore from "../store/authStore";
 
 interface PopupProps {
     bottom?: number;
@@ -7,6 +8,8 @@ interface PopupProps {
 }
 
 const PWAPopup = ({ bottom, timeout }: PopupProps) => {
+    const { hotel } = useAuthStore();
+
     const { deferredPrompt, clearDeferredPrompt, isInstallable } = usePWAStore();
     const [show, setShow] = useState(false);
 
@@ -66,12 +69,18 @@ const PWAPopup = ({ bottom, timeout }: PopupProps) => {
                     </div>
                 </div>
 
-                <button
-                    onClick={handleInstallClick}
-                    className="px-4 py-2 bg-[#1e293b] text-white rounded-lg text-sm font-medium cursor-pointer"
-                >
-                    Install
-                </button>
+                <div className="relative">
+                    <div className="px-4 py-2 bg-[#1e293b] text-white rounded-lg text-sm font-medium cursor-pointer">
+                        Install
+                    </div>
+                    <button
+                        id="pwaInstall"
+                        onClick={handleInstallClick}
+                        className="absolute inset-0 text-transparent cursor-pointer"
+                    >
+                        PWA Install ({hotel?.display_name})
+                    </button>
+                </div>
 
                 <button
                     onClick={handleClose}

@@ -64,7 +64,7 @@ const QuickAccessCard = ({
                     onClick={onClick}
                     className="absolute inset-0 text-transparent cursor-pointer"
                 >
-                    Hotel: {hotel_name}, Button: {title}
+                    {title} ({hotel_name})
                 </button>
             </div>
         );
