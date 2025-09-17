@@ -1,4 +1,5 @@
 import useVerifyPayment from "./useVerifyPayment";
+import useAuthStore from "../store/authStore";
 import type { RazorpayPaymentResponse } from "../global";
 
 interface CreatePaymentProps {
@@ -10,6 +11,8 @@ interface CreatePaymentProps {
 export default function useCreatePayment() {
     const { verifyPayment } = useVerifyPayment();
 
+    const { user } = useAuthStore();
+
     const createPayment = ({ booking_id, order_id, order_amount }: CreatePaymentProps): Promise<boolean> => {
         return new Promise((resolve) => {
             const options = {
@@ -17,6 +20,9 @@ export default function useCreatePayment() {
                 amount: order_amount,
                 currency: "INR",
                 order_id,
+                prefill: {
+                    ...(user?.phone ? { contact: `+91${user.phone}` } : {}),
+                },
                 config: {
                     display: {
                         blocks: {
