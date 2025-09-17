@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import useAuthStore from "../store/authStore";
-import { sendPageView } from "../lib/analytics";
 
 const isValidUUID = (id: string) =>
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
@@ -17,7 +16,12 @@ export default function useAnalytics() {
 
         if (!isValidUUID(pathHotelId) || pathHotelId !== hotel.id) return;
 
-        sendPageView(location.pathname, hotel.display_name);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: "pageview",
+            page_path: location.pathname,
+            page_title: hotel.display_name,
+        });
     };
 
     return { trackPageView };
