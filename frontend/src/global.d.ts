@@ -2,6 +2,7 @@ export { };
 
 declare global {
     interface Window {
+        __lastPagePath?: string;
         dataLayer: DataLayerEvent[];
         Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
     }

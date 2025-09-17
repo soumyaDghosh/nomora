@@ -22,24 +22,22 @@ import ScrollToTop from "./components/ScrollToTop";
 import BottomNavigation from "./components/BottomNavigation"
 
 function App() {
-  const { trackPageView } = useAnalytics();
+  const { trackPage } = useAnalytics();
   const { fetchHotel } = useFetchHotel();
   const { fetchUser } = useFetchUser();
   const { fetchBookings } = useFetchBookings();
 
   useEffect(() => {
-    trackPageView();
-  }, [trackPageView]);
+    trackPage();
+  }, [trackPage]);
 
   useEffect(() => {
     const init = async () => {
-      const [, ok] = await Promise.all([fetchHotel(), fetchUser()]);
-
-      if (ok) {
+      const [, success] = await Promise.all([fetchHotel(), fetchUser()]);
+      if (success) {
         await fetchBookings();
       }
     };
-
     init();
   }, [fetchHotel, fetchUser, fetchBookings]);
 
