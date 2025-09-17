@@ -128,13 +128,15 @@ export const createBooking = async (req: Request, res: Response) => {
         if (process.env.NODE_ENV === "production") {
             if (product_type === "airport_transfer") {
                 const dupCheck = await client.query(
-                    `SELECT 1 
+                    `
+                    SELECT 1 
                     FROM bookings 
                     WHERE user_id = $1 
                     AND hotel_id = $2 
                     AND transfer_type = $3 
                     AND status = 'ongoing'
-                    LIMIT 1`,
+                    LIMIT 1
+                    `,
                     [user_id, hotel_id, transfer_type]
                 );
 
@@ -147,13 +149,15 @@ export const createBooking = async (req: Request, res: Response) => {
             }
             else {
                 const dupCheck = await client.query(
-                    `SELECT 1 
+                    `
+                    SELECT 1 
                     FROM bookings 
                     WHERE user_id = $1 
                     AND hotel_id = $2 
                     AND listing_id = $3 
                     AND status = 'ongoing'
-                    LIMIT 1`,
+                    LIMIT 1
+                    `,
                     [user_id, hotel_id, listing_id]
                 );
 
@@ -226,38 +230,69 @@ export const createBooking = async (req: Request, res: Response) => {
 };
 
 export const verifyBooking = async (req: Request, res: Response) => {
+    const client = await pool.connect();
+
     try {
         const user_id = req.user?.id;
+        const hotel_id = req.cookies?.hotel_id;
+        const hotel_name = req.cookies?.hotel_name;
         const { booking_id, order_id, payment_id } = req.body ?? {};
 
-        if (!user_id) return res.status(401).json({ message: "Unauthorized: user_id missing" });
         if (!booking_id) return res.status(401).json({ message: "booking_id is required" });
         if (!order_id) return res.status(400).json({ message: "order_id is required" });
 
-        const paymentResult = await pool.query(
-            `SELECT id, status FROM payments WHERE user_id = $1 AND booking_id = $2 AND order_id = $3`,
+        await client.query("BEGIN");
+
+        const paymentResult = await client.query(
+            `
+            SELECT id, status 
+            FROM payments 
+            WHERE user_id = $1 AND booking_id = $2 AND order_id = $3
+            FOR UPDATE
+            `,
             [user_id, booking_id, order_id]
         );
         if (paymentResult.rows.length === 0) {
+            await client.query("ROLLBACK");
             return res.status(404).json({ message: "Payment not found" });
         }
 
         const { status: dbStatus } = paymentResult.rows[0];
         if (dbStatus !== "PENDING") {
+            await client.query("ROLLBACK");
             return res.status(400).json({
                 message: `Payment already ${dbStatus}`
             });
         }
 
         const { status, payment_method, amount } = await getPaymentStatus({ order_id });
-        if (status === "FAILED") {
+        const processedAmount = amount !== undefined && amount !== null ? Number(amount) / 100 : null;
+
+        if (status !== "COMPLETED") {
+            await client.query(
+                `
+                DELETE FROM payments 
+                WHERE user_id = $1 AND booking_id = $2 AND order_id = $3
+                `,
+                [user_id, booking_id, order_id]
+            );
+
+            await client.query(
+                `
+                DELETE FROM bookings 
+                WHERE id = $1 AND user_id = $2
+                `,
+                [booking_id, user_id]
+            );
+
+            await client.query("COMMIT");
+
             return res.status(400).json({
                 message: `Payment ${status}`
             });
         }
 
-        const processedAmount = amount !== undefined && amount !== null ? Number(amount) / 100 : null;
-        await pool.query(
+        await client.query(
             `
             UPDATE payments 
             SET status = $1, method = $2, amount = $3, payment_id = $4
@@ -266,7 +301,7 @@ export const verifyBooking = async (req: Request, res: Response) => {
             [status, payment_method ?? null, processedAmount, payment_id ?? null, user_id, booking_id, order_id]
         );
 
-        await pool.query(
+        await client.query(
             `
             UPDATE bookings
             SET payment_status = 'advance-paid'
@@ -275,10 +310,12 @@ export const verifyBooking = async (req: Request, res: Response) => {
             [booking_id, user_id]
         );
 
-        const bookingRow = await pool.query(
-            `SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time 
-             FROM bookings 
-             WHERE id = $1 AND user_id = $2`,
+        const bookingRow = await client.query(
+            `
+            SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
+            FROM bookings 
+            WHERE id = $1 AND user_id = $2
+            `,
             [booking_id, user_id]
         );
 
@@ -287,12 +324,53 @@ export const verifyBooking = async (req: Request, res: Response) => {
             paid_amount: processedAmount,
         };
 
+        if (process.env.NODE_ENV === "production") {
+            axios.post(
+                "https://api.resend.com/emails",
+                {
+                    from: "Acme <onboarding@resend.dev>",
+                    to: ["nomoradev@gmail.com"],
+                    subject: "New Booking",
+                    html: `
+Booking ID: ${booking_id}<br /><br />
+Hotel ID: ${hotel_id}<br />
+Hotel Name: ${hotel_name}<br /><br />
+User ID: ${req.user?.id}<br />
+User Phone: ${req.user?.phone}<br /><br />
+Product Type: ${booking.product_type}<br />
+${booking.product_type !== "airport_transfer" ? `Listing ID: ${booking.listing_id}<br />` : ""}
+<br />
+${booking.product_type === "airport_transfer" ? `Transfer Type: ${booking.transfer_type}<br />` : ""}
+${booking.product_type === "airport_transfer" ? `Terminal: ${booking.terminal}<br />` : ""}
+${booking.product_type === "airport_transfer" ? `Guest Count: ${booking.guest_count}<br /><br />` : ""}
+Car Type: ${booking.product_type === "airport_transfer" ? 'Comfort' : booking.car_type}<br />
+AC Type: ${booking.product_type === "airport_transfer" ? 'AC' : booking.ac_type}<br /><br />
+Price: ₹${booking.price}<br />
+Advance: ₹${booking.paid_amount}<br />
+Payment Status: ${booking.payment_status}<br /><br />
+Date: ${new Date(booking.date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
+Time: ${booking.time}
+`,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        }
+
+        await client.query("COMMIT");
+
         return res.status(201).json({
             message: `Payment ${status}`,
             booking
         });
     }
     catch (error) {
+        await client.query("ROLLBACK");
+
         if (error instanceof DatabaseError) {
             return res.status(500).json({ message: "Database error" });
         }
@@ -300,42 +378,10 @@ export const verifyBooking = async (req: Request, res: Response) => {
             return res.status(500).json({ message: "Server error" });
         }
     }
+    finally {
+        client.release();
+    }
 };
-
-//         if (process.env.NODE_ENV === "production") {
-//             axios.post(
-//                 "https://api.resend.com/emails",
-//                 {
-//                     from: "Acme <onboarding@resend.dev>",
-//                     to: ["nomoradev@gmail.com"],
-//                     subject: "New Booking",
-//                     html: `
-// Booking ID: ${booking_id}<br /><br />
-// Hotel ID: ${hotel_id}<br />
-// Hotel Name: ${hotel_name}<br /><br />
-// User ID: ${req.user?.id}<br />
-// User Phone: ${req.user?.phone}<br /><br />
-// Product Type: ${product_type}<br />
-// ${product_type !== "airport_transfer" ? `Listing ID: ${listing_id}<br />` : ""}
-// <br />
-// ${product_type === "airport_transfer" ? `Transfer Type: ${transfer_type}<br />` : ""}
-// ${product_type === "airport_transfer" ? `Terminal: ${terminal}<br />` : ""}
-// ${product_type === "airport_transfer" ? `Guest Count: ${guest_count}<br /><br />` : ""}
-// Car Type: ${product_type === "airport_transfer" ? 'Comfort' : car_type}<br />
-// AC Type: ${product_type === "airport_transfer" ? 'AC' : ac_type}<br /><br />
-// Price: ₹${price}<br /><br />
-// Date: ${new Date(date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
-// Time: ${time}
-// `,
-//                 },
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-//                         "Content-Type": "application/json",
-//                     },
-//                 }
-//             );
-//         }
 
 export const listBookings = async (req: Request, res: Response) => {
     const client = await pool.connect();
@@ -348,11 +394,12 @@ export const listBookings = async (req: Request, res: Response) => {
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
 
         const result = await client.query(
-            `SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, 
-                    transfer_type, terminal, guest_count, date, time, created_at
-             FROM bookings
-             WHERE user_id = $1 AND hotel_id = $2
-             ORDER BY created_at DESC`,
+            `
+            SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
+            FROM bookings
+            WHERE user_id = $1 AND hotel_id = $2
+            ORDER BY created_at DESC
+            `,
             [user_id, hotel_id]
         );
 
@@ -386,12 +433,12 @@ export const bookingDetails = async (req: Request, res: Response) => {
         }
 
         const result = await client.query(
-            `SELECT id, user_id, hotel_id, status, product_type, listing_id, price, payment_status,
-                    ac_type, car_type, transfer_type, terminal, guest_count,
-                    date, time, created_at
-             FROM bookings
-             WHERE id = $1
-             LIMIT 1`,
+            `
+            SELECT id, user_id, hotel_id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
+            FROM bookings
+            WHERE id = $1
+            LIMIT 1
+            `,
             [booking_id]
         );
 
@@ -404,10 +451,19 @@ export const bookingDetails = async (req: Request, res: Response) => {
         if (row.user_id !== user_id) {
             return res.status(403).json({ message: "Forbidden: booking does not belong to user" });
         }
-
         if (row.status === "cancelled") {
             return res.status(404).json({ message: "Booking cancelled" });
         }
+
+        const paymentResult = await client.query(
+            `
+            SELECT COALESCE(SUM(amount), 0) AS paid_amount
+            FROM payments
+            WHERE booking_id = $1 AND user_id = $2 AND status = 'COMPLETED'
+            `,
+            [booking_id, user_id]
+        );
+        const paid_amount = paymentResult.rows[0]?.paid_amount ?? 0;
 
         return res.status(200).json({
             booking: {
@@ -415,16 +471,16 @@ export const bookingDetails = async (req: Request, res: Response) => {
                 status: row.status,
                 product_type: row.product_type,
                 listing_id: row.listing_id,
-                price: row.price,
-                payment_status: row.payment_status,
                 ac_type: row.ac_type,
                 car_type: row.car_type,
                 transfer_type: row.transfer_type,
                 terminal: row.terminal,
                 guest_count: row.guest_count,
+                price: row.price,
+                paid_amount: Number(paid_amount),
+                payment_status: row.payment_status,
                 date: row.date,
                 time: row.time,
-                created_at: row.created_at,
             },
         });
     }

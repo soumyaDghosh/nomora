@@ -40,8 +40,8 @@ export default function Confirmation() {
     };
 
     const getPricePart = (price: number, part: "base" | "tax") => {
-        const base = Math.round(price / 1.05);
-        const tax = Math.round(price - base);
+        const base = price / 1.05;
+        const tax = price - base;
         return formatPrice(part === "base" ? base : tax);
     };
 
@@ -334,20 +334,20 @@ export default function Confirmation() {
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-gray-600">Base Price</span>
                                             <span className="text-gray-900">
-                                                {getPricePart(Number(booking?.price), "base")}
+                                                {getPricePart(Number(booking.price), "base")}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-gray-600">Tax (5%)</span>
                                             <span className="text-gray-900">
-                                                {getPricePart(Number(booking?.price), "tax")}
+                                                {getPricePart(Number(booking.price), "tax")}
                                             </span>
                                         </div>
                                         <div className="border-t border-gray-200 pt-2">
                                             <div className="flex items-center justify-between">
                                                 <span className="font-medium text-gray-900">Total Amount</span>
                                                 <span className="font-semibold text-gray-900">
-                                                    {formatPrice(booking?.price)}
+                                                    {formatPrice(booking.price)}
                                                 </span>
                                             </div>
                                         </div>
@@ -356,14 +356,14 @@ export default function Confirmation() {
 
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-gray-600">Advance Paid</span>
-                                    <span className="text-green-600">₹0</span>
+                                    <span className="text-green-600">₹{booking.paid_amount}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-gray-600">Balance Due</span>
                                     <span className="font-medium text-orange-600">
                                         {isAirportTransfer ?
-                                            formatPrice(transfer.baseFare + transfer.airportToll)
-                                            : formatPrice(booking?.price)}
+                                            formatPrice((transfer.baseFare + transfer.airportToll) - Number(booking.paid_amount))
+                                            : formatPrice(Number(booking.price) - Number(booking.paid_amount))}
                                     </span>
                                 </div>
                             </div>
@@ -391,8 +391,9 @@ export default function Confirmation() {
                                     <i className="ri-information-line text-blue-600 text-sm mt-0.5"></i>
                                     <p className="text-sm text-blue-800">
                                         Please pay {
-                                            isAirportTransfer ? formatPrice(transfer.baseFare + transfer.airportToll)
-                                                : formatPrice(booking?.price)
+                                            isAirportTransfer ?
+                                                formatPrice((transfer.baseFare + transfer.airportToll) - Number(booking.paid_amount))
+                                                : formatPrice(Number(booking.price) - Number(booking.paid_amount))
                                         } in cash/UPI directly to your chauffeur at trip completion.
                                     </p>
                                 </div>

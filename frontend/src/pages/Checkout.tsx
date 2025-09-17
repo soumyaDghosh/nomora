@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import useBookTour from "../hooks/useBookTour";
 import useAuthStore from "../store/authStore";
 import { tripData, type CarType, type TimeSlot } from "../data/tripData";
+import { formatPrice } from "../utils/formatPrice";
 
 type EnhancedTimeSlot = TimeSlot & {
     isBookable: boolean;
@@ -117,24 +118,6 @@ export default function Checkout() {
         return hoursDiff >= 8;
     }, [getCurrentISTTime]);
 
-    const formatPrice = useCallback((amount: number) => {
-        return new Intl.NumberFormat("en-IN", {
-            style: "currency",
-            currency: "INR",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount).replace("₹", "₹");
-    }, []);
-    
-    const formatAdvancePrice = useCallback((amount: number) => {
-        return new Intl.NumberFormat("en-IN", {
-            style: "currency",
-            currency: "INR",
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        }).format(amount).replace("₹", "₹");
-    }, []);
-
     const calculateTotal = useCallback(() => {
         if (!selectedCarType || !trip) return 0;
 
@@ -144,7 +127,7 @@ export default function Checkout() {
         const basePrice = selectedAcType === "AC" ? carType.acPrice : carType.nonAcPrice;
         const tax = basePrice * trip.taxRate;
 
-        return Math.round(basePrice + tax);
+        return basePrice + tax;
     }, [selectedCarType, selectedAcType, trip]);
 
     const isCheckoutReady = useCallback(() => {
@@ -550,9 +533,9 @@ export default function Checkout() {
                                 <span className="font-medium text-gray-900">Total</span>
                                 <span className="text-lg font-bold text-gray-900">{formatPrice(total)}</span>
                             </div>
-                            <div className="mt-2 flex items-center justify-between">
-                                <span className="text-sm font-medium text-gray-900">Advance</span>
-                                <span className="font-bold text-gray-900">{formatAdvancePrice(advanceAmount)}</span>
+                            <div className="mt-1.5 flex items-center justify-between">
+                                <span className="text-sm font-medium text-gray-900">Advance (25%)</span>
+                                <span className="font-bold text-gray-900">{formatPrice(advanceAmount)}</span>
                             </div>
                         </div>
                         <div className="bg-green-50 p-3 rounded-lg">
@@ -702,7 +685,7 @@ export default function Checkout() {
                                 {loading && (
                                     <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                                 )}
-                                Confirm Booking {total > 0 ? formatAdvancePrice(advanceAmount) : ""}
+                                Confirm Booking {total > 0 ? formatPrice(advanceAmount) : ""}
                             </div>
                             <button
                                 id="confirmBooking"

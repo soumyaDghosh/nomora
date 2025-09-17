@@ -1,3 +1,5 @@
+import { formatPrice } from "../../utils/formatPrice";
+
 interface TripCardProps {
     id: string;
     title: string;
@@ -29,15 +31,6 @@ const TripCard = ({
         red: "bg-red-500 text-white",
         green: "bg-green-500 text-white",
         blue: "bg-blue-500 text-white"
-    };
-
-    const formatPrice = (amount: number) => {
-        return new Intl.NumberFormat("en-IN", {
-            style: "currency",
-            currency: "INR",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount).replace("₹", "₹");
     };
 
     return (

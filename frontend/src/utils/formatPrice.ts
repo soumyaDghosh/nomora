@@ -10,5 +10,5 @@ export const formatPrice = (value?: string | number): string => {
         currency: "INR",
         minimumFractionDigits: hasDecimals ? 2 : 0,
         maximumFractionDigits: hasDecimals ? 2 : 0,
-    }).format(num);
+    }).format(num).replace("₹", "₹");
 }

@@ -6,6 +6,7 @@ import { tripData } from "../data/tripData";
 import { badgesData } from "../data/badgesData";
 import { inclusionsData } from "../data/inclusionsData";
 import { whyNomoraData } from "../data/nomoraData";
+import { formatPrice } from "../utils/formatPrice";
 
 export default function Trip() {
     const { tripId } = useParams<{ tripId: string }>();
@@ -52,16 +53,6 @@ export default function Trip() {
     // Safe text helper for adaptive data handling
     const safeText = (text: string | undefined | null, fallback: string = "") => {
         return text && text.trim() ? text : fallback;
-    };
-
-    // Format price for India
-    const formatPrice = (amount: number) => {
-        return new Intl.NumberFormat("en-IN", {
-            style: "currency",
-            currency: "INR",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount).replace("₹", "₹");
     };
 
     // Format date for India

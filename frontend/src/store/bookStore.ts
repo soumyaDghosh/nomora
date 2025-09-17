@@ -11,11 +11,10 @@ export interface MyBooking {
   terminal?: string
   guest_count?: number
   price: string;
-  payment_status: "paid" | "unpaid" | "advance-paid" | "refunded"
   paid_amount: string;
+  payment_status: "paid" | "unpaid" | "advance-paid" | "refunded"
   date: string
   time: string
-  created_at: string
 }
 
 interface BookState {

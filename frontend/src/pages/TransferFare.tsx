@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import useBookTransfer from "../hooks/useBookTransfer";
 import useAuthStore from "../store/authStore";
 import { transferData } from "../data/transferData";
+import { formatPrice } from "../utils/formatPrice";
 
 type FareData = {
     type: string;
@@ -39,15 +40,6 @@ export default function TransferFare() {
             });
         }
     }, [searchParams]);
-
-    const formatPrice = (amount: number) => {
-        return new Intl.NumberFormat("en-IN", {
-            style: "currency",
-            currency: "INR",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount).replace("₹", "₹");
-    };
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
