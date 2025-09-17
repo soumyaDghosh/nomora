@@ -41,5 +41,6 @@ interface RazorpayOptions {
 interface RazorpayInstance {
     open(): void;
     on(event: string, callback: (response: RazorpayPaymentResponse) => void): void;
+    off(arg0: string, handler: () => Promise<void>): unknown;
     close(): void;
 }

@@ -56,9 +56,9 @@ export default function useCreatePayment() {
             const rzp = new window.Razorpay(options);
             rzp.open();
 
-            rzp.on("payment.failed", async function () {
-                const success = await verifyPayment({ booking_id, order_id });
-                resolve(success);
+            rzp.on("payment.failed", async function handler() {
+                rzp.off("payment.failed", handler);
+                verifyPayment({ booking_id, order_id, allow_retry: true });
             });
         });
     };

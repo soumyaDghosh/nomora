@@ -236,7 +236,7 @@ export const verifyBooking = async (req: Request, res: Response) => {
         const user_id = req.user?.id;
         const hotel_id = req.cookies?.hotel_id;
         const hotel_name = req.cookies?.hotel_name;
-        const { booking_id, order_id, payment_id } = req.body ?? {};
+        const { booking_id, order_id, payment_id, allow_retry } = req.body ?? {};
 
         if (!booking_id) return res.status(401).json({ message: "booking_id is required" });
         if (!order_id) return res.status(400).json({ message: "order_id is required" });
@@ -252,17 +252,24 @@ export const verifyBooking = async (req: Request, res: Response) => {
             `,
             [user_id, booking_id, order_id]
         );
-        if (paymentResult.rows.length === 0) {
-            await client.query("ROLLBACK");
-            return res.status(404).json({ message: "Payment not found" });
-        }
 
-        const { status: dbStatus } = paymentResult.rows[0];
-        if (dbStatus !== "PENDING") {
-            await client.query("ROLLBACK");
-            return res.status(400).json({
-                message: `Payment already ${dbStatus}`
-            });
+        if (paymentResult.rows.length === 0) {
+            await client.query(
+                `
+                INSERT INTO payments (user_id, booking_id, order_id)
+                VALUES ($1, $2, $3)
+                `,
+                [user_id, booking_id, order_id]
+            );
+        }
+        else {
+            const { status } = paymentResult.rows[0];
+            if (status !== "PENDING") {
+                await client.query("ROLLBACK");
+                return res.status(400).json({
+                    message: `Payment already ${status}`
+                });
+            }
         }
 
         const { status, payment_method, amount } = await getPaymentStatus({ order_id });
@@ -277,13 +284,15 @@ export const verifyBooking = async (req: Request, res: Response) => {
                 [user_id, booking_id, order_id]
             );
 
-            await client.query(
-                `
-                DELETE FROM bookings 
-                WHERE id = $1 AND user_id = $2
-                `,
-                [booking_id, user_id]
-            );
+            if (!allow_retry) {
+                await client.query(
+                    `
+                    DELETE FROM bookings 
+                    WHERE id = $1 AND user_id = $2
+                    `,
+                    [booking_id, user_id]
+                );
+            }
 
             await client.query("COMMIT");
 
