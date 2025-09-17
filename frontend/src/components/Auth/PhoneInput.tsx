@@ -36,8 +36,8 @@ const PhoneInput = ({ setTab, phoneNumber, setPhoneNumber }: PhoneInputProps) =>
         }
         setError("");
 
-        const ok = await sendOtp(phoneNumber);
-        if (ok) {
+        const success = await sendOtp(phoneNumber);
+        if (success) {
             setTab(1);
         }
     };

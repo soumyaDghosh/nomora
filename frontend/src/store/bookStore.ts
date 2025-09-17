@@ -12,6 +12,7 @@ export interface MyBooking {
   guest_count?: number
   price: string;
   payment_status: "paid" | "unpaid" | "advance-paid" | "refunded"
+  paid_amount: string;
   date: string
   time: string
   created_at: string

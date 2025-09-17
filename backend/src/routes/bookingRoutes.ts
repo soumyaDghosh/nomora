@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { verifyUser } from "../middlewares/verifyUser";
-import { createBooking, listBookings, bookingDetails } from "../controllers/bookingControllers";
+import { createBooking, verifyBooking, listBookings, bookingDetails } from "../controllers/bookingControllers";
 
 const router = Router();
 
-router.post("/", verifyUser, createBooking);
-router.get("/", verifyUser, listBookings);
-router.get("/:booking_id", verifyUser, bookingDetails);
+router.post("/create", verifyUser, createBooking);
+router.post("/verify", verifyUser, verifyBooking);
+router.get("/list", verifyUser, listBookings);
+router.get("/details", verifyUser, bookingDetails);
 
 export default router;

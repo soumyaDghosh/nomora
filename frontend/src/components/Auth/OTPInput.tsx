@@ -43,10 +43,10 @@ const OTPInput = ({ setTab, phoneNumber }: OTPInputProps) => {
         if (!otp || otp.length !== 4) return;
         setError("");
 
-        const ok = await verifyOtp(phoneNumber, otp);
-        if (ok) {
-            const ok = await fetchUser();
-            if (ok) {
+        const success = await verifyOtp(phoneNumber, otp);
+        if (success) {
+            const success = await fetchUser();
+            if (success) {
                 await fetchBookings();
             }
         }

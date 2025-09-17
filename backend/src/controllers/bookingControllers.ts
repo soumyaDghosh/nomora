@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { DatabaseError } from "pg";
 import axios from "axios";
 import { pool } from "../config/db";
+import { getPaymentOrder, getPaymentStatus } from "../services/payment";
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -10,10 +11,6 @@ const ALLOWED_PRODUCT_TYPES = [
     "overnight",
     "experiences",
 ] as const;
-const COMING_SOON_PRODUCT_TYPES = new Set<typeof ALLOWED_PRODUCT_TYPES[number]>([
-    "overnight",
-    "experiences",
-]);
 
 const validateDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date);
 const validateTime = (time: string) => /^(0?[1-9]|1[0-2])(:[0-5][0-9])? (AM|PM)$/.test(time);
@@ -91,15 +88,10 @@ export const createBooking = async (req: Request, res: Response) => {
         if (!hotel_id) return res.status(400).json({ message: "hotel_id is required" });
         if (!hotel_name) return res.status(400).json({ message: "hotel_name is required" });
         if (!product_type) return res.status(400).json({ message: "product_type is required" });
-        if (!ALLOWED_PRODUCT_TYPES.includes(product_type))
+        if (!ALLOWED_PRODUCT_TYPES.includes(product_type)) {
             return res.status(400).json({ message: `product_type must be one of: ${ALLOWED_PRODUCT_TYPES.join(", ")}` });
-
-        if (COMING_SOON_PRODUCT_TYPES.has(product_type)) {
-            return res.status(503).json({ message: `${product_type} bookings are coming soon` });
         }
-
         if (price === undefined) return res.status(400).json({ message: "price is required" });
-
         if (["sameday", "city_sightseeing"].includes(product_type)) {
             if (!listing_id) return res.status(400).json({ message: "listing_id is required" });
             if (!ac_type || !["AC", "Non-AC"].includes(ac_type))
@@ -152,7 +144,8 @@ export const createBooking = async (req: Request, res: Response) => {
                         message: `You already have an ongoing ${transfer_type} booking at this hotel`,
                     });
                 }
-            } else {
+            }
+            else {
                 const dupCheck = await client.query(
                     `SELECT 1 
                     FROM bookings 
@@ -173,7 +166,7 @@ export const createBooking = async (req: Request, res: Response) => {
             }
         }
 
-        const insertResult = await client.query(
+        const bookingResult = await client.query(
             `
             INSERT INTO bookings (
                 user_id, product_type, ac_type, car_type, transfer_type, 
@@ -190,65 +183,31 @@ export const createBooking = async (req: Request, res: Response) => {
                 terminal ?? null, guest_count ?? null, date, time, price, hotel_id, listing_id ?? null
             ]
         );
+        const bookingId = bookingResult.rows[0].id;
 
-        const newBookingId = insertResult.rows[0].id;
+        const paymentResult = await client.query(
+            `INSERT INTO payments (booking_id, user_id) VALUES ($1, $2) RETURNING id`,
+            [bookingId, user_id]
+        );
+        const paymentId = paymentResult.rows[0].id;
 
-        const booking = {
-            id: newBookingId,
-            status: "ongoing",
-            product_type,
-            listing_id,
-            price,
-            payment_status: "unpaid",
-            ac_type,
-            car_type,
-            transfer_type,
-            terminal,
-            guest_count,
-            date,
-            time
-        };
+        const paymentOrder = await getPaymentOrder({
+            receipt_id: paymentId,
+            amount: Math.round(price * 0.25 * 100)
+        });
 
-        if (process.env.NODE_ENV === "production") {
-            axios.post(
-                "https://api.resend.com/emails",
-                {
-                    from: "Acme <onboarding@resend.dev>",
-                    to: ["nomoradev@gmail.com"],
-                    subject: "New Booking",
-                    html: `
-Booking ID: ${newBookingId}<br /><br />
-Hotel ID: ${hotel_id}<br />
-Hotel Name: ${hotel_name}<br /><br />
-User ID: ${req.user?.id}<br />
-User Phone: ${req.user?.phone}<br /><br />
-Product Type: ${product_type}<br />
-${product_type !== "airport_transfer" ? `Listing ID: ${listing_id}<br />` : ""}
-<br />
-${product_type === "airport_transfer" ? `Transfer Type: ${transfer_type}<br />` : ""}
-${product_type === "airport_transfer" ? `Terminal: ${terminal}<br />` : ""}
-${product_type === "airport_transfer" ? `Guest Count: ${guest_count}<br /><br />` : ""}
-Car Type: ${product_type === "airport_transfer" ? 'Comfort' : car_type}<br />
-AC Type: ${product_type === "airport_transfer" ? 'AC' : ac_type}<br /><br />
-Price: ₹${price}<br /><br />
-Date: ${new Date(date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
-Time: ${time}
-`,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-        }
+        await client.query(
+            `UPDATE payments SET order_id = $1, amount = $2 WHERE id = $3`,
+            [paymentOrder.id, price * 0.25, paymentId]
+        );
 
         await client.query("COMMIT");
 
         return res.status(201).json({
             message: "Booked successfully",
-            booking,
+            booking_id: bookingId,
+            order_id: paymentOrder.id,
+            order_amount: paymentOrder.amount
         });
     }
     catch (error) {
@@ -265,6 +224,118 @@ Time: ${time}
         client.release();
     }
 };
+
+export const verifyBooking = async (req: Request, res: Response) => {
+    try {
+        const user_id = req.user?.id;
+        const { booking_id, order_id, payment_id } = req.body ?? {};
+
+        if (!user_id) return res.status(401).json({ message: "Unauthorized: user_id missing" });
+        if (!booking_id) return res.status(401).json({ message: "booking_id is required" });
+        if (!order_id) return res.status(400).json({ message: "order_id is required" });
+
+        const paymentResult = await pool.query(
+            `SELECT id, status FROM payments WHERE user_id = $1 AND booking_id = $2 AND order_id = $3`,
+            [user_id, booking_id, order_id]
+        );
+        if (paymentResult.rows.length === 0) {
+            return res.status(404).json({ message: "Payment not found" });
+        }
+
+        const { status: dbStatus } = paymentResult.rows[0];
+        if (dbStatus !== "PENDING") {
+            return res.status(400).json({
+                message: `Payment already ${dbStatus}`
+            });
+        }
+
+        const { status, payment_method, amount } = await getPaymentStatus({ order_id });
+        if (status === "FAILED") {
+            return res.status(400).json({
+                message: `Payment ${status}`
+            });
+        }
+
+        const processedAmount = amount !== undefined && amount !== null ? Number(amount) / 100 : null;
+        await pool.query(
+            `
+            UPDATE payments 
+            SET status = $1, method = $2, amount = $3, payment_id = $4
+            WHERE user_id = $5 AND booking_id = $6 AND order_id = $7
+            `,
+            [status, payment_method ?? null, processedAmount, payment_id ?? null, user_id, booking_id, order_id]
+        );
+
+        await pool.query(
+            `
+            UPDATE bookings
+            SET payment_status = 'advance-paid'
+            WHERE id = $1 AND user_id = $2
+            `,
+            [booking_id, user_id]
+        );
+
+        const bookingRow = await pool.query(
+            `SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time 
+             FROM bookings 
+             WHERE id = $1 AND user_id = $2`,
+            [booking_id, user_id]
+        );
+
+        const booking = {
+            ...bookingRow.rows[0],
+            paid_amount: processedAmount,
+        };
+
+        return res.status(201).json({
+            message: `Payment ${status}`,
+            booking
+        });
+    }
+    catch (error) {
+        if (error instanceof DatabaseError) {
+            return res.status(500).json({ message: "Database error" });
+        }
+        else {
+            return res.status(500).json({ message: "Server error" });
+        }
+    }
+};
+
+//         if (process.env.NODE_ENV === "production") {
+//             axios.post(
+//                 "https://api.resend.com/emails",
+//                 {
+//                     from: "Acme <onboarding@resend.dev>",
+//                     to: ["nomoradev@gmail.com"],
+//                     subject: "New Booking",
+//                     html: `
+// Booking ID: ${booking_id}<br /><br />
+// Hotel ID: ${hotel_id}<br />
+// Hotel Name: ${hotel_name}<br /><br />
+// User ID: ${req.user?.id}<br />
+// User Phone: ${req.user?.phone}<br /><br />
+// Product Type: ${product_type}<br />
+// ${product_type !== "airport_transfer" ? `Listing ID: ${listing_id}<br />` : ""}
+// <br />
+// ${product_type === "airport_transfer" ? `Transfer Type: ${transfer_type}<br />` : ""}
+// ${product_type === "airport_transfer" ? `Terminal: ${terminal}<br />` : ""}
+// ${product_type === "airport_transfer" ? `Guest Count: ${guest_count}<br /><br />` : ""}
+// Car Type: ${product_type === "airport_transfer" ? 'Comfort' : car_type}<br />
+// AC Type: ${product_type === "airport_transfer" ? 'AC' : ac_type}<br /><br />
+// Price: ₹${price}<br /><br />
+// Date: ${new Date(date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
+// Time: ${time}
+// `,
+//                 },
+//                 {
+//                     headers: {
+//                         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+//                         "Content-Type": "application/json",
+//                     },
+//                 }
+//             );
+//         }
 
 export const listBookings = async (req: Request, res: Response) => {
     const client = await pool.connect();
@@ -305,7 +376,7 @@ export const bookingDetails = async (req: Request, res: Response) => {
 
     try {
         const user_id = req.user?.id;
-        const { booking_id } = req.params;
+        const { booking_id } = req.query ?? {};
 
         if (!user_id) {
             return res.status(401).json({ message: "Unauthorized: user_id missing" });

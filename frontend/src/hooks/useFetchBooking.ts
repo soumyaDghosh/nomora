@@ -18,7 +18,7 @@ export default function useFetchBooking() {
 
         try {
             const response = await axios.get<{ booking: MyBooking }>(
-                `${import.meta.env.VITE_SERVER_URL}/api/booking/${bookingId}`,
+                `${import.meta.env.VITE_SERVER_URL}/api/booking/details?booking_id=${bookingId}`,
                 { withCredentials: true }
             );
 
@@ -26,7 +26,7 @@ export default function useFetchBooking() {
         }
         catch (err) {
             const error = err as AxiosError<{ message?: string }>;
-            console.log(error.response?.data?.message || "Failed to fetch booking");
+            console.log(error.response?.data?.message || "Failed to fetch booking details");
         }
         finally {
             setLoading(false);

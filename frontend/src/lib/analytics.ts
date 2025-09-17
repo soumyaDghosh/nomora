@@ -6,6 +6,12 @@ export const initGA = () => {
     ReactGA.initialize(MEASUREMENT_ID, { gaOptions: { send_page_view: false } });
 };
 
+// ReactGA.send({ hitType: "pageview", page: path, title });
 export const sendPageView = (path: string, title?: string) => {
-    ReactGA.send({ hitType: "pageview", page: path, title });
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        event: "pageview",
+        page_path: path,
+        page_title: title,
+    });
 };

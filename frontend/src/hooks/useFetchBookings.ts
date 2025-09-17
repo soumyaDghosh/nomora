@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import axios from "axios";
-import { toast } from "sonner";
+import axios, { AxiosError } from "axios";
 import useBookStore from "../store/bookStore";
 
 export default function useFetchBookings() {
@@ -11,7 +10,7 @@ export default function useFetchBookings() {
             setLoadingBookings(true);
 
             const response = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL}/api/booking`,
+                `${import.meta.env.VITE_SERVER_URL}/api/booking/list`,
                 { withCredentials: true }
             );
             const bookings = response.data.bookings;
@@ -19,8 +18,9 @@ export default function useFetchBookings() {
             setShortBookings(bookings);
             return bookings.map((b: { id: string }) => b.id);
         }
-        catch {
-            toast.error("Failed to fetch bookings");
+        catch (err) {
+            const error = err as AxiosError<{ message?: string }>;
+            console.log(error.response?.data?.message || "Failed to fetch bookings");
             return [];
         }
         finally {
