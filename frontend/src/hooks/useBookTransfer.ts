@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
-import useBookStore from "../store/bookStore";
+import useCreatePayment from "./useCreatePayment";
 
 interface BookTransferProps {
     product_type: string;
@@ -19,7 +19,7 @@ interface BookTransferResult {
 }
 
 export default function useBookTransfer() {
-    const { shortBookings, setShortBookings } = useBookStore();
+    const { createPayment } = useCreatePayment();
 
     const [loading, setLoading] = useState(false);
 
@@ -48,16 +48,18 @@ export default function useBookTransfer() {
                 },
                 { withCredentials: true }
             );
-            const result = response.data;
 
-            const newBooking = result.booking;
-            setShortBookings([newBooking, ...shortBookings]);
-            toast.success(result.message);
+            const { booking_id, order_id, order_amount } = response.data;
+            const success = await createPayment({ booking_id, order_id, order_amount });
 
-            return {
-                success: true,
-                bookingId: newBooking.id
-            };
+            if (success) {
+                return {
+                    success: true,
+                    bookingId: booking_id
+                };
+            }
+
+            return { success: false };
         }
         catch (err) {
             const error = err as AxiosError<{ message?: string }>;
