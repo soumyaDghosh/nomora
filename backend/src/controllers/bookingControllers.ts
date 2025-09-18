@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { DatabaseError } from "pg";
 import axios from "axios";
+import crypto from "crypto";
 import { pool } from "../config/db";
 import { getPaymentOrder, getPaymentStatus } from "../services/payment";
 
@@ -189,21 +190,10 @@ export const createBooking = async (req: Request, res: Response) => {
         );
         const bookingId = bookingResult.rows[0].id;
 
-        const paymentResult = await client.query(
-            `INSERT INTO payments (booking_id) VALUES ($1) RETURNING id`,
-            [bookingId]
-        );
-        const paymentId = paymentResult.rows[0].id;
-
         const paymentOrder = await getPaymentOrder({
-            receipt_id: paymentId,
+            receipt_id: crypto.randomUUID(),
             amount: Math.round(price * 0.25 * 100)
         });
-
-        await client.query(
-            `UPDATE payments SET order_id = $1, amount = $2 WHERE id = $3`,
-            [paymentOrder.id, price * 0.25, paymentId]
-        );
 
         await client.query("COMMIT");
 
@@ -235,7 +225,7 @@ export const verifyBooking = async (req: Request, res: Response) => {
     try {
         const hotel_id = req.cookies?.hotel_id;
         const hotel_name = req.cookies?.hotel_name;
-        const { booking_id, order_id, payment_id, allow_retry } = req.body ?? {};
+        const { booking_id, order_id, payment_id } = req.body ?? {};
 
         if (!booking_id) return res.status(401).json({ message: "booking_id is required" });
         if (!order_id) return res.status(400).json({ message: "order_id is required" });
@@ -244,102 +234,61 @@ export const verifyBooking = async (req: Request, res: Response) => {
 
         const paymentResult = await client.query(
             `
-            SELECT id, status 
+            SELECT status 
             FROM payments 
-            WHERE booking_id = $1 AND order_id = $2
+            WHERE booking_id = $1 AND order_id = $2 AND payment_id = $3
             FOR UPDATE
             `,
-            [booking_id, order_id]
+            [booking_id, order_id, payment_id]
         );
 
-        if (paymentResult.rows.length === 0) {
-            await client.query(
-                `
-                INSERT INTO payments (booking_id, order_id)
-                VALUES ($1, $2)
-                `,
-                [booking_id, order_id]
-            );
-        }
-        else {
-            const { status } = paymentResult.rows[0];
-            if (status !== "PENDING") {
-                await client.query("ROLLBACK");
-                return res.status(400).json({
-                    message: `Payment already ${status}`
-                });
-            }
-        }
-
-        const { status, payment_method, amount } = await getPaymentStatus({ order_id });
-        const processedAmount = amount !== undefined && amount !== null ? Number(amount) / 100 : null;
-
-        if (status !== "COMPLETED") {
-            await client.query(
-                `
-                DELETE FROM payments 
-                WHERE booking_id = $1 AND order_id = $2
-                `,
-                [booking_id, order_id]
-            );
-
-            if (!allow_retry) {
-                await client.query(
-                    `
-                    DELETE FROM bookings 
-                    WHERE id = $1
-                    `,
-                    [booking_id]
-                );
-            }
-
-            await client.query("COMMIT");
-
+        if (paymentResult.rows.length > 0) {
+            await client.query("ROLLBACK");
             return res.status(400).json({
-                message: `Payment ${status}`
+                message: `Payment already ${paymentResult.rows[0].status.toLowerCase()}`
             });
         }
 
-        await client.query(
-            `
-            UPDATE payments 
-            SET status = $1, method = $2, amount = $3, payment_id = $4
-            WHERE booking_id = $5 AND order_id = $6
-            `,
-            [status, payment_method ?? null, processedAmount, payment_id ?? null, booking_id, order_id]
-        );
+        const { status, payment_method, amount } = await getPaymentStatus({ order_id, payment_id });
+        const processedAmount = amount !== undefined && amount !== null ? Number(amount) / 100 : null;
 
-        await client.query(
-            `
-            UPDATE bookings
-            SET payment_status = 'advance-paid'
-            WHERE id = $1
-            `,
-            [booking_id]
-        );
+        if (status === "COMPLETED") {
+            await client.query(
+                `
+                INSERT INTO payments (booking_id, order_id, payment_id, amount, status, method)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                `,
+                [booking_id, order_id, payment_id, processedAmount, status, payment_method]
+            );
 
-        const bookingRow = await client.query(
-            `
-            SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
-            FROM bookings 
-            WHERE id = $1
-            `,
-            [booking_id]
-        );
+            const bookingResult = await client.query(
+                `
+                UPDATE bookings
+                SET status = 'ongoing', payment_status = 'advance-paid'
+                WHERE id = $1
+                RETURNING id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
+                `,
+                [booking_id]
+            );
 
-        const booking = {
-            ...bookingRow.rows[0],
-            paid_amount: processedAmount,
-        };
+            if (bookingResult.rows.length === 0) {
+                await client.query("ROLLBACK");
+                return res.status(404).json({ message: "Booking not found" });
+            }
 
-        if (process.env.NODE_ENV === "production") {
-            axios.post(
-                "https://api.resend.com/emails",
-                {
-                    from: "Acme <onboarding@resend.dev>",
-                    to: ["nomoradev@gmail.com"],
-                    subject: "New Booking",
-                    html: `
+            const booking = {
+                ...bookingResult.rows[0],
+                paid_amount: processedAmount,
+            };
+
+            if (process.env.NODE_ENV === "production") {
+                axios.post(
+                    "https://api.resend.com/emails",
+                    {
+                        from: "Acme <onboarding@resend.dev>",
+                        to: ["nomoradev@gmail.com"],
+                        subject: "New Booking",
+                        html: `
 Booking ID: ${booking_id}<br /><br />
 Hotel ID: ${hotel_id}<br />
 Hotel Name: ${hotel_name}<br /><br />
@@ -359,28 +308,52 @@ Payment Status: ${booking.payment_status}<br /><br />
 Date: ${new Date(booking.date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
 Time: ${booking.time}
 `,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-                        "Content-Type": "application/json",
                     },
-                }
-            );
+                    {
+                        headers: {
+                            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+            }
+
+            await client.query("COMMIT");
+
+            return res.status(201).json({
+                message: `Payment ${status}`,
+                booking
+            });
         }
+        else if (status === "FAILED") {
+            await client.query(
+                `
+                INSERT INTO payments (booking_id, order_id, payment_id, amount, status, method)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                `,
+                [booking_id, order_id, payment_id ?? null, processedAmount ?? null, status, payment_method ?? null]
+            );
 
-        await client.query("COMMIT");
+            await client.query(
+                `
+                    UPDATE bookings
+                    SET status = 'cancelled'
+                    WHERE id = $1
+                    `,
+                [booking_id]
+            );
 
-        return res.status(201).json({
-            message: `Payment ${status}`,
-            booking
-        });
+            await client.query("COMMIT");
+
+            return res.status(400).json({
+                message: "Payment failed. If money has been deducted, it will be refunded shortly. You can retry payment again with different payment method."
+            });
+        }
     }
     catch (error) {
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
-            console.log(error)
             return res.status(500).json({ message: "Database error" });
         }
         else {

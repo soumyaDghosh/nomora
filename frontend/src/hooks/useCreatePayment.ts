@@ -15,6 +15,8 @@ export default function useCreatePayment() {
 
     const createPayment = ({ booking_id, order_id, order_amount }: CreatePaymentProps): Promise<boolean> => {
         return new Promise((resolve) => {
+            let failed = false;
+
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: order_amount,
@@ -38,6 +40,7 @@ export default function useCreatePayment() {
                     },
                 },
                 handler: async function (response: RazorpayPaymentResponse) {
+                    if (failed) return resolve(false);
                     const success = await verifyPayment({
                         booking_id,
                         order_id,
@@ -47,18 +50,29 @@ export default function useCreatePayment() {
                 },
                 modal: {
                     ondismiss: async function () {
+                        if (failed) return resolve(false);
                         const success = await verifyPayment({ booking_id, order_id });
                         resolve(success);
                     },
+                },
+                retry: {
+                    enabled: false,
                 },
             };
 
             const rzp = new window.Razorpay(options);
             rzp.open();
 
-            rzp.on("payment.failed", async function handler() {
+            rzp.on("payment.failed", async function handler(response) {
+                failed = true;
                 rzp.off("payment.failed", handler);
-                verifyPayment({ booking_id, order_id, allow_retry: true });
+                verifyPayment({
+                    booking_id,
+                    order_id,
+                    ...(response?.error?.metadata?.payment_id
+                        ? { payment_id: response.error.metadata.payment_id }
+                        : {}),
+                });
             });
         });
     };

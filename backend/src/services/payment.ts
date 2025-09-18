@@ -12,6 +12,7 @@ interface PaymentOrderResponse {
 
 interface GetPaymentStatusParams {
     order_id: string;
+    payment_id?: string;
 }
 
 interface PaymentStatusResponse {
@@ -36,7 +37,10 @@ const razorpay = new Razorpay({
     key_secret: RAZORPAY_KEY_SECRET,
 });
 
-export async function getPaymentOrder({ receipt_id, amount }: GetPaymentOrderParams): Promise<PaymentOrderResponse> {
+export async function getPaymentOrder({
+    receipt_id,
+    amount
+}: GetPaymentOrderParams): Promise<PaymentOrderResponse> {
     if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
         throw new Error("Razorpay keys not found");
     }
@@ -58,9 +62,16 @@ export async function getPaymentOrder({ receipt_id, amount }: GetPaymentOrderPar
     }
 };
 
-export async function getPaymentStatus({ order_id, }: GetPaymentStatusParams): Promise<PaymentStatusResponse> {
+export async function getPaymentStatus({
+    order_id,
+    payment_id
+}: GetPaymentStatusParams): Promise<PaymentStatusResponse> {
     if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
         throw new Error("Razorpay keys not found");
+    }
+
+    if (!payment_id) {
+        return { status: "FAILED" };
     }
 
     try {
@@ -71,25 +82,30 @@ export async function getPaymentStatus({ order_id, }: GetPaymentStatusParams): P
             return { status: "FAILED" };
         }
 
-        const isPending = payments.some((payment) => payment.status === "created");
-        if (isPending) {
+        const targetPayment = payments.find((payment) => payment.id === payment_id);
+
+        if (!targetPayment) {
+            return { status: "FAILED" };
+        }
+
+        if (targetPayment.status === "created") {
             return { status: "PENDING" };
         }
 
-        const capturedPayment = payments.find(
-            (payment) => payment.status === "captured"
-        );
-        if (capturedPayment) {
+        if (targetPayment.status === "captured") {
             return {
                 status: "COMPLETED",
-                payment_method: capturedPayment.method,
-                amount: capturedPayment.amount,
+                payment_method: targetPayment.method,
+                amount: targetPayment.amount,
             };
         }
 
-        const hasFailed = payments.some((payment) => payment.status === "failed");
-        if (hasFailed) {
-            return { status: "FAILED" };
+        if (targetPayment.status === "failed") {
+            return {
+                status: "FAILED",
+                payment_method: targetPayment.method,
+                amount: targetPayment.amount,
+            };
         }
 
         return { status: "FAILED" };
