@@ -10,6 +10,7 @@ import { formatPrice } from "../utils/formatPrice";
 import { getVehicleSeat } from "../utils/getVehicleSeat";
 import { tripData } from "../data/tripData";
 import { transferData } from "../data/transferData";
+import { getPaymentStatusConfig } from "../utils/paymentStatus";
 
 export default function Confirmation() {
     const { hotelId } = useParams<{ hotelId: string }>();
@@ -69,6 +70,7 @@ export default function Confirmation() {
     const isAirportTransfer = booking?.product_type === "airport_transfer";
     const trip = tripData[booking?.listing_id ?? ""];
     const transfer = transferData;
+    const paymentConfig = getPaymentStatusConfig(booking?.payment_status ?? "unpaid");
 
     if (loading) {
         return <AppLoader />
@@ -293,15 +295,8 @@ export default function Confirmation() {
                         <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm text-gray-600">Payment Status</span>
-                                {/* <span className={`
-                                    text-sm font-medium px-2 py-1 rounded-full 
-                                    ${false ? "bg-green-100 text-green-800" :
-                                        false ? "bg-yellow-100 text-yellow-800" :
-                                            "bg-orange-100 text-orange-800"
-                                    }`}
-                                > */}
-                                <span className="text-sm font-medium px-2 py-1 rounded-full bg-orange-100 text-orange-800">
-                                    Unpaid
+                                <span className={`text-sm font-medium px-2 py-1 rounded-full ${paymentConfig.bgColor} ${paymentConfig.textColor}`}>
+                                    {paymentConfig.label}
                                 </span>
                             </div>
 
@@ -356,7 +351,7 @@ export default function Confirmation() {
 
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-gray-600">Advance Paid</span>
-                                    <span className="text-green-600">₹{booking.paid_amount}</span>
+                                    <span className="text-green-600">{formatPrice(booking.paid_amount)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-gray-600">Balance Due</span>
@@ -370,13 +365,13 @@ export default function Confirmation() {
 
                             {isAirportTransfer && (
                                 <div className="border-t border-gray-200 pt-3 space-y-3">
-                                    <div className="flex items-start gap-3">
+                                    <div className="flex items-center gap-3">
                                         <i className="ri-shield-check-line text-green-600 text-lg mt-0.5"></i>
                                         <div>
                                             <p className="text-sm font-medium text-gray-900">Fixed fare, No hidden charges</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-start gap-3">
+                                    <div className="flex items-center gap-3">
                                         <i className="ri-calendar-close-line text-blue-600 text-lg mt-0.5"></i>
                                         <div>
                                             <p className="text-sm font-medium text-gray-900">Cancel free until 4 hours prior; no refunds after</p>

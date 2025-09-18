@@ -190,8 +190,8 @@ export const createBooking = async (req: Request, res: Response) => {
         const bookingId = bookingResult.rows[0].id;
 
         const paymentResult = await client.query(
-            `INSERT INTO payments (booking_id, user_id) VALUES ($1, $2) RETURNING id`,
-            [bookingId, user_id]
+            `INSERT INTO payments (booking_id) VALUES ($1) RETURNING id`,
+            [bookingId]
         );
         const paymentId = paymentResult.rows[0].id;
 
@@ -233,7 +233,6 @@ export const verifyBooking = async (req: Request, res: Response) => {
     const client = await pool.connect();
 
     try {
-        const user_id = req.user?.id;
         const hotel_id = req.cookies?.hotel_id;
         const hotel_name = req.cookies?.hotel_name;
         const { booking_id, order_id, payment_id, allow_retry } = req.body ?? {};
@@ -247,19 +246,19 @@ export const verifyBooking = async (req: Request, res: Response) => {
             `
             SELECT id, status 
             FROM payments 
-            WHERE user_id = $1 AND booking_id = $2 AND order_id = $3
+            WHERE booking_id = $1 AND order_id = $2
             FOR UPDATE
             `,
-            [user_id, booking_id, order_id]
+            [booking_id, order_id]
         );
 
         if (paymentResult.rows.length === 0) {
             await client.query(
                 `
-                INSERT INTO payments (user_id, booking_id, order_id)
-                VALUES ($1, $2, $3)
+                INSERT INTO payments (booking_id, order_id)
+                VALUES ($1, $2)
                 `,
-                [user_id, booking_id, order_id]
+                [booking_id, order_id]
             );
         }
         else {
@@ -279,18 +278,18 @@ export const verifyBooking = async (req: Request, res: Response) => {
             await client.query(
                 `
                 DELETE FROM payments 
-                WHERE user_id = $1 AND booking_id = $2 AND order_id = $3
+                WHERE booking_id = $1 AND order_id = $2
                 `,
-                [user_id, booking_id, order_id]
+                [booking_id, order_id]
             );
 
             if (!allow_retry) {
                 await client.query(
                     `
                     DELETE FROM bookings 
-                    WHERE id = $1 AND user_id = $2
+                    WHERE id = $1
                     `,
-                    [booking_id, user_id]
+                    [booking_id]
                 );
             }
 
@@ -305,27 +304,27 @@ export const verifyBooking = async (req: Request, res: Response) => {
             `
             UPDATE payments 
             SET status = $1, method = $2, amount = $3, payment_id = $4
-            WHERE user_id = $5 AND booking_id = $6 AND order_id = $7
+            WHERE booking_id = $5 AND order_id = $6
             `,
-            [status, payment_method ?? null, processedAmount, payment_id ?? null, user_id, booking_id, order_id]
+            [status, payment_method ?? null, processedAmount, payment_id ?? null, booking_id, order_id]
         );
 
         await client.query(
             `
             UPDATE bookings
             SET payment_status = 'advance-paid'
-            WHERE id = $1 AND user_id = $2
+            WHERE id = $1
             `,
-            [booking_id, user_id]
+            [booking_id]
         );
 
         const bookingRow = await client.query(
             `
             SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
             FROM bookings 
-            WHERE id = $1 AND user_id = $2
+            WHERE id = $1
             `,
-            [booking_id, user_id]
+            [booking_id]
         );
 
         const booking = {
@@ -381,6 +380,7 @@ Time: ${booking.time}
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {
+            console.log(error)
             return res.status(500).json({ message: "Database error" });
         }
         else {
@@ -468,9 +468,9 @@ export const bookingDetails = async (req: Request, res: Response) => {
             `
             SELECT COALESCE(SUM(amount), 0) AS paid_amount
             FROM payments
-            WHERE booking_id = $1 AND user_id = $2 AND status = 'COMPLETED'
+            WHERE booking_id = $1 AND status = 'COMPLETED'
             `,
-            [booking_id, user_id]
+            [booking_id]
         );
         const paid_amount = paymentResult.rows[0]?.paid_amount ?? 0;
 

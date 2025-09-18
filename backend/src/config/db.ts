@@ -100,7 +100,6 @@ export const pool = new Pool({
   await pool.query(`
     CREATE TABLE IF NOT EXISTS payments (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
       order_id VARCHAR(100),
       payment_id VARCHAR(100),
