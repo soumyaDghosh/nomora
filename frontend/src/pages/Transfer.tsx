@@ -6,9 +6,16 @@ import DateTimePicker from "../components/DateTimePicker";
 export default function Transfer() {
     const navigate = useNavigate();
 
+    const params = new URLSearchParams(location.search);
+    const isDeeplink = params.get("type") === "deeplink";
+
     const { hotel } = useAuthStore();
 
-    const [transferType, setTransferType] = useState<"pickup" | "drop">("drop");
+    const [transferType, setTransferType] = useState<"pickup" | "drop">(
+        isDeeplink && (params.get("transfer_type") === "pickup" || params.get("transfer_type") === "drop")
+            ? (params.get("transfer_type") as "pickup" | "drop")
+            : "drop"
+    );
     const [selectedTerminal, setSelectedTerminal] = useState<"T1" | "T2" | "">("T1");
     const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
     const [guestCount, setGuestCount] = useState<number>(1);

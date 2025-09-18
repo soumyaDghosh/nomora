@@ -16,6 +16,9 @@ export default function ProtectedRoute() {
         location.pathname.includes(path)
     );
 
+    const params = new URLSearchParams(location.search);
+    const isDeeplink = params.get("type") === "deeplink";
+
     // Validate hotelId format (UUID check)
     const isValidHotelId =
         hotelId &&
@@ -37,21 +40,69 @@ export default function ProtectedRoute() {
             if (redirectTo === `/${hotelId}/profile`) {
                 redirectTo = `/${hotelId}`;
             }
-            return <Navigate to={redirectTo || `/${hotelId}`} replace />;
+            return (
+                <Navigate
+                    to={{
+                        pathname: redirectTo || `/${hotelId}`,
+                        search: location.state?.from?.search || location.search,
+                    }}
+                    replace
+                />
+            );
         }
     }
     else {
+        // Deeplink - skip /welcome
+        if (isDeeplink && !isAuthPage) {
+            return (
+                <Navigate
+                    to={{
+                        pathname: `/${hotelId}/auth`,
+                        search: location.search,
+                    }}
+                    replace
+                    state={{ from: location }}
+                />
+            );
+        }
+
         // Prevent /welcome after seen
         if (location.pathname.endsWith("/welcome") && doneWelcome) {
-            return <Navigate to={`/${hotelId}/auth`} replace />;
+            return (
+                <Navigate
+                    to={{
+                        pathname: `/${hotelId}/auth`,
+                        search: location.search
+                    }}
+                    replace
+                />
+            );
         }
 
         // NOT on authPages - save intended route
         if (!isAuthPage) {
             if (!doneWelcome) {
-                return <Navigate to={`/${hotelId}/welcome`} replace state={{ from: location }} />;
+                return (
+                    <Navigate
+                        to={{
+                            pathname: `/${hotelId}/welcome`,
+                            search: location.search,
+                        }}
+                        replace
+                        state={{ from: location }}
+                    />
+                );
             }
-            return <Navigate to={`/${hotelId}/auth`} replace state={{ from: location }} />;
+            return (
+                <Navigate
+                    to={{
+                        pathname: `/${hotelId}/auth`,
+                        search: location.search
+                    }}
+                    replace
+                    state={{ from: location }}
+                />
+            );
         }
     }
 

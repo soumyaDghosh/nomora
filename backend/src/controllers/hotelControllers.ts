@@ -33,14 +33,14 @@ export const getHotel = async (req: Request, res: Response) => {
 
         res.cookie("hotel_id", hotelId, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 3 * 24 * 60 * 60 * 1000,
         });
         res.cookie("hotel_name", hotel.display_name, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 3 * 24 * 60 * 60 * 1000,
         });
 
