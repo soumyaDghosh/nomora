@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import NodeCache from "node-cache";
 import { pool } from "../config/db";
+import { setCookie } from "../utils/cookies";
 
 const hotelCache = new NodeCache({ stdTTL: 3600 });
 
@@ -31,18 +32,8 @@ export const getHotel = async (req: Request, res: Response) => {
             hotelCache.set(hotelId, hotel);
         }
 
-        res.cookie("hotel_id", hotelId, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat-production",
-            sameSite: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat-production" ? "none" : "lax",
-            maxAge: 3 * 24 * 60 * 60 * 1000,
-        });
-        res.cookie("hotel_name", hotel.display_name, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat-production",
-            sameSite: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat-production" ? "none" : "lax",
-            maxAge: 3 * 24 * 60 * 60 * 1000,
-        });
+        setCookie(res, "hotel_id", hotelId);
+        setCookie(res, "hotel_name", hotel.display_name);
 
         return res.status(200).json({ hotel });
     }

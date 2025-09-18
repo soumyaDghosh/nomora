@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { pool } from "../config/db";
 import { requestOtp, confirmOtp } from "../services/message";
+import { setCookie, clearCookie } from "../utils/cookies";
 
 export const getUser = async (req: Request, res: Response) => {
     try {
@@ -68,12 +69,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
             expiresIn: "3d",
         });
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat-production",
-            sameSite: process.env.NODE_ENV === "production" || process.env.NODE_ENV === "uat-production" ? "none" : "lax",
-            maxAge: 3 * 24 * 60 * 60 * 1000,
-        });
+        setCookie(res, "token", token);
 
         return res.status(200).json({
             message: isNewUser ? "Signup successful" : "Login successful"
@@ -85,11 +81,6 @@ export const verifyOTP = async (req: Request, res: Response) => {
 };
 
 export const logoutUser = async (req: Request, res: Response) => {
-    res.clearCookie("token", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    });
-
+    clearCookie(res, "token");
     res.status(200).json({ message: "Logged out successfully" });
 };
