@@ -3,6 +3,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import { Logtail } from "@logtail/node";
+import { LogtailTransport } from "@logtail/winston";
+import winston from "winston";
 import mongoose from "mongoose";
 import hotelRoutes from "./routes/hotelRoutes"
 import authRoutes from "./routes/authRoutes"
@@ -17,9 +20,32 @@ app.use(cors({
   credentials: true
 }));
 
+const logtail = new Logtail(process.env.SOURCE_TOKEN!, {
+  endpoint: process.env.INGEST_HOST
+});
+const logger = winston.createLogger({
+  transports: [new LogtailTransport(logtail)]
+});
+
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-app.get("/", (req, res) => res.send("Server running..."));
+app.use((req, res, next) => {
+  const start = Date.now();
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    logger.info("API Request", {
+      method: req.method,
+      url: req.originalUrl,
+      status: res.statusCode,
+      response_time_ms: duration
+    });
+  });
+
+  next();
+});
+
+app.get("/", (req, res) => res.send("OK"));
 app.use("/api/hotel", hotelRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/booking", bookingRoutes);
