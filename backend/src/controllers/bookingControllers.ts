@@ -325,7 +325,7 @@ Time: ${booking.time}
                 booking
             });
         }
-        else if (status === "FAILED") {
+        else {
             await client.query(
                 `
                 INSERT INTO payments (booking_id, order_id, payment_id, amount, status, method)
@@ -334,19 +334,21 @@ Time: ${booking.time}
                 [booking_id, order_id, payment_id ?? null, processedAmount ?? null, status, payment_method ?? null]
             );
 
-            await client.query(
-                `
+            if (status === "FAILED") {
+                await client.query(
+                    `
                     UPDATE bookings
                     SET status = 'cancelled'
                     WHERE id = $1
                     `,
-                [booking_id]
-            );
+                    [booking_id]
+                );
+            }
 
             await client.query("COMMIT");
 
             return res.status(400).json({
-                message: "Payment failed. If money has been deducted, it will be refunded shortly. You can retry payment again with different payment method."
+                message: `Payment ${status.toLowerCase()}. If money has been deducted, it will be refunded shortly. You can retry payment again with different payment method.`
             });
         }
     }
@@ -433,8 +435,8 @@ export const bookingDetails = async (req: Request, res: Response) => {
         if (row.user_id !== user_id) {
             return res.status(401).json({ message: "Forbidden: booking does not belong to user" });
         }
-        if (row.status === "cancelled") {
-            return res.status(404).json({ message: "Booking cancelled" });
+        if (row.status === "processing" || row.status === "cancelled") {
+            return res.status(404).json({ message: `Booking ${row.status}` });
         }
 
         const paymentResult = await client.query(

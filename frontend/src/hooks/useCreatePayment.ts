@@ -28,14 +28,34 @@ export default function useCreatePayment() {
                 config: {
                     display: {
                         blocks: {
-                            banks: {
+                            upi: {
+                                name: "UPI",
                                 instruments: [
-                                    { method: "upi" },
-                                    { method: "card" },
+                                    {
+                                        method: "upi"
+                                    },
+                                ],
+                            },
+                            debit: {
+                                name: "Debit Card",
+                                instruments: [
+                                    {
+                                        method: "card",
+                                        types: ["debit"]
+                                    },
+                                ],
+                            },
+                            credit: {
+                                name: "Credit Card",
+                                instruments: [
+                                    {
+                                        method: "card",
+                                        types: ["credit"]
+                                    },
                                 ],
                             },
                         },
-                        sequence: ["block.banks"],
+                        sequence: ["block.upi", "block.debit", "block.credit"],
                         preferences: { show_default_blocks: false },
                     },
                 },

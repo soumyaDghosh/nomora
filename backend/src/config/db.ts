@@ -68,8 +68,8 @@ export const pool = new Pool({
   await pool.query(`
     CREATE TABLE IF NOT EXISTS bookings (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      status VARCHAR(20) NOT NULL DEFAULT 'ongoing'
-        CHECK (status IN ('ongoing', 'completed', 'cancelled')),
+      status VARCHAR(20) NOT NULL DEFAULT 'processing'
+        CHECK (status IN ('processing', 'ongoing', 'completed', 'cancelled')),
       product_type VARCHAR(50) NOT NULL
         CHECK (product_type IN ('sameday', 'city_sightseeing', 'airport_transfer', 'overnight', 'experiences')),
       ac_type VARCHAR(20)
