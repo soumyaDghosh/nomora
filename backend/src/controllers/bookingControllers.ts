@@ -431,7 +431,7 @@ export const bookingDetails = async (req: Request, res: Response) => {
         const row = result.rows[0];
 
         if (row.user_id !== user_id) {
-            return res.status(403).json({ message: "Forbidden: booking does not belong to user" });
+            return res.status(401).json({ message: "Forbidden: booking does not belong to user" });
         }
         if (row.status === "cancelled") {
             return res.status(404).json({ message: "Booking cancelled" });

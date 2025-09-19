@@ -23,7 +23,7 @@ export const verifyAdmin = async (req: Request, res: Response, next: NextFunctio
             return res.status(404).json({ message: "User not found" });
         }
         else if (user.phone !== process.env.ADMIN_PHONE) {
-            return res.status(403).json({ message: "Forbidden: Admins only" });
+            return res.status(401).json({ message: "Forbidden: Admins only" });
         }
 
         req.user = user;
