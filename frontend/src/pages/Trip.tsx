@@ -406,7 +406,7 @@ export default function Trip() {
                             onClick={() => navigate(`/${hotel?.id}/checkout/${tripId}`)}
                             className="absolute inset-0 text-transparent cursor-pointer"
                         >
-                            Select Trip Timeslot ({trip.title}, {hotel?.display_name})
+                            Trip Select Timeslot ({trip.title}, {hotel?.display_name})
                         </button>
                     </div>
                 </div>

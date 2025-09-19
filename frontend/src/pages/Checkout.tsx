@@ -696,7 +696,7 @@ export default function Checkout() {
                                     : "cursor-not-allowed"
                                     }`}
                             >
-                                Confirm Trip Booking ({trip.title}, {hotel?.display_name})
+                                Trip Confirm Booking ({trip.title}, {hotel?.display_name})
                             </button>
                         </div>
                     </div>

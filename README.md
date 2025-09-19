@@ -26,7 +26,13 @@ git merge dev
 git push origin uat
 ```
 
-### 3. Promote to *prod* (for release)
+### 3. Switch to *dev* after pushing to *uat*
+```
+git checkout dev
+git pull origin dev
+```
+
+### 4. Promote to *prod* only from *uat* (for release)
 ```
 git checkout prod
 git pull origin prod

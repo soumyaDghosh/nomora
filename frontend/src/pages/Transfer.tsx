@@ -291,7 +291,7 @@ export default function Transfer() {
                                     : "cursor-not-allowed"
                                     }`}
                             >
-                                Check Transfer Fare ({hotel?.display_name})
+                                Transfer Check Fare ({hotel?.display_name})
                             </button>
                         </div>
                     </div>
