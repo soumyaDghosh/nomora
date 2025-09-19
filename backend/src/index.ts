@@ -70,13 +70,7 @@ app.use("/api/hotel", hotelRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/admin", adminRoutes);
-
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api/") || req.path.startsWith("/uploads") || req.path === "/") {
-    return next();
-  }
-  return res.status(403).json({ message: "Forbidden route" });
-});
+app.use((req, res) => res.status(403).send("Not found"));
 
 mongoose.connect(process.env.MONGO_DB_URL as string)
   .then(async () => {
