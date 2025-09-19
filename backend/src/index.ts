@@ -32,13 +32,33 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use((req, res, next) => {
   const start = Date.now();
 
+  let oldSend = res.send;
+  let responseBody: any;
+  res.send = function (body) {
+    responseBody = body;
+    return oldSend.call(this, body);
+  };
+
   res.on("finish", () => {
     const duration = Date.now() - start;
-    logger.info("API Request", {
+    const status = res.statusCode;
+    const level =
+      status >= 500
+        ? "error"
+        : status >= 400
+          ? "warn"
+          : "info";
+
+    const message = `${req.method} ${req.originalUrl} → ${status}`;
+
+    logger.log({
+      level,
+      message,
       method: req.method,
       url: req.originalUrl,
-      status: res.statusCode,
-      response_time_ms: duration
+      status,
+      response_time_ms: duration,
+      response: responseBody,
     });
   });
 
