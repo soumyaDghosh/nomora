@@ -198,7 +198,6 @@ export const createBooking = async (req: Request, res: Response) => {
         await client.query("COMMIT");
 
         return res.status(201).json({
-            message: "Booked successfully",
             booking_id: bookingId,
             order_id: paymentOrder.id,
             order_amount: paymentOrder.amount
