@@ -1,9 +1,9 @@
-name: Deploy Nomora App
+name: Deploy Nomora App (UAT)
 
 on:
   push:
     branches:
-      - prod
+      - uat
 
 jobs:
   build-and-deploy:
@@ -22,10 +22,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Create production .env
+      - name: Create .env
         working-directory: frontend
         run: |
-          echo "VITE_SERVER_URL=${{ secrets.VPS_PROD_SERVER }}" > .env
+          echo "VITE_SERVER_URL=${{ secrets.VPS_UAT_SERVER }}" > .env
           echo "VITE_RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}" >> .env
 
       - name: Build frontend
@@ -42,15 +42,15 @@ jobs:
       - name: Deploy to VPS
         run: |
           # Ensure directories exist on VPS
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ${{ secrets.VPS_PROD_DIR }}/frontend ${{ secrets.VPS_PROD_DIR }}/backend"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ${{ secrets.VPS_UAT_DIR }}/frontend ${{ secrets.VPS_UAT_DIR }}/backend"
 
-          # Deploy frontend dist -> frontend folder (replace completely)
+          # Deploy frontend dist
           rsync -avz --delete \
-            frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/frontend/
+            frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_UAT_DIR }}/frontend/
 
-          # Deploy backend folder -> backend (KEEP node_modules & .env)
+          # Deploy backend (KEEP node_modules & .env)
           rsync -avz --delete --exclude node_modules --exclude .env \
-            backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/backend/
+            backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_UAT_DIR }}/backend/
 
-          # Install backend dependencies and restart pm2
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_PROD_DIR }}/backend && npm install && pm2 restart ${{ secrets.VPS_PROD_PM2 }}'"
+          # Install backend deps + restart pm2
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_UAT_DIR }}/backend && npm install'"

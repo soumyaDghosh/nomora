@@ -1,0 +1,56 @@
+name: Deploy Nomora App (PROD)
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Create .env
+        working-directory: frontend
+        run: |
+          echo "VITE_SERVER_URL=${{ secrets.VPS_PROD_SERVER }}" > .env
+          echo "VITE_RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}" >> .env
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          # Ensure directories exist on VPS
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ${{ secrets.VPS_PROD_DIR }}/frontend ${{ secrets.VPS_PROD_DIR }}/backend"
+
+          # Deploy frontend dist -> frontend folder (replace completely)
+          rsync -avz --delete \
+            frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/frontend/
+
+          # Deploy backend folder -> backend (KEEP node_modules & .env)
+          rsync -avz --delete --exclude node_modules --exclude .env \
+            backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/backend/
+
+          # Install backend dependencies and restart pm2
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_PROD_DIR }}/backend && npm install && pm2 restart ${{ secrets.VPS_PROD_PM2 }}'"
