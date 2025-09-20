@@ -4,6 +4,10 @@ import axios from "axios";
 import crypto from "crypto";
 import { pool } from "../config/db";
 import { getPaymentOrder, getPaymentStatus } from "../services/payment";
+import { sendWhatsAppMessage } from "../services/message";
+import { validateDate, validateTime } from "../utils/validateDateTime";
+import validateTripWindow from "../utils/validateTrip";
+import { parseDateTime, formatBookingDate } from "../utils/parseDateTime";
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -12,58 +16,6 @@ const ALLOWED_PRODUCT_TYPES = [
     "overnight",
     "experiences",
 ] as const;
-
-const validateDate = (date: string) => /^\d{4}-\d{2}-\d{2}$/.test(date);
-const validateTime = (time: string) => /^(0?[1-9]|1[0-2])(:[0-5][0-9])? (AM|PM)$/.test(time);
-
-function validateTripWindow(date: string, time: string): string | null {
-    try {
-        const bookingDateTime = parseDateTime(date, time);
-        const now = new Date();
-
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const bookingStart = new Date(bookingDateTime.getFullYear(), bookingDateTime.getMonth(), bookingDateTime.getDate());
-
-        const daysDiff = Math.floor((bookingStart.getTime() - todayStart.getTime()) / (1000 * 60 * 60 * 24));
-
-        if (daysDiff < 0 || daysDiff > 7) {
-            return "Trip can only be booked within 7 days from today";
-        }
-
-        const hoursDiff = (bookingDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-        if (hoursDiff < 8) {
-            return "Trip must be booked at least 8 hours in advance";
-        }
-
-        return null;
-    }
-    catch (err) {
-        return "Invalid trip date/time";
-    }
-}
-
-function parseDateTime(date: string, time: string): Date {
-    let normalized = time.trim().toUpperCase();
-    if (!normalized.includes(":")) {
-        normalized = normalized.replace(/ (AM|PM)$/, ":00 $1");
-    }
-
-    const [year, month, day] = date.split("-").map(Number);
-
-    const match = normalized.match(/^(\d{1,2})(?::(\d{2}))? (AM|PM)$/);
-    if (!match) {
-        throw new Error(`Invalid time format after normalization: ${normalized}`);
-    }
-
-    let hour = Number(match[1]);
-    const minute = match[2] ? Number(match[2]) : 0;
-    const meridiem = match[3];
-
-    if (meridiem === "PM" && hour !== 12) hour += 12;
-    if (meridiem === "AM" && hour === 12) hour = 0;
-
-    return new Date(year, month - 1, day, hour, minute, 0, 0);
-}
 
 export const createBooking = async (req: Request, res: Response) => {
     const client = await pool.connect();
@@ -304,7 +256,7 @@ AC Type: ${booking.product_type === "airport_transfer" ? 'AC' : booking.ac_type}
 Price: ₹${booking.price}<br />
 Advance: ₹${booking.paid_amount}<br />
 Payment Status: ${booking.payment_status}<br /><br />
-Date: ${new Date(booking.date).toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}<br />
+Date: ${formatBookingDate(booking.date)}<br />
 Time: ${booking.time}
 `,
                     },
@@ -315,6 +267,19 @@ Time: ${booking.time}
                         },
                     }
                 );
+
+                // if (booking.product_type === "airport_tranfer") {
+                //     sendWhatsAppMessage("guest_airport_booking_confirmation", req.user?.phone!, {
+                //         body_1: {
+                //             type: "text",
+                //             value: formatBookingDate(booking.date)
+                //         },
+                //         body_2: {
+                //             type: "text",
+                //             value: booking.transfer_type === "Drop to Airport" ? hotel_name : `${booking.terminal}, KIA Bengaluru`
+                //         },
+                //     });
+                // }
             }
 
             await client.query("COMMIT");
