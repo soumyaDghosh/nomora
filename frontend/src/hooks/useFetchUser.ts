@@ -18,7 +18,6 @@ export default function useFetchUser() {
                 return true;
             }
             else {
-                localStorage.removeItem("doneAuth");
                 clearUser();
                 return false;
             }

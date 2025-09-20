@@ -46,7 +46,10 @@ const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   setAuthenticated: (state) => set({ isAuthenticated: state }),
 
-  clearUser: () => set({ user: null, isAuthenticated: false }),
+  clearUser: () => {
+    localStorage.removeItem("doneAuth");
+    set({ user: null, isAuthenticated: false });
+  }
 }));
 
 export default useAuthStore;
