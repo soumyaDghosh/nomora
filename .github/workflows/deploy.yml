@@ -25,7 +25,7 @@ jobs:
       - name: Create production .env
         working-directory: frontend
         run: |
-          echo "VITE_SERVER_URL=${{ secrets.VPS_SERVER_URL }}" > .env
+          echo "VITE_SERVER_URL=${{ secrets.VPS_PROD_SERVER }}" > .env
           echo "VITE_RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}" >> .env
 
       - name: Build frontend
@@ -53,4 +53,4 @@ jobs:
             backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/backend/
 
           # Install backend dependencies and restart pm2
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_PROD_DIR }}/backend && npm install && pm2 restart ${{ secrets.PM2_APP }}'"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_PROD_DIR }}/backend && npm install && pm2 restart ${{ secrets.VPS_PROD_PM2 }}'"
