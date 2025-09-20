@@ -42,15 +42,15 @@ jobs:
       - name: Deploy to VPS
         run: |
           # Ensure directories exist on VPS
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /root/Nomora-App/frontend /root/Nomora-App/backend"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ${{ secrets.VPS_PROD_DIR }}/frontend ${{ secrets.VPS_PROD_DIR }}/backend"
 
-          # Deploy frontend dist -> /root/Nomora-App/frontend (replace completely)
+          # Deploy frontend dist -> frontend folder (replace completely)
           rsync -avz --delete \
-            frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/Nomora-App/frontend/
+            frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/frontend/
 
-          # Deploy backend folder -> /root/Nomora-App/backend (KEEP node_modules & .env)
+          # Deploy backend folder -> backend (KEEP node_modules & .env)
           rsync -avz --delete --exclude node_modules --exclude .env \
-            backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/Nomora-App/backend/
+            backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PROD_DIR }}/backend/
 
-          # Install backend dependencies with nvm and restart pm2 app
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd /root/Nomora-App/backend && npm install && pm2 restart ${{ secrets.PM2_APP }}'"
+          # Install backend dependencies and restart pm2
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_PROD_DIR }}/backend && npm install && pm2 restart ${{ secrets.PM2_APP }}'"
