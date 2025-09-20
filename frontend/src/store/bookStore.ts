@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export interface MyBooking {
   id: string;
-  status: "ongoing" | "completed" | "cancelled";
+  status: "created" | "allocated" | "confirmed" | "assigned" | "completed" | "cancelled";
   product_type: "sameday" | "city_sightseeing" | "airport_transfer" | "overnight" | "experiences";
   listing_id?: string;
   ac_type: "AC" | "Non-AC"

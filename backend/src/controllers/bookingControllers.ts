@@ -130,12 +130,12 @@ export const createBooking = async (req: Request, res: Response) => {
             if (product_type === "airport_transfer") {
                 const dupCheck = await client.query(
                     `
-                    SELECT 1 
-                    FROM bookings 
-                    WHERE user_id = $1 
-                    AND hotel_id = $2 
-                    AND transfer_type = $3 
-                    AND status = 'ongoing'
+                    SELECT 1
+                    FROM bookings
+                    WHERE user_id = $1
+                        AND hotel_id = $2
+                        AND transfer_type = $3
+                        AND status IN ('created', 'allocated', 'confirmed', 'assigned')
                     LIMIT 1
                     `,
                     [user_id, hotel_id, transfer_type]
@@ -154,9 +154,9 @@ export const createBooking = async (req: Request, res: Response) => {
                     SELECT 1 
                     FROM bookings 
                     WHERE user_id = $1 
-                    AND hotel_id = $2 
-                    AND listing_id = $3 
-                    AND status = 'ongoing'
+                        AND hotel_id = $2 
+                        AND listing_id = $3 
+                        AND status IN ('created', 'allocated', 'confirmed', 'assigned')
                     LIMIT 1
                     `,
                     [user_id, hotel_id, listing_id]
@@ -263,7 +263,7 @@ export const verifyBooking = async (req: Request, res: Response) => {
             const bookingResult = await client.query(
                 `
                 UPDATE bookings
-                SET status = 'ongoing', payment_status = 'advance-paid'
+                SET payment_status = 'advance-paid'
                 WHERE id = $1
                 RETURNING id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
                 `,
@@ -434,8 +434,8 @@ export const bookingDetails = async (req: Request, res: Response) => {
         if (row.user_id !== user_id) {
             return res.status(401).json({ message: "Forbidden: booking does not belong to user" });
         }
-        if (row.status === "processing" || row.status === "cancelled") {
-            return res.status(404).json({ message: `Booking ${row.status}` });
+        if (row.status === "cancelled") {
+            return res.status(404).json({ message: "Booking cancelled" });
         }
 
         const paymentResult = await client.query(

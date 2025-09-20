@@ -20,50 +20,50 @@ app.use(cors({
   credentials: true
 }));
 
-const logtail = new Logtail(process.env.SOURCE_TOKEN!, {
-  endpoint: process.env.INGEST_HOST
-});
-const logger = winston.createLogger({
-  transports: [new LogtailTransport(logtail)]
-});
-
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-app.use((req, res, next) => {
-  const start = Date.now();
+// const logtail = new Logtail(process.env.SOURCE_TOKEN!, {
+//   endpoint: process.env.INGEST_HOST
+// });
+// const logger = winston.createLogger({
+//   transports: [new LogtailTransport(logtail)]
+// });
 
-  let oldSend = res.send;
-  let responseBody: any;
-  res.send = function (body) {
-    responseBody = body;
-    return oldSend.call(this, body);
-  };
+// app.use((req, res, next) => {
+//   const start = Date.now();
 
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    const status = res.statusCode;
-    const level =
-      status >= 500
-        ? "error"
-        : status >= 400
-          ? "warn"
-          : "info";
+//   let oldSend = res.send;
+//   let responseBody: any;
+//   res.send = function (body) {
+//     responseBody = body;
+//     return oldSend.call(this, body);
+//   };
 
-    const message = `${req.method} ${req.originalUrl} → ${status}`;
+//   res.on("finish", () => {
+//     const duration = Date.now() - start;
+//     const status = res.statusCode;
+//     const level =
+//       status >= 500
+//         ? "error"
+//         : status >= 400
+//           ? "warn"
+//           : "info";
 
-    logger.log({
-      level,
-      message,
-      method: req.method,
-      url: req.originalUrl,
-      status,
-      response_time_ms: duration,
-      response: responseBody,
-    });
-  });
+//     const message = `${req.method} ${req.originalUrl} → ${status}`;
 
-  next();
-});
+//     logger.log({
+//       level,
+//       message,
+//       method: req.method,
+//       url: req.originalUrl,
+//       status,
+//       response_time_ms: duration,
+//       response: responseBody,
+//     });
+//   });
+
+//   next();
+// });
 
 app.get("/", (req, res) => res.send("OK"));
 app.use("/api/hotel", hotelRoutes);

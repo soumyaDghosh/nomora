@@ -111,7 +111,9 @@ export default function Confirmation() {
                                 <i className="ri-check-line text-white text-lg"></i>
                             </div>
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-900">Booking Confirmed</h2>
+                                <h2 className="text-lg font-semibold text-gray-900">
+                                    Booking <span className="capitalize">{booking.status}</span>
+                                    </h2>
                                 <p className="flex flex-col sm:flex-row gap-1 text-xs sm:text-sm text-gray-700">
                                     <span>Booking ID:</span>
                                     <span>{bookingId}</span>

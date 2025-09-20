@@ -22,14 +22,10 @@ const BookingStateCard = ({ booking }: BookingStateCardProps) => {
 
     const getStateConfig = (state: string) => {
         switch (state) {
-            case "processing":
-                return {
-                    label: "Processing",
-                    bgColor: "bg-orange-100",
-                    textColor: "text-orange-800",
-                    showViewDetails: false
-                };
-            case "ongoing":
+            case "created":
+            case "allocated":
+            case "confirmed":
+            case "assigned":
                 return {
                     label: "Ongoing",
                     bgColor: "bg-blue-100",

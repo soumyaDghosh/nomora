@@ -6,8 +6,6 @@ export const pool = new Pool({
 });
 
 (async () => {
-  // await pool.query(`DROP TYPE IF EXISTS transfer_detail CASCADE;`);
-
   // enable UUID generator
   await pool.query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`);
 
@@ -68,8 +66,8 @@ export const pool = new Pool({
   await pool.query(`
     CREATE TABLE IF NOT EXISTS bookings (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      status VARCHAR(20) NOT NULL DEFAULT 'processing'
-        CHECK (status IN ('processing', 'ongoing', 'completed', 'cancelled')),
+      status VARCHAR(20) NOT NULL DEFAULT 'created'
+        CHECK (status IN ('created', 'allocated', 'confirmed', 'assigned', 'completed', 'cancelled')),
       product_type VARCHAR(50) NOT NULL
         CHECK (product_type IN ('sameday', 'city_sightseeing', 'airport_transfer', 'overnight', 'experiences')),
       ac_type VARCHAR(20)
