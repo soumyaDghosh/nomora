@@ -210,16 +210,9 @@ export const updateBooking = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "booking_id is required" });
         }
 
-        const validStatuses = ["ongoing", "completed", "cancelled"];
+        const validStatuses = ["created", "allocated", "confirmed", "assigned", "completed", "cancelled"];
         if (status && !validStatuses.includes(status)) {
             return res.status(400).json({ message: "Invalid status value" });
-        }
-
-        const updatingAssignment = supplier_id || driver_id || vehicle_id;
-        if (updatingAssignment && (!supplier_id || !driver_id || !vehicle_id)) {
-            return res.status(400).json({
-                message: "All three IDs are required: supplier_id, driver_id, vehicle_id",
-            });
         }
 
         await client.query("BEGIN");
@@ -228,38 +221,9 @@ export const updateBooking = async (req: Request, res: Response) => {
             "SELECT id FROM bookings WHERE id = $1",
             [booking_id]
         );
-        if (bookingCheck.rows.length === 0) {
+        if (bookingCheck.rowCount === 0) {
             await client.query("ROLLBACK");
             return res.status(404).json({ message: "Booking not found" });
-        }
-
-        if (updatingAssignment) {
-            const supplierCheck = await client.query(
-                "SELECT id FROM suppliers WHERE id = $1",
-                [supplier_id]
-            );
-            if (supplierCheck.rows.length === 0) {
-                await client.query("ROLLBACK");
-                return res.status(404).json({ message: "Supplier not found" });
-            }
-
-            const driverCheck = await client.query(
-                "SELECT id FROM drivers WHERE id = $1 AND supplier_id = $2",
-                [driver_id, supplier_id]
-            );
-            if (driverCheck.rows.length === 0) {
-                await client.query("ROLLBACK");
-                return res.status(400).json({ message: "Driver does not belong to the supplier" });
-            }
-
-            const vehicleCheck = await client.query(
-                "SELECT id FROM vehicles WHERE id = $1 AND supplier_id = $2",
-                [vehicle_id, supplier_id]
-            );
-            if (vehicleCheck.rows.length === 0) {
-                await client.query("ROLLBACK");
-                return res.status(400).json({ message: "Vehicle does not belong to the supplier" });
-            }
         }
 
         const updates: string[] = [];
@@ -270,13 +234,15 @@ export const updateBooking = async (req: Request, res: Response) => {
             updates.push(`status = $${paramIndex++}`);
             values.push(status);
         }
-        if (updatingAssignment) {
+        if (supplier_id) {
             updates.push(`supplier_id = $${paramIndex++}`);
             values.push(supplier_id);
-
+        }
+        if (driver_id) {
             updates.push(`driver_id = $${paramIndex++}`);
             values.push(driver_id);
-
+        }
+        if (vehicle_id) {
             updates.push(`vehicle_id = $${paramIndex++}`);
             values.push(vehicle_id);
         }
@@ -295,11 +261,14 @@ export const updateBooking = async (req: Request, res: Response) => {
             RETURNING *;
         `;
 
-        await client.query(updateQuery, values);
+        const result = await client.query(updateQuery, values);
 
         await client.query("COMMIT");
 
-        return res.status(200).json({ message: "Booking updated successfully" });
+        return res.status(200).json({
+            message: "Booking updated successfully",
+            booking: result.rows[0]
+        });
     }
     catch (error) {
         await client.query("ROLLBACK");
