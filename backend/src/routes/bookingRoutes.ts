@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { verifyUser } from "../middlewares/verifyUser";
-import { createBooking, verifyBooking, listBookings, bookingDetails } from "../controllers/bookingControllers";
+import createBooking from "../controllers/bookingControllers/create";
+import verifyBooking from "../controllers/bookingControllers/verify";
+import { listBookings, bookingDetails } from "../controllers/bookingControllers/others";
 
 const router = Router();
 
