@@ -53,4 +53,4 @@ jobs:
             backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_UAT_DIR }}/backend/
 
           # Install backend deps + restart pm2
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_UAT_DIR }}/backend && npm install'"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_UAT_DIR }}/backend && npm install && pm2 restart ${{ secrets.VPS_UAT_PM2 }}'"
