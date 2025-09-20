@@ -65,7 +65,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => res.send("OK"));
+app.get("/", (req, res) => res.send(`${process.env.CLIENT_URL}, ${process.env.NODE_ENV}`));
 app.use("/api/hotel", hotelRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/booking", bookingRoutes);
