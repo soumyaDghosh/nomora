@@ -87,6 +87,7 @@ export default function Checkout() {
         return istTime;
     }, []);
 
+    // NEW LOGIC
     // FIXED: Updated time slot booking logic to properly handle T+7 date with IST time
     const isTimeSlotBookable = useCallback((dateString: string, timeSlot: string): boolean => {
         if (!dateString || !timeSlot) return false;

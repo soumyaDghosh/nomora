@@ -51,6 +51,7 @@ export default async function createBooking(req: Request, res: Response) {
             if (!validateDate(date)) return res.status(400).json({ message: "date must be in format YYYY-MM-DD" });
             if (!validateTime(time)) return res.status(400).json({ message: "time must be in format h:mm AM/PM" });
 
+            // NEW LOGIC
             const windowError = validateTripWindow(date, time);
             if (windowError) return res.status(400).json({ message: windowError });
         }

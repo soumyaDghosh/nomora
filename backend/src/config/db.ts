@@ -1,9 +1,17 @@
 import { Pool } from "pg";
 
-export const pool = new Pool({
+declare global {
+  var __dbPool__: Pool | undefined;
+}
+
+export const pool: Pool = global.__dbPool__ ?? new Pool({
   connectionString: process.env.NEON_DB_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
 });
+
+if (!global.__dbPool__) {
+  global.__dbPool__ = pool;
+}
 
 (async () => {
   // enable UUID generator

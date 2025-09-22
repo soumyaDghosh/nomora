@@ -52,7 +52,8 @@ git pull origin dev
 sudo dnf install redis
 sudo systemctl start redis
 
-sudo systemctl enable redis
+sudo systemctl enable redis (For local machine)
+sudo systemctl enable /lib/systemd/system/redis-server.service (For Digital Ocean)
 
 redis-cli ping
 ```
