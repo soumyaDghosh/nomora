@@ -103,6 +103,7 @@ if (!global.__dbPool__) {
     );
   `);
 
+  // payments table
   await pool.query(`
     CREATE TABLE IF NOT EXISTS payments (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

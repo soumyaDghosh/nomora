@@ -1,6 +1,4 @@
-# Nomora App
-
-## Steps to Push
+## Steps to push code
 
 NOTE: *dev* is default branch for any new code.
 

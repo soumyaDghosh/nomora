@@ -6,7 +6,6 @@ import path from "path";
 import { Logtail } from "@logtail/node";
 import { LogtailTransport } from "@logtail/winston";
 import winston from "winston";
-import mongoose from "mongoose";
 import hotelRoutes from "./routes/hotelRoutes"
 import authRoutes from "./routes/authRoutes"
 import bookingRoutes from "./routes/bookingRoutes"
@@ -72,11 +71,7 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use((req, res) => res.status(403).send("Not found"));
 
-mongoose.connect(process.env.MONGO_DB_URL as string)
-  .then(async () => {
-    const port = process.env.PORT || 5000;
-    app.listen(port, () => {
-      console.log(`Server running on PORT ${port}`);
-    });
-  })
-  .catch(err => console.log(`MongoDB connection error: ${err}`));
+const port = process.env.PORT || 5000;
+app.listen(port, async () => {
+  console.log(`Server running on PORT ${port}`);
+});
