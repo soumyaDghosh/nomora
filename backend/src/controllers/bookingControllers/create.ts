@@ -4,8 +4,7 @@ import crypto from "crypto";
 import { pool } from "../../config/db";
 import { getPaymentOrder } from "../../services/payment";
 import { validateDate, validateTime } from "../../utils/validateDateTime";
-import validateTripWindow from "../../utils/validateTrip";
-import { parseDateTime } from "../../utils/parseDateTime";
+import { validateTripWindow, validateTransferWindow } from "../../utils/validateTrip";
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -66,12 +65,8 @@ export default async function createBooking(req: Request, res: Response) {
             if (!Number.isInteger(count) || count < 1 || count > 4)
                 return res.status(400).json({ message: "guest_count must be an integer between 1 and 4" });
 
-            const bookingDateTime = parseDateTime(date, time);
-            const now = new Date();
-            const fourHoursLater = new Date(now.getTime() + 4 * 60 * 60 * 1000);
-            if (bookingDateTime < fourHoursLater) {
-                return res.status(400).json({ message: "Airport transfer must be booked at least 4 hours in advance" });
-            }
+            const windowError = validateTransferWindow(date, time);
+            if (windowError) return res.status(400).json({ message: windowError });
         }
 
         await client.query("BEGIN");

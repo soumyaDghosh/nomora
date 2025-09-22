@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import NodeCache from "node-cache";
 import { pool } from "../config/db";
 import { setCookie } from "../utils/cookies";
+import type { Hotel } from "../global";
 
 const hotelCache = new NodeCache({ stdTTL: 3600 });
 
@@ -13,7 +14,7 @@ export const getHotel = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "hotel_id is required" });
         }
 
-        let hotel = hotelCache.get<Express.Hotel>(hotelId);
+        let hotel = hotelCache.get<Hotel>(hotelId);
 
         if (!hotel) {
             const query = `

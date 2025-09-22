@@ -7,7 +7,7 @@ declare global {
             phone: string;
         }
 
-        interface Hotel {
+        export interface Hotel {
             id: string;
             display_name: string;
             address: string;
@@ -20,4 +20,17 @@ declare global {
             hotel?: Hotel;
         }
     }
+}
+
+export interface User {
+    id: string;
+    phone: string;
+}
+
+export interface Hotel {
+    id: string;
+    display_name: string;
+    address: string;
+    pincode: number;
+    lat_long: string;
 }

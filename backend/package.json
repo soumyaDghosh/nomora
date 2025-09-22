@@ -8,13 +8,19 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "dev": "nodemon --exec \"npm run start\" --ext ts --watch src"
+    "build": "tsc",
+    "start": "npm-run-all build --parallel start:api start:worker",
+    "start:api": "node dist/index.js",
+    "start:worker": "node dist/workers/messageWorker.js",
+    "dev": "npm-run-all --parallel dev:api dev:worker",
+    "dev:api": "nodemon --watch src --exec ts-node src/index.ts",
+    "dev:worker": "nodemon --watch src/workers --exec ts-node src/workers/messageWorker.ts"
   },
   "dependencies": {
     "@logtail/node": "^0.5.6",
     "@logtail/winston": "^0.5.6",
     "axios": "^1.11.0",
+    "bull": "^4.16.5",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -37,6 +43,8 @@
     "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.15.5",
     "nodemon": "^3.1.10",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
 }

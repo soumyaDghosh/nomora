@@ -46,3 +46,13 @@ git push origin prod
 git checkout dev
 git pull origin dev
 ```
+
+## Redis
+```
+sudo dnf install redis
+sudo systemctl start redis
+
+sudo systemctl enable redis
+
+redis-cli ping
+```

@@ -6,6 +6,7 @@ import { getPaymentStatus } from "../../services/payment";
 import { sendWhatsAppMessage } from "../../services/message";
 import { formatBookingDate } from "../../utils/parseDateTime";
 import getVehicleSeat from "../../utils/getVehicleSeat";
+import { messageQueue } from "../../queues/messageQueue";
 import { tripData } from "../../data/tripData";
 
 export default async function verifyBooking(req: Request, res: Response) {
@@ -106,51 +107,68 @@ Time: ${booking.time}
                     }
                 );
 
-                // if (["sameday", "city_sightseeing"].includes(booking.product_type)) {
-                //     const trip = tripData[booking.listing_id];
-                //     sendWhatsAppMessage("guest_tour_booking_confirmation", req.user?.phone!, {
-                //         body_1: {
-                //             type: "text",
-                //             value: trip.title
-                //         },
-                //         body_2: {
-                //             type: "text",
-                //             value: trip.duration
-                //         },
-                //         body_3: {
-                //             type: "text",
-                //             value: `${formatBookingDate(booking.date)}, ${booking.time}`
-                //         },
-                //         body_4: {
-                //             type: "text",
-                //             value: hotel_name
-                //         },
-                //         body_5: {
-                //             type: "text",
-                //             value: `${booking.car_type}`
-                //         },
-                //         body_6: {
-                //             type: "text",
-                //             value: `${getVehicleSeat(booking.car_type)}`
-                //         },
-                //         body_7: {
-                //             type: "text",
-                //             value: `${booking.ac_type}`
-                //         },
-                //     });
-                // }
-                // if (booking.product_type === "airport_tranfer") {
-                //     sendWhatsAppMessage("guest_airport_booking_confirmation", req.user?.phone!, {
-                //         body_1: {
-                //             type: "text",
-                //             value: `${formatBookingDate(booking.date)}, ${booking.time}`
-                //         },
-                //         body_2: {
-                //             type: "text",
-                //             value: booking.transfer_type === "Drop to Airport" ? hotel_name : `${booking.terminal}, KIA Bengaluru`
-                //         },
-                //     });
-                // }
+                if (["sameday", "city_sightseeing"].includes(booking.product_type)) {
+                    const trip = tripData[booking.listing_id];
+                    sendWhatsAppMessage("guest_tour_booking_confirmation", req.user?.phone!, {
+                        body_1: {
+                            type: "text",
+                            value: trip.title
+                        },
+                        body_2: {
+                            type: "text",
+                            value: trip.duration
+                        },
+                        body_3: {
+                            type: "text",
+                            value: `${formatBookingDate(booking.date)}, ${booking.time}`
+                        },
+                        body_4: {
+                            type: "text",
+                            value: hotel_name
+                        },
+                        body_5: {
+                            type: "text",
+                            value: `${booking.car_type}`
+                        },
+                        body_6: {
+                            type: "text",
+                            value: `${getVehicleSeat(booking.car_type)}`
+                        },
+                        body_7: {
+                            type: "text",
+                            value: `${booking.ac_type}`
+                        },
+                    });
+                }
+                if (booking.product_type === "airport_tranfer") {
+                    sendWhatsAppMessage("guest_airport_booking_confirmation", req.user?.phone!, {
+                        body_1: {
+                            type: "text",
+                            value: `${formatBookingDate(booking.date)}, ${booking.time}`
+                        },
+                        body_2: {
+                            type: "text",
+                            value: booking.transfer_type === "Drop to Airport" ? hotel_name : `${booking.terminal}, KIA Bengaluru`
+                        },
+                    });
+
+                    // 1 minute -> 1 * 60 * 1000
+                    // 30 minutes -> 30 * 60 * 1000
+                    // 2 hours -> 2 * 60 * 60 * 1000
+                    await messageQueue.add(
+                        "guest_airport_assignment_reminder",
+                        {
+                            bookingId: booking_id,
+                            phone: req.user?.phone!,
+                            bookingDate: formatBookingDate(booking.date),
+                            bookingTime: booking.time,
+                            transferType: booking.transfer_type,
+                            hotelName: hotel_name,
+                            terminal: booking.terminal
+                        },
+                        { delay: 10 * 1000, attempts: 3 }
+                    );
+                }
             }
 
             await client.query("COMMIT");

@@ -182,8 +182,8 @@ export default function Checkout() {
 
     const handleDirectDateSelect = useCallback((dateString: string) => {
         setSelectedDate(dateString);
-        setSelectedTimeSlot(""); // ✅ clear old slot
-        setCustomDateValue("");  // ✅ clear custom input
+        setSelectedTimeSlot("");
+        setCustomDateValue("");
         setShowCustomDatePicker(false);
     }, []);
 
