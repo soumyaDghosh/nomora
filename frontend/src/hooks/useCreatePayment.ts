@@ -3,7 +3,7 @@ import useAuthStore from "../store/authStore";
 import type { RazorpayPaymentResponse } from "../global";
 
 interface CreatePaymentProps {
-    environment: string,
+    environment?: string,
     booking_id: string,
     order_id: string,
     order_amount: number
