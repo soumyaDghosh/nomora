@@ -15,12 +15,33 @@ export default async function verifyBooking(req: Request, res: Response) {
     try {
         const hotel_id = req.cookies?.hotel_id;
         const hotel_name = req.cookies?.hotel_name;
-        const { booking_id, order_id, payment_id } = req.body ?? {};
+        const { environment, booking_id, order_id, payment_id } = req.body ?? {};
 
         if (!booking_id) return res.status(401).json({ message: "booking_id is required" });
         if (!order_id) return res.status(400).json({ message: "order_id is required" });
 
         await client.query("BEGIN");
+
+        if (environment === "production") {
+            const bookingResult = await client.query(
+                `
+                SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
+                FROM bookings
+                WHERE id = $1
+                `,
+                [booking_id]
+            );
+
+            if (bookingResult.rows.length === 0) {
+                await client.query("ROLLBACK");
+                return res.status(404).json({ message: "Booking not found" });
+            }
+
+            return res.status(201).json({
+                message: "Booked successfully",
+                booking: bookingResult.rows[0]
+            });
+        }
 
         const paymentResult = await client.query(
             `

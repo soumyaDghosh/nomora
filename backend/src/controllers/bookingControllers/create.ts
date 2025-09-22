@@ -135,14 +135,18 @@ export default async function createBooking(req: Request, res: Response) {
         );
         const bookingId = bookingResult.rows[0].id;
 
-        const paymentOrder = await getPaymentOrder({
-            receipt_id: crypto.randomUUID(),
-            amount: Math.round(price * 0.25 * 100)
-        });
+        let paymentOrder = { id: "test", amount: Number(0) || "" };
+        if (process.env.NODE_ENV !== "production") {
+            paymentOrder = await getPaymentOrder({
+                receipt_id: crypto.randomUUID(),
+                amount: Math.round(price * 0.25 * 100)
+            });
+        }
 
         await client.query("COMMIT");
 
         return res.status(201).json({
+            environment: process.env.NODE_ENV,
             booking_id: bookingId,
             order_id: paymentOrder.id,
             order_amount: paymentOrder.amount

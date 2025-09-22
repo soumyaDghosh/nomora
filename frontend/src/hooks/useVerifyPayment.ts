@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import useBookStore from "../store/bookStore";
 
 interface VerifyPaymentProps {
+    environment?: string,
     booking_id: string;
     order_id: string;
     payment_id?: string;
@@ -11,12 +12,12 @@ interface VerifyPaymentProps {
 export default function useVerifyPayment() {
     const { shortBookings, setShortBookings } = useBookStore();
 
-    const verifyPayment = async ({ booking_id, order_id, payment_id }: VerifyPaymentProps): Promise<boolean> => {
+    const verifyPayment = async ({ environment, booking_id, order_id, payment_id }: VerifyPaymentProps): Promise<boolean> => {
         const toastId = toast.loading("Verifying payment...");
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/booking/verify`,
-                { booking_id, order_id, payment_id },
+                { environment, booking_id, order_id, payment_id },
                 { withCredentials: true }
             );
 

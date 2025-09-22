@@ -49,8 +49,8 @@ export default function useBookTour() {
                 { withCredentials: true }
             );
 
-            const { booking_id, order_id, order_amount } = response.data;
-            const success = await createPayment({ booking_id, order_id, order_amount });
+            const { environment, booking_id, order_id, order_amount } = response.data;
+            const success = await createPayment({ environment, booking_id, order_id, order_amount });
 
             if (success) {
                 return {
