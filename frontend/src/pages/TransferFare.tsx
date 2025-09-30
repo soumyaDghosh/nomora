@@ -76,7 +76,7 @@ export default function TransferFare() {
             date: fareData.date,
             time: fareData.time,
             guest_count: fareData.guests,
-            price: transfer.baseFare + transfer.airportToll
+            price: transfer.baseFare + transfer.tax +transfer.airportToll
         });
 
         if (success) {
@@ -113,17 +113,21 @@ export default function TransferFare() {
                             <span className="text-sm font-medium text-gray-900">{formatPrice(transfer.baseFare)}</span>
                         </div>
                         <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Tax (5%)</span>
+                            <span className="text-sm font-medium text-gray-900">{formatPrice(transfer.tax)}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-600">Airport Toll</span>
                             <span className="text-sm font-medium text-gray-900">{formatPrice(transfer.airportToll)}</span>
                         </div>
                         <div className="border-t border-gray-200 pt-3">
                             <div className="flex items-center justify-between">
                                 <span className="font-medium text-gray-900">Total Fare</span>
-                                <span className="text-lg font-bold text-gray-900">{formatPrice(transfer.baseFare + transfer.airportToll)}</span>
+                                <span className="text-lg font-bold text-gray-900">{formatPrice(transfer.baseFare + transfer.tax + transfer.airportToll)}</span>
                             </div>
                             <div className="mt-1.5 flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-900">Advance (25%)</span>
-                                <span className="font-bold text-gray-900">{formatPrice((transfer.baseFare + transfer.airportToll) * 0.25)}</span>
+                                <span className="font-bold text-gray-900">{formatPrice((transfer.baseFare + transfer.tax+transfer.airportToll) * 0.25)}</span>
                             </div>
                         </div>
 
@@ -189,11 +193,11 @@ export default function TransferFare() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex items-start gap-3">
                                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <i className="ri-time-line text-blue-600 text-sm" />
+                                    <i className="ri-car-line text-blue-600 text-sm" />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-medium text-gray-900 mb-1">Early Car Assignment</h4>
-                                    <p className="text-xs text-gray-600">Zero stress, no impact on plans</p>
+                                    <h4 className="text-sm font-medium text-gray-900 mb-1">Vehicle Condition</h4>
+                                    <p className="text-xs text-gray-600">Clean, well-maintained vehicles</p>
                                 </div>
                             </div>
 
@@ -279,7 +283,7 @@ export default function TransferFare() {
                             {loading && (
                                 <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                             )}
-                            Book Now • {formatPrice((transfer.baseFare + transfer.airportToll) * 0.25)}
+                            Book Now • {formatPrice((transfer.baseFare +transfer.tax + transfer.airportToll) * 0.25)}
                         </div>
                         <button
                             id="bookNow"

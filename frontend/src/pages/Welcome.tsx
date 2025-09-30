@@ -27,6 +27,7 @@ export default function Welcome() {
         <Step3 setCurrentStep={setCurrentStep} />,
         <Step4 setCurrentStep={setCurrentStep} />,
         <Step5 handleContinue={handleContinue} />
+        // <Step4 setCurrentStep={setCurrentStep} />,
     ];
 
     const handleTouchStart = (e: React.TouchEvent) => {
@@ -64,7 +65,7 @@ export default function Welcome() {
 
             <div className="flex justify-between items-center h-[80px] px-4">
                 <div className="flex space-x-2">
-                    {[1, 2, 3, 4, 5].map((step) => (
+                    {[1, 2, 3, 4,5].map((step) => (
                         <button key={step} onClick={() => setCurrentStep(step)}>
                             <div
                                 className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${currentStep >= step ? "bg-gray-800 w-8" : "bg-gray-200 w-2"}`}
@@ -124,7 +125,7 @@ const Step1: React.FC<StepProps> = () => (
                 Explore Bangalore with <span className="text-gray-900">Nomora</span>
             </h1>
             <p className="text-gray-600 text-base leading-relaxed">
-                Sightseeing, tourist activities, and cab services with high-quality, private chauffeurs. Seamless travel, no planning required.
+                Book curated trips and private cabs with professional chauffeurs, with the convenience of hotel pickup and drop. Seamless travel, no planning required.
             </p>
         </div>
     </div>
@@ -144,10 +145,10 @@ const Step2: React.FC<StepProps> = () => (
 
         <div className="text-center max-w-sm">
             <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                Tourist-First Service
+                Traveler-First Service
             </h1>
             <p className="text-gray-600 text-base leading-relaxed">
-                Designed for tourist comfort and care. Expect no rush pickups, clean cars, help with luggage, and multi-language support.
+                Designed for comfort and care. Expect uniformed chauffeurs, no rush pickups, clean and well-maintained vehicles, and luggage assistance.
             </p>
         </div>
     </div>
@@ -170,41 +171,18 @@ const Step3: React.FC<StepProps> = () => (
                 Travel with Local Experts
             </h1>
             <p className="text-gray-600 text-base leading-relaxed">
-                Our partners know every landmark, route, and traffic flow, ensuring quick, hassle-free pickups, drop-offs, and getting around. Enjoy safe and experienced driving.
+                Our partners know every landmark, best routes, parking spots, and traffic, ensuring quick, hassle-free local navigation. Enjoy safe, experienced driving.
             </p>
         </div>
     </div>
 );
 
-const Step4: React.FC<StepProps> = () => (
-    <div className="flex flex-col items-center">
-        <div className="w-full max-w-sm mb-12">
-            <div className="relative rounded-3xl overflow-hidden shadow-lg bg-blue-100">
-                <img
-                    src="https://static.readdy.ai/image/638a2981e869109b2bf5c39446e6f624/dec2cd142401efcbd0184fd36d6da84c.png"
-                    alt=""
-                    className="w-full h-64 object-cover object-top"
-                />
-            </div>
-        </div>
-
-        <div className="text-center max-w-sm">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                Early Vehicle Assignment
-            </h1>
-            <p className="text-gray-600 text-base leading-relaxed">
-                No more waiting till the last minute. Get your car details upfront, so you can travel with confidence, zero stress, zero impact on your plans.
-            </p>
-        </div>
-    </div>
-);
-
-const Step5: React.FC<Step5Props> = () => (
+const Step4: React.FC<Step5Props> = () => (
     <div className="flex flex-col items-center">
         <div className="w-full max-w-sm mb-12">
             <div className="relative rounded-3xl overflow-hidden shadow-lg bg-blue-50">
                 <img
-                    src="https://static.readdy.ai/image/638a2981e869109b2bf5c39446e6f624/fe2d911edc0ed324ad71151cd045de83.png"
+                    src="/images/step4.png"
                     alt=""
                     className="w-full h-64 object-cover object-top"
                 />
@@ -213,11 +191,71 @@ const Step5: React.FC<Step5Props> = () => (
 
         <div className="text-center max-w-sm">
             <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
-                Clear Terms, Trusted Partners
+                No Price Negotiations
             </h1>
             <p className="text-gray-600 text-base leading-relaxed">
-                We work with high-quality service partners, offering upfront, simple, and clear terms. No negotiations, no hidden charges.
+                We work only with top-quality service partners, offering upfront pricing and simple terms. No hidden charges, no surprises
             </p>
         </div>
     </div>
 );
+
+const Step5: React.FC<StepProps> = () => {
+  const services = [
+    {
+      icon: "ri-plane-line",
+      title: "Airport Transfers",
+      description: "Reliable pickups and drop-offs",
+    },
+    {
+      icon: "ri-camera-line",
+      title: "Sightseeing",
+      description: "Explore local attractions with chauffeur",
+    },
+    {
+      icon: "ri-map-pin-line",
+      title: "Same-Day Round Trips",
+      description: "Curated escapes around Bangalore",
+    },
+    {
+      icon: "ri-time-line",
+      title: "Hourly Rental",
+      description: "Perfect for business meetings",
+    },
+  ];
+
+  return (
+    <div className="flex flex-col items-center w-full">
+      {/* Title */}
+      <div className="text-center mb-6 px-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
+          Designed for Tourists and Business Travelers
+        </h1>
+      </div>
+
+      {/* Services List */}
+      <div className="flex-1 w-full space-y-6 mb-6 px-4">
+        {services.map((service, index) => (
+          <div key={index} className="flex items-center space-x-4 py-2">
+            <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+              <i className={`${service.icon} text-white text-xl`}></i>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                {service.title}
+              </h3>
+              <p className="text-gray-600 text-sm">{service.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Call to Action */}
+      <div className="text-center mb-4 px-4">
+        <p className="text-gray-600 text-sm">
+          Ready to explore? Let's get started!
+        </p>
+      </div>
+    </div>
+  );
+};

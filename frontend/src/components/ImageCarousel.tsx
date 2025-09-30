@@ -32,6 +32,11 @@ const ImageCarousel = ({
     const [touchStartX, setTouchStartX] = useState<number | null>(null);
     const [modalTouchStartX, setModalTouchStartX] = useState<number | null>(null);
 
+    // --- NEW: vertical touch/drag state for modal swipe-down-to-close ---
+    const [modalTouchStartY, setModalTouchStartY] = useState<number | null>(null);
+    const [modalDragOffset, setModalDragOffset] = useState(0); // px offset while dragging
+    const [modalDragging, setModalDragging] = useState(false);
+
     // Programmatic-scroll guards
     const isProgrammaticScroll = useRef(false);
     const modalIsProgrammaticScroll = useRef(false);
@@ -95,30 +100,31 @@ const ImageCarousel = ({
     }, [images.length, isAutoPlaying, showModal, isUserInteracting, autoPlayInterval]);
 
     // Auto-play functionality for modal carousel
-    useEffect(() => {
-        if (modalAutoPlayRef.current) {
-            clearInterval(modalAutoPlayRef.current);
-            modalAutoPlayRef.current = null;
-        }
+    // useEffect(() => {
+    //     if (modalAutoPlayRef.current) {
+    //         clearInterval(modalAutoPlayRef.current);
+    //         modalAutoPlayRef.current = null;
+    //     }
 
-        if (modalAutoPlay && showModal && !modalUserInteracting) {
-            const currentGallery = images[selectedItemIndex]?.gallery || [];
-            if (currentGallery.length > 1) {
-                modalAutoPlayRef.current = setInterval(() => {
-                    setSelectedImageIndex((prev) => (prev + 1) % currentGallery.length);
-                }, autoPlayInterval);
-            }
-        }
+    //     if (modalAutoPlay && showModal && !modalUserInteracting) {
+    //         const currentGallery = images[selectedItemIndex]?.gallery || [];
+    //         if (currentGallery.length > 1) {
+    //             modalAutoPlayRef.current = setInterval(() => {
+    //                 setSelectedImageIndex((prev) => (prev + 1) % currentGallery.length);
+    //             }, autoPlayInterval);
+    //         }
+    //     }
 
-        return () => {
-            if (modalAutoPlayRef.current) {
-                clearInterval(modalAutoPlayRef.current);
-                modalAutoPlayRef.current = null;
-            }
-        };
-    }, [modalAutoPlay, showModal, selectedItemIndex, images, modalUserInteracting, autoPlayInterval]);
+    //     return () => {
+    //         if (modalAutoPlayRef.current) {
+    //             clearInterval(modalAutoPlayRef.current);
+    //             modalAutoPlayRef.current = null;
+    //         }
+    //     };
+    // }, [modalAutoPlay, showModal, selectedItemIndex, images, modalUserInteracting, autoPlayInterval]);
 
     // Smooth scroll to current item (main)
+
     useEffect(() => {
         if (scrollRef.current) {
             const container = scrollRef.current;
@@ -253,6 +259,11 @@ const ImageCarousel = ({
         setModalUserInteracting(false);
         clearAutoPlayIntervals();
         clearInteractionTimeouts();
+
+        // reset drag state
+        setModalDragOffset(0);
+        setModalTouchStartY(null);
+        setModalDragging(false);
     }, [clearAutoPlayIntervals, clearInteractionTimeouts]);
 
     // Outside click to close modal
@@ -374,6 +385,72 @@ const ImageCarousel = ({
             setModalAutoPlay(true);
         }, 2000);
     }, [modalTouchStartX, selectedImageIndex, selectedItemIndex, images, goToModalSlide]);
+
+    // --- NEW: overlay touch handlers for swipe-down-to-close with drag feedback ---
+    const handleOverlayTouchStart = useCallback((e: React.TouchEvent) => {
+        if (!showModal) return;
+        // Record vertical start position
+        setModalTouchStartY(e.touches[0].clientY);
+        setModalDragging(true);
+        // stop modal autoplay while dragging
+        setModalAutoPlay(false);
+        setModalUserInteracting(true);
+        if (modalInteractionTimeoutRef.current) {
+            clearTimeout(modalInteractionTimeoutRef.current);
+        }
+    }, [showModal]);
+
+    const handleOverlayTouchMove = useCallback((e: React.TouchEvent) => {
+        if (modalTouchStartY === null) return;
+        const currentY = e.touches[0].clientY;
+        const diff = currentY - modalTouchStartY;
+
+        // If vertical movement is negative (upwards), we ignore for closing behavior.
+        // Only allow positive downward drag to close. Also ignore small movements.
+        if (diff > 0) {
+            // Prevent page scroll while dragging the modal down
+            if (Math.abs(diff) > 8) {
+                e.preventDefault();
+            }
+            // Gentle damping after 200px to avoid huge translate
+            const damped = diff > 200 ? 200 + (diff - 200) * 0.2 : diff;
+            setModalDragOffset(damped);
+        } else {
+            // upward moves: keep offset at 0
+            setModalDragOffset(0);
+        }
+    }, [modalTouchStartY]);
+
+    const handleOverlayTouchEnd = useCallback((e: React.TouchEvent) => {
+        if (modalTouchStartY === null) {
+            setModalDragOffset(0);
+            setModalDragging(false);
+            return;
+        }
+        const endY = e.changedTouches[0].clientY;
+        const diff = endY - modalTouchStartY;
+        const threshold = 80; // px threshold to trigger close
+
+        if (diff > threshold) {
+            // animate out (we can set offset to viewport height for nicer effect)
+            setModalDragOffset(window.innerHeight);
+            // small timeout to let the transform run visually then close
+            setTimeout(() => {
+                closeModal();
+            }, 180);
+        } else {
+            // reset to original position (animate back)
+            setModalDragOffset(0);
+            // resume autoplay after a short delay
+            modalInteractionTimeoutRef.current = setTimeout(() => {
+                setModalUserInteracting(false);
+                setModalAutoPlay(true);
+            }, 300);
+        }
+
+        setModalTouchStartY(null);
+        setModalDragging(false);
+    }, [modalTouchStartY, closeModal]);
 
     // Keyboard navigation for accessibility
     useEffect(() => {
@@ -539,24 +616,34 @@ const ImageCarousel = ({
                     </div>
                 )}
             </div>
-
             {/*  Level 2 - Modal Carousel */}
             {showModal && currentModalItem && (
+             <> 
+             
                 <div
                     className="fixed inset-0 z-50 flex items-end"
                     onClick={handleBackdropClick}
+                    // --- NEW: overlay touch handlers for drag-close (attached to same overlay) ---
+                    onTouchStart={handleOverlayTouchStart}
+                    onTouchMove={handleOverlayTouchMove}
+                    onTouchEnd={handleOverlayTouchEnd}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-title"
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/50" />
+                    <div className="absolute inset-0 bg-black/50"  onClick={()=>closeModal()}/>
 
                     {/* Modal Container - Scrollable */}
                     <div
                         ref={modalRef}
                         className="relative w-full bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
+                        // apply drag transform + transition only when needed
+                        style={{
+                            transform: `translateY(${modalDragOffset}px)`,
+                            transition: modalDragging ? "none" : "transform 220ms cubic-bezier(.22,.9,.35,1)"
+                        }}
                     >
 
                         {/* Modal Carousel */}
@@ -763,6 +850,7 @@ const ImageCarousel = ({
                         </div>
                     </div>
                 </div>
+             </>
             )}
         </>
     )

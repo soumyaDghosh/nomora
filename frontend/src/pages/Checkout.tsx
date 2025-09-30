@@ -116,7 +116,9 @@ export default function Checkout() {
 
         // Enforce 8-hour lead time for ALL bookings
         const hoursDiff = (selectedDate.getTime() - nowIST.getTime()) / (1000 * 60 * 60);
-        return hoursDiff >= 8;
+
+        //                       this logic ensure that if the time is more than 8 we can select from t+2 day and if it nearly to 8 it allows upto 8:05 PM
+        return hoursDiff >= 8 && ((new Date().getHours()<20 || (new Date().getHours()==20 && new Date().getMinutes()<=5)) || daysDiff>1);
     }, [getCurrentISTTime]);
 
     const calculateTotal = useCallback(() => {
@@ -227,8 +229,7 @@ export default function Checkout() {
         if (!trip) return [];
 
         return trip.timeSlots.map((slot: TimeSlot) => ({
-            ...slot,
-            isBookable: slot.available && (selectedDate ? isTimeSlotBookable(selectedDate, slot.time) : false),
+            ...slot,   isBookable: slot.available && (selectedDate ? isTimeSlotBookable(selectedDate, slot.time) : false),
         }));
     }, [trip, selectedDate, isTimeSlotBookable]);
 
@@ -335,7 +336,7 @@ export default function Checkout() {
                             >
                                 AC
                             </button>
-                            <button
+                            {/* <button
                                 onClick={() => setSelectedAcType("Non-AC")}
                                 className={`flex-1 py-3 px-4 rounded-lg border font-medium text-sm transition-colors cursor-pointer ${selectedAcType === "Non-AC"
                                     ? "bg-gray-900 text-white border-gray-900"
@@ -343,7 +344,7 @@ export default function Checkout() {
                                     }`}
                             >
                                 Non-AC
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

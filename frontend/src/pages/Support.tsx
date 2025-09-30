@@ -19,21 +19,14 @@ export default function Support() {
             id: "customize",
             question: "Can I customize my tour itinerary?",
             answer:
-                "Absolutely! Just let your chauffeur know the changes you'd like, and they'll do their best to optimize the route and schedule for you. Please note that factors like traffic, entry timings, and route changes may affect the overall itinerary. Places (like outside city limits) with separate pricing rules may not be feasible.",
+                "Currently, we do't offer customization. It impacts the number of places that can be covered within a timeframe and overall price, due to factors such as route adjustments, entry times, and traffic conditions.",
         },
         {
             id: "guests",
             question: "What is the maximum number of guests allowed?",
-            answer: `Guest count depends on the seating capacity of the car category you've booked. Here's a quick guide:
-Go
-3+1 Guests
-Comfort
-4+1 Guests
-Edge
-4+1 Guests
-Max
-6+1 Guests
-Note: +1 refers to the chauffeur.`,
+            answer: `Guest count depends on the seating capacity of the vehicle you’ve booked. Capacity details are provided on the relevant screens during booking.
+
+Note: '+1' refers to the chauffeur.`,
         },
         {
             id: "payment",
@@ -45,7 +38,7 @@ Note: +1 refers to the chauffeur.`,
             id: "chauffeur-details",
             question: "I haven't received my chauffeur details yet. What should I do?",
             answer:
-                "Chauffeur details are usually shared within 30 minutes of booking confirmation. If you haven't received them, please check your SMS, WhatsApp, and email (including the spam folder) once, and make sure your contact details are correct. If you still can't find them, just chat with us, and we'll resend the chauffeur and vehicle details right away.",
+                "Chauffeur details are provided ahead of your pickup, usually 4 hours before airport transfers or by 11 PM the night before a scheduled tour. If you haven’t received them, please check your SMS, WhatsApp, and email (including the spam folder) and ensure your contact details are correct. If you still can’t find them, simply chat with us, and we’ll resend the chauffeur and vehicle details immediately.",
         },
         {
             id: "chauffeur-not-responding",
@@ -151,7 +144,7 @@ Note: +1 refers to the chauffeur.`,
                                     {section.id === "guests" ? (
                                         <div>
                                             <p className="text-gray-600 leading-relaxed break-words mb-2">
-                                                Guest count depends on the seating capacity of the car category you've booked. Here"s a quick guide:
+                                                Guest count depends on the seating capacity of the vehicle you’ve booked. Capacity details are provided on the relevant screens during booking.
                                             </p>
 
                                             <div className="font-medium text-gray-900 mt-2 mb-1">
@@ -183,7 +176,7 @@ Note: +1 refers to the chauffeur.`,
                                             </div>
 
                                             <p className="text-gray-600 leading-relaxed break-words mb-2">
-                                                Note: +1 refers to the chauffeur.
+                                                Note: '+1' refers to the chauffeur.
                                             </p>
                                         </div>
                                     ) : (

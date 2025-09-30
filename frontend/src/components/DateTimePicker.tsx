@@ -257,6 +257,14 @@ const DateTimePicker = ({
         const istTime = getCurrentISTTime();
         const timeDiff = selectedDateTime.getTime() - istTime.getTime();
         const hoursDiff = timeDiff / (1000 * 60 * 60);
+        const hour = selectedDateTime.getHours();
+        console.log(hour);
+        
+        if (!(hour >= 6 && hour <22)) {
+            return 'Pickups between 10:00 PM and 6:00 AM are not available.';
+        }
+
+
 
         if (hoursDiff < 4) {
             return 'Booking must be at least 4 hours in advance';
