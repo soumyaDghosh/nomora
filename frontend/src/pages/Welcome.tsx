@@ -209,7 +209,7 @@ const Step4: React.FC<StepProps> = () => (
   </div>
 );
 
-const Step5: React.FC<Step5Props> = ({ _handleContinue }) => {
+const Step5: React.FC<Step5Props> = () => {
   const services = [
     {
       icon: "ri-plane-line",

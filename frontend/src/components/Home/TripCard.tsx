@@ -23,7 +23,6 @@ const TripCard = ({
     price,
     duration,
     pickup,
-    _chauffeur,
     tag
 }: TripCardProps) => {
     const tagColors = {
