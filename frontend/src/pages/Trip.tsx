@@ -259,11 +259,12 @@ export default function Trip() {
                         </div>
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded-lg flex-shrink-0">
-                                <i className="ri-thermometer-line w-4 h-4 flex items-center justify-center text-yellow-400" />
+                                 {/* <i className="ri-contrast-drop-line w-3 h-6 text-gray-600" ri-thermometer-line/> */}
+                                <i className="ri-temp-cold-line w-4 h-4 flex items-center justify-center text-yellow-400" />
                             </div>
                             <div className="min-w-0 flex-1">
                                 <p className="text-xs text-gray-500">Air-Conditioned</p>
-                                <p className="text-sm font-medium break-words">Included</p>
+                                <p className="text-sm font-medium break-words">AC Type</p>
                             </div>
                         </div>
                     </div>

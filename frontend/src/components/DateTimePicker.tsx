@@ -260,8 +260,8 @@ const DateTimePicker = ({
         const hour = selectedDateTime.getHours();
         console.log(hour);
         
-        if (!(hour >= 6 && hour <22)) {
-            return 'Pickups between 10:00 PM and 6:00 AM are not available.';
+        if (!(hour >= 6 && hour <20)) {
+            return 'Pickups between 8:00 PM and 6:00 AM are not available.';
         }
 
 

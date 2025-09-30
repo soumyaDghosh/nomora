@@ -19,7 +19,7 @@ export default function Support() {
             id: "customize",
             question: "Can I customize my tour itinerary?",
             answer:
-                "Currently, we do't offer customization. It impacts the number of places that can be covered within a timeframe and overall price, due to factors such as route adjustments, entry times, and traffic conditions.",
+                "Currently, we don't offer customization. It impacts the number of places that can be covered within a timeframe and overall price, due to factors such as route adjustments, entry times, and traffic conditions.",
         },
         {
             id: "guests",
@@ -141,47 +141,7 @@ Note: '+1' refers to the chauffeur.`,
                             <div className="px-4 pb-4 border-t border-gray-100">
                                 {/* FIXED: Added proper spacing between question and answer */}
                                 <div className="space-y-3 mb-4 pt-4">
-                                    {section.id === "guests" ? (
-                                        <div>
-                                            <p className="text-gray-600 leading-relaxed break-words mb-2">
-                                                Guest count depends on the seating capacity of the vehicle you’ve booked. Capacity details are provided on the relevant screens during booking.
-                                            </p>
-
-                                            <div className="font-medium text-gray-900 mt-2 mb-1">
-                                                Go
-                                            </div>
-                                            <div className="text-gray-600 text-sm mb-2">
-                                                3+1 Guests
-                                            </div>
-
-                                            <div className="font-medium text-gray-900 mt-2 mb-1">
-                                                Comfort
-                                            </div>
-                                            <div className="text-gray-600 text-sm mb-2">
-                                                4+1 Guests
-                                            </div>
-
-                                            <div className="font-medium text-gray-900 mt-2 mb-1">
-                                                Edge
-                                            </div>
-                                            <div className="text-gray-600 text-sm mb-2">
-                                                4+1 Guests
-                                            </div>
-
-                                            <div className="font-medium text-gray-900 mt-2 mb-1">
-                                                Max
-                                            </div>
-                                            <div className="text-gray-600 text-sm mb-2">
-                                                6+1 Guests
-                                            </div>
-
-                                            <p className="text-gray-600 leading-relaxed break-words mb-2">
-                                                Note: '+1' refers to the chauffeur.
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        formatAnswerText(section.answer)
-                                    )}
+                                    {formatAnswerText(section.answer)}
                                 </div>
 
                                 <button

@@ -82,7 +82,7 @@ const TripCard = ({
                     <span className="text-xs text-gray-500">Chauffeur Speaks: {chauffeur}</span>
                 </div> */}
                 <div className="flex items-center gap-2 mb-4">
-                    <i className="ri-thermometer-line w-4 h-4 flex items-center justify-center text-gray-400" />
+                    <i className="ri-temp-cold-line w-3 h-6 text-gray-600" />
                     <span className="text-xs text-gray-500">Air-Conditioned</span>
                 </div>
 

@@ -140,17 +140,9 @@ export default function Confirmation() {
                         </div>
 
                         <div className="space-y-2">
-                            {/* <div className="flex items-start gap-2">
-                                <i className="ri-information-line text-gray-600 text-sm mt-0.5"></i>
-                                <p className="text-sm text-gray-800">Chauffeur will be assigned within 30 mins.</p>
-                            </div> */}
-                            <div className="flex items-start gap-2">
+                            {!isAirportTransfer && <div className="flex items-start gap-2">
                                 <i className="ri-information-line text-gray-600 text-sm mt-0.5"></i>
                                 <p className="text-sm text-gray-800">Chauffeur will be assigned by 11 PM the night before.</p>
-                            </div>
-                            {!isAirportTransfer && <div className="flex items-start gap-2">
-                                <i className="ri-map-pin-time-line text-gray-600 text-sm mt-0.5"></i>
-                                <p className="text-sm text-gray-800">Chauffeur will be at pickup 30 mins ahead</p>
                             </div>}
                             {isAirportTransfer && (
                                 <div className="flex items-start gap-2">
@@ -158,6 +150,14 @@ export default function Confirmation() {
                                     <p className="text-sm text-gray-800">Chauffeur will be assigned 4 hours before pickup {/*Chauffeur will be at pickup 15–30 mins ahead.*/}</p>
                                 </div>
                             )}
+                            {!isAirportTransfer && <div className="flex items-start gap-2">
+                                <i className="ri-map-pin-time-line text-gray-600 text-sm mt-0.5"></i>
+                                <p className="text-sm text-gray-800">Chauffeur will be at pickup 30 mins ahead</p>
+                            </div>}
+                            {isAirportTransfer && <div className="flex items-start gap-2">
+                                <i className="ri-map-pin-time-line text-gray-600 text-sm mt-0.5"></i>
+                                <p className="text-sm text-gray-800">Chauffeur will be at pickup 15-30 min ahead</p>
+                            </div>}
                             <div className="flex items-start gap-2">
                                 <i className="ri-notification-line text-gray-600 text-sm mt-0.5"></i>
                                 <p className="text-sm text-gray-800">Car and chauffeur details will be shared via notification.</p>
