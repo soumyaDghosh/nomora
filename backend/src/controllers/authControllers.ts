@@ -43,7 +43,7 @@ export const sendOTP = async (req: Request, res: Response) => {
 
 export const verifyOTP = async (req: Request, res: Response) => {
     try {
-        const { phone, otp } = req.body ?? {};
+        const { phone, otp ,hotelId} = req.body ?? {};
         if (!phone) return res.status(400).json({ message: "phone is required" });
         if (!otp) return res.status(400).json({ message: "otp is required" });
 
@@ -58,8 +58,8 @@ export const verifyOTP = async (req: Request, res: Response) => {
 
         if (!user) {
             result = await pool.query(
-                "INSERT INTO users (phone) VALUES ($1) RETURNING *",
-                [phone]
+                "INSERT INTO users (phone,hotel_id) VALUES ($1,$2) RETURNING *",
+                [phone,hotelId]
             );
             user = result.rows[0];
             isNewUser = true;
