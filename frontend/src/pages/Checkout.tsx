@@ -112,7 +112,7 @@ export default function Checkout() {
         const daysDiff = Math.floor((selectedDateStart.getTime() - todayStart.getTime()) / (1000 * 60 * 60 * 24));
 
         // Outside booking window (T-1 or >T+7)
-        if (daysDiff < 0 || daysDiff > 7) return false;
+        if (daysDiff <=0 || daysDiff > 7) return false;
 
         // Enforce 8-hour lead time for ALL bookings
         const hoursDiff = (selectedDate.getTime() - nowIST.getTime()) / (1000 * 60 * 60);

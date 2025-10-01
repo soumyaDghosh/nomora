@@ -241,7 +241,7 @@ const Step5: React.FC<Step5Props> = () => {
         </h1>
       </div>
 
-      <div className="flex-1 w-full space-y-2 mb-6 px-4">
+      <div className="flex-1 w-full space-y-2 mb-1 px-4">
         {services.map((service, index) => (
           <div key={index} className="flex items-center space-x-4 py-2">
             <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
@@ -255,12 +255,6 @@ const Step5: React.FC<Step5Props> = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="text-center mb-4 px-4">
-        <p className="text-gray-600 text-sm">
-          Ready to explore? Let&apos;s get started!
-        </p>
       </div>
     </div>
   );
