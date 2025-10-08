@@ -140,7 +140,7 @@ export default async function createBooking(req: Request, res: Response) {
         if (process.env.NODE_ENV !== "production") {
             paymentOrder = await getPaymentOrder({
                 receipt_id: crypto.randomUUID(),
-                amount: Math.round(price * 0.25 * 100)
+                amount: Math.round(price * 100)
             });
         }
 

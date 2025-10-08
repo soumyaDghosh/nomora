@@ -206,7 +206,7 @@ export default function Checkout() {
 
     const selectedCarTypeData = useMemo(() => trip?.carTypes.find((car: CarType) => car.id === selectedCarType), [trip, selectedCarType]);
 
-    const { basePrice, tax, total, advanceAmount } = useMemo(() => {
+    const { basePrice, tax, total } = useMemo(() => {
         const base = selectedCarTypeData
             ? (selectedAcType === "AC"
                 ? selectedCarTypeData.acPrice
@@ -215,13 +215,13 @@ export default function Checkout() {
 
         const taxAmount = base * (trip?.taxRate || 0);
         const totalAmount = calculateTotal();
-        const advance = totalAmount * 0.25;
+        // const advance = totalAmount * 0.25;
 
         return {
             basePrice: base,
             tax: taxAmount,
             total: totalAmount,
-            advanceAmount: advance,
+            // advanceAmount: advance,
         };
     }, [selectedCarTypeData, selectedAcType, trip, calculateTotal]);
 
@@ -535,10 +535,10 @@ export default function Checkout() {
                                 <span className="font-medium text-gray-900">Total</span>
                                 <span className="text-lg font-bold text-gray-900">{formatPrice(total)}</span>
                             </div>
-                            <div className="mt-1.5 flex items-center justify-between">
+                            {/* <div className="mt-1.5 flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-900">Advance (25%)</span>
                                 <span className="font-bold text-gray-900">{formatPrice(advanceAmount)}</span>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="bg-green-50 p-3 rounded-lg">
                             <div className="flex items-center gap-2 text-green-800 text-sm">
@@ -687,7 +687,7 @@ export default function Checkout() {
                                 {loading && (
                                     <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                                 )}
-                                Confirm Booking • {total > 0 ? formatPrice(advanceAmount) : ""}
+                                Confirm Booking
                             </div>
                             <button
                                 id="confirmBooking"

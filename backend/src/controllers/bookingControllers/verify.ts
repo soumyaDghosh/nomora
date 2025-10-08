@@ -77,7 +77,7 @@ export default async function verifyBooking(req: Request, res: Response) {
             const bookingResult = await client.query(
                 `
                 UPDATE bookings
-                SET payment_status = 'advance-paid'
+                SET payment_status = 'paid'
                 WHERE id = $1
                 RETURNING id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
                 `,
@@ -254,7 +254,7 @@ Time: ${booking.time}
             await client.query("COMMIT");
 
             return res.status(400).json({
-                message: `Payment ${status.toLowerCase()}. If money has been deducted, it will be refunded shortly. You can retry payment again with different payment method.`
+                message: `Payment ${status.toLowerCase()}. Please check your bank statement before retrying. If the amount has been deducted, it will be refunded within 3–5 business days, depending on bank’s processing time. `
             });
         }
     }

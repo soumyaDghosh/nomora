@@ -5,7 +5,7 @@ export const getPaymentStatusConfig = (status: string) => {
         case "unpaid":
             return { label: "Unpaid", bgColor: "bg-orange-100", textColor: "text-orange-800" };
         case "advance-paid":
-            return { label: "Advance Paid", bgColor: "bg-yellow-100", textColor: "text-yellow-800" };
+        return { label: "Advance Paid", bgColor: "bg-yellow-100", textColor: "text-yellow-800" };
         case "refunded":
             return { label: "Refunded", bgColor: "bg-purple-100", textColor: "text-purple-800" };
         default:

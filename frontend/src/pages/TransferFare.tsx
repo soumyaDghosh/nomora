@@ -125,10 +125,10 @@ export default function TransferFare() {
                                 <span className="font-medium text-gray-900">Total Fare</span>
                                 <span className="text-lg font-bold text-gray-900">{formatPrice(transfer.baseFare + transfer_tax + transfer.airportToll)}</span>
                             </div>
-                            <div className="mt-1.5 flex items-center justify-between">
+                            {/* <div className="mt-1.5 flex items-center justify-between">
                                 <span className="text-sm font-medium text-gray-900">Advance (25%)</span>
                                 <span className="font-bold text-gray-900">{formatPrice((transfer.baseFare + transfer_tax+transfer.airportToll) * 0.25)}</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Trust & Flexibility integrated within Fare Breakdown */}
