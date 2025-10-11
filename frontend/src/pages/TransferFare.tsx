@@ -259,7 +259,7 @@ export default function TransferFare() {
                 </div>
 
                 {/* Payment Information */}
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                {/* <div className="bg-green-50 border border-green-200 rounded-xl p-4">
                     <div className="flex items-start gap-3">
                         <i className="ri-money-rupee-circle-line text-green-600 text-lg mt-0.5" />
                         <div>
@@ -267,7 +267,7 @@ export default function TransferFare() {
                             <p className="text-sm text-green-800">Pay in Cash/UPI directly to your chauffeur after the trip</p>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             {/* Fixed Bottom CTA */}
@@ -283,7 +283,7 @@ export default function TransferFare() {
                             {loading && (
                                 <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                             )}
-                            Book Now • {formatPrice((transfer.baseFare +transfer_tax + transfer.airportToll) * 0.25)}
+                            Pay Now • {formatPrice((transfer.baseFare +transfer_tax + transfer.airportToll))}
                         </div>
                         <button
                             id="bookNow"

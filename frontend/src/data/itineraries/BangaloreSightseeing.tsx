@@ -290,7 +290,7 @@ export const BangaloreSightseeing: Trip = {
         // },
         {
             id: "sedan",
-            name: "Comfort",
+            name: "Prime",
             seats: "4+1 Seats",
             description: "Dzire, Etios, Xcent",
             acPrice: 3134,

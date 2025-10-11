@@ -393,7 +393,7 @@ export const tripData: Record<string, Trip> = {
             },
             {
                 id: "sedan",
-                name: "Comfort",
+                name: "Prime",
                 seats: "4+1 Seats",
                 description: "Dzire, Etios, Xcent",
                 acPrice: 3134,

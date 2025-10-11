@@ -18,7 +18,7 @@ export default function Transfer() {
     );
     const [selectedTerminal, setSelectedTerminal] = useState<"T1" | "T2" | "">("T1");
     const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
-    const [guestCount, setGuestCount] = useState<number>(1);
+    const [guestCount, setGuestCount] = useState<number>(0);
 
     const isFormValid = useCallback(() => {
         return !!selectedDateTime;
@@ -220,7 +220,10 @@ export default function Transfer() {
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-calendar-line text-lg text-orange-600" />
-                            <span className="font-medium text-gray-900">Schedule</span>
+                            <div>
+                                <span className="font-medium text-gray-900">Schedule</span>
+                                <p className="text-sm text-gray-600">Book up to 4 hours in advance</p>
+                            </div>
                         </div>
                     </div>
                     <div className="px-4 pb-4">
@@ -238,13 +241,12 @@ export default function Transfer() {
                         <div className="flex items-center gap-3">
                             <i className="ri-group-line text-lg text-cyan-600" />
                             <span className="font-medium text-gray-900">Guest Count</span>
-                            <span className="text-xs text-gray-500">(Optional)</span>
                         </div>
                     </div>
-                    <div className="px-4 pb-4">
+                    <div className="px-4">
                         <div className="flex items-center justify-between">
                             <span className="text-sm text-gray-600">Number of guests</span>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 pt-4">
                                 <button
                                     onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
                                     disabled={guestCount <= 1}
@@ -262,7 +264,7 @@ export default function Transfer() {
                                 </button>
                             </div>
                         </div>
-                        <p className="text-xs text-gray-500 mt-2">Maximum 4 guests allowed</p>
+                        <p className="text-xs text-gray-500 mb-4">Maximum 4 guests allowed</p>
                     </div>
                 </div>
 

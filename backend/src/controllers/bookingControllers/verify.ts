@@ -113,8 +113,7 @@ ${booking.product_type !== "airport_transfer" ? `Listing ID: ${booking.listing_i
 ${booking.product_type === "airport_transfer" ? `Transfer Type: ${booking.transfer_type}<br />` : ""}
 ${booking.product_type === "airport_transfer" ? `Terminal: ${booking.terminal}<br />` : ""}
 ${booking.product_type === "airport_transfer" ? `Guest Count: ${booking.guest_count}<br /><br />` : ""}
-Car Type: ${booking.product_type === "airport_transfer" ? 'Comfort' : booking.car_type}<br />
-AC Type: ${booking.product_type === "airport_transfer" ? 'AC' : booking.ac_type}<br /><br />
+Car Type: ${booking.product_type === "airport_transfer" ? 'Prime' : booking.car_type}<br />
 Price: ₹${booking.price}<br />
 Advance: ₹${booking.paid_amount}<br />
 Payment Status: ${booking.payment_status}<br /><br />

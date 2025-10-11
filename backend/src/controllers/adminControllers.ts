@@ -138,7 +138,7 @@ export const createVehicle = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "car_number is required" });
         }
 
-        const validCarTypes = ["Go", "Comfort", "Edge", "Max"];
+        const validCarTypes = ["Go", "Prime", "Edge", "Max"];
         if (!validCarTypes.includes(car_type)) {
             return res.status(400).json({
                 message: `Invalid car_type. Must be one of: ${validCarTypes.join(", ")}`,

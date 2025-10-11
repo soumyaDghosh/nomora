@@ -46,8 +46,8 @@ export default async function createBooking(req: Request, res: Response) {
             if (!listing_id) return res.status(400).json({ message: "listing_id is required" });
             if (!ac_type || !["AC", "Non-AC"].includes(ac_type))
                 return res.status(400).json({ message: "ac_type must be either 'AC' or 'Non-AC'" });
-            if (!car_type || !["Go", "Comfort", "Edge", "Max"].includes(car_type))
-                return res.status(400).json({ message: "car_type must be one of: Go, Comfort, Edge, Max" });
+            if (!car_type || !["Go", "Prime", "Edge", "Max"].includes(car_type))
+                return res.status(400).json({ message: "car_type must be one of: Go, Prime, Edge, Max" });
             if (!validateDate(date)) return res.status(400).json({ message: "date must be in format YYYY-MM-DD" });
             if (!validateTime(time)) return res.status(400).json({ message: "time must be in format h:mm AM/PM" });
 
@@ -130,7 +130,7 @@ export default async function createBooking(req: Request, res: Response) {
             RETURNING id
             `,
             [
-                user_id, product_type, ac_type ?? "AC", car_type ?? "Comfort", transfer_type ?? null,
+                user_id, product_type, ac_type ?? "AC", car_type ?? "Prime", transfer_type ?? null,
                 terminal ?? null, guest_count ?? null, date, time, price, hotel_id, listing_id ?? null
             ]
         );
@@ -154,6 +154,7 @@ export default async function createBooking(req: Request, res: Response) {
         });
     }
     catch (error) {
+        console.log(error)
         await client.query("ROLLBACK");
 
         if (error instanceof DatabaseError) {

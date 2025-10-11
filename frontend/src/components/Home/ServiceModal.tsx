@@ -28,7 +28,7 @@ export default function ServiceModal({ isOpen, onClose, type, onContinue }: Serv
             {
                 icon: 'ri-time-line',
                 title: 'Duration Options',
-                subtitle: '8 hrs or 12 hrs'
+                subtitle: '8 hrs to 12 hrs'
             },
             {
                 icon: 'ri-car-line',

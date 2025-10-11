@@ -81,7 +81,7 @@ if (!global.__dbPool__) {
       ac_type VARCHAR(20)
         CHECK (ac_type IN ('AC', 'Non-AC')),
       car_type VARCHAR(20)
-        CHECK (car_type IN ('Go', 'Comfort', 'Edge', 'Max')),
+        CHECK (car_type IN ('Go', 'Prime', 'Edge', 'Max')),
       transfer_type VARCHAR(30)
         CHECK (transfer_type IN ('Drop to Airport', 'Pickup from Airport')),
       terminal VARCHAR(50),

@@ -28,12 +28,12 @@ export default function Support() {
 
 Note: '+1' refers to the chauffeur.`,
         },
-        {
-            id: "payment",
-            question: "How and when do I make the payment?",
-            answer:
-                "You can pay your chauffeur directly at the end of the trip using Cash or UPI (no cards for offline payments). Your payment details are available in My Bookings. If you'd prefer paying online, just chat with us and we'll share an official, secure Razorpay link.",
-        },
+        // {
+        //     id: "payment",
+        //     question: "How and when do I make the payment?",
+        //     answer:
+        //         "You can pay your chauffeur directly at the end of the trip using Cash or UPI (no cards for offline payments). Your payment details are available in My Bookings. If you'd prefer paying online, just chat with us and we'll share an official, secure Razorpay link.",
+        // },
         {
             id: "chauffeur-details",
             question: "I haven't received my chauffeur details yet. What should I do?",
@@ -73,8 +73,8 @@ Note: '+1' refers to the chauffeur.`,
                 return <br key={index} />;
             }
 
-            // Handle car category headers (Go, Comfort, Edge, Max)
-            if (["Go", "Comfort", "Edge", "Max"].includes(line.trim())) {
+            // Handle car category headers (Go, Prime, Edge, Max)
+            if (["Go", "Prime", "Edge", "Max"].includes(line.trim())) {
                 return (
                     <div key={index} className="font-medium text-gray-900 mt-3 mb-1">
                         {line}

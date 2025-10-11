@@ -6,7 +6,7 @@ export interface MyBooking {
   product_type: "sameday" | "city_sightseeing" | "airport_transfer" | "overnight" | "experiences";
   listing_id?: string;
   ac_type: "AC" | "Non-AC"
-  car_type: "Go" | "Comfort" | "Edge" | "Max"
+  car_type: "Go" | "Prime" | "Edge" | "Max"
   transfer_type?: "Drop to Airport" | "Pickup from Airport"
   terminal?: string
   guest_count?: number

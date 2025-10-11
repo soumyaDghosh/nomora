@@ -1,9 +1,10 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useBookTour from "../hooks/useBookTour";
 import useAuthStore from "../store/authStore";
 import { tripData, type CarType, type TimeSlot } from "../data/tripData";
 import { formatPrice } from "../utils/formatPrice";
+import { toast } from "sonner";
 
 type EnhancedTimeSlot = TimeSlot & {
     isBookable: boolean;
@@ -28,6 +29,8 @@ export default function Checkout() {
     const { hotel } = useAuthStore();
 
     const [selectedAcType, setSelectedAcType] = useState<"AC" | "Non-AC">("AC");
+    // const [seatingCapacity, setSeatingCapacity] = useState<number>(0);
+    const [guestCount, setGuestCount] = useState<number>(0);
     const [selectedCarType, setSelectedCarType] = useState<CarType["id"] | "">("");
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("");
@@ -268,6 +271,11 @@ export default function Checkout() {
     const handleConfirmBooking = async () => {
         if (!isCheckoutReady()) return;
 
+        if (guestCount > Number(selectedCarTypeData?.seats?.[0])) {
+            toast.error("Guest count cannot be more than the seating capacity of the selected vehicle category");
+            return false;
+        }
+
         const { success, bookingId } = await bookTour({
             product_type: trip.product_type,
             ac_type: selectedAcType,
@@ -318,7 +326,7 @@ export default function Checkout() {
             </div>
 
             <div className="px-4 py-6 flex flex-col gap-4">
-                <div className="bg-white rounded-lg border border-gray-200">
+                {/* <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                             <i className="ri-temp-cold-line text-lg text-blue-600" />
@@ -336,7 +344,7 @@ export default function Checkout() {
                             >
                                 AC
                             </button>
-                            {/* <button
+                            <button
                                 onClick={() => setSelectedAcType("Non-AC")}
                                 className={`flex-1 py-3 px-4 rounded-lg border font-medium text-sm transition-colors cursor-pointer ${selectedAcType === "Non-AC"
                                     ? "bg-gray-900 text-white border-gray-900"
@@ -344,7 +352,39 @@ export default function Checkout() {
                                     }`}
                             >
                                 Non-AC
-                            </button> */}
+                            </button>
+                        </div>
+                    </div>
+                </div> */}
+
+                {/*  */}
+                <div className="bg-white rounded-xl border border-gray-200 mb-4">
+                    <div className="p-4 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                            <i className="ri-group-line text-lg text-cyan-600" />
+                            <span className="font-medium text-gray-900">Guest Count</span>
+                        </div>
+                    </div>
+                    <div className="px-4 py-2">
+                        <div className="flex items-center justify-between">
+                            <span className="text-md text-gray-600">Number of guests</span>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                                    disabled={guestCount <= 1}
+                                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <i className="ri-subtract-line" />
+                                </button>
+                                <span className="text-lg font-medium text-gray-900 w-8 text-center">{guestCount}</span>
+                                <button
+                                    onClick={() => setGuestCount(Math.min(6, guestCount + 1))}
+                                    disabled={guestCount >= 6}
+                                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <i className="ri-add-line" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -621,7 +661,7 @@ export default function Checkout() {
                     )}
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <div className="flex items-start gap-3">
                         <i className="ri-money-rupee-circle-line text-blue-600 text-lg mt-0.5" />
                         <div>
@@ -629,7 +669,7 @@ export default function Checkout() {
                             <p className="text-sm text-blue-800">Pay in Cash/UPI directly to your chauffeur on trip completion</p>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 {/* Your Selection - Now includes seating capacity */}
                 {(selectedDate || selectedTimeSlot || selectedCarType) && (
@@ -687,8 +727,9 @@ export default function Checkout() {
                                 {loading && (
                                     <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                                 )}
-                                Confirm Booking
+                                Pay Now • {total > 0 ? formatPrice(total) : ""}
                             </div>
+                            {/* Suspicious Button */}
                             <button
                                 id="confirmBooking"
                                 onClick={handleConfirmBooking}
