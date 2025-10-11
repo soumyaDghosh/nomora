@@ -84,58 +84,56 @@ export default function Home() {
   const allTrips = [
     {
       id: "heritage-tour-8hr",
-      title: "Bangalore Heritage City Tour",
-      description: "Explore Tipu Sultan Palace, Bangalore Fort & Bull Temple",
+      title: "Essence of Bangalore – City’s Core Highlights",
+      description: "Experience the Heart of Bangalore, Heritage, Temples & Culture",
       imageUrl: "https://readdy.ai/api/search-image?query=Beautiful%20historic%20Tipu%20Sultan%20Palace%20in%20Bangalore%20with%20Indo-Islamic%20architecture%2C%20ornate%20wooden%20pillars%20and%20arches%2C%20golden%20sunlight%20filtering%20through%2C%20traditional%20Indian%20heritage%20building%2C%20detailed%20craftsmanship%2C%20warm%20ambient%20lighting%2C%20tourism%20photography%20style%2C%20clear%20blue%20sky%2C%20lush%20gardens&width=400&height=300&seq=heritage1&orientation=landscape",
-      price: 3200,
-      duration: "8 hours",
-      pickup: true,
-      chauffeur: "Hindi, English, Kannada",
+      price: 3999,
+      duration: "9 hours",
+      category: "city_sightseeing",
       tag: {
-        text: "Highlights",
+        text: "Top Pick",
         color: "orange" as const
       }
     },
-    {
-      id: "heritage-tour-12hr",
-      title: "Extended Bangalore Heritage Tour",
-      description: "Complete city tour including Lalbagh, ISKCON & Cubbon Park",
-      imageUrl: "https://readdy.ai/api/search-image?query=Lalbagh%20Botanical%20Garden%20Bangalore%20with%20beautiful%20glass%20house%20and%20colorful%20flowers%2C%20botanical%20photography%2C%20serene%20garden%20landscape%2C%20Indian%20heritage%20garden%2C%20vibrant%20flora%2C%20peaceful%20atmosphere%2C%20tourism%20photography%20style%2C%20natural%20lighting&width=400&height=300&seq=lalbagh1&orientation=landscape",
-      price: 4200,
-      duration: "12 hours",
-      pickup: true,
-      chauffeur: "Hindi, English, Kannada",
-      tag: {
-        text: "Extended",
-        color: "blue" as const
-      }
-    },
-    {
-      id: "nandi-sunrise",
-      title: "Nandi Hills Sunrise Trek",
-      description: "Watch the spectacular sunrise from 4,851 feet above sea level",
-      imageUrl: "https://readdy.ai/api/search-image?query=Spectacular%20sunrise%20view%20from%20Nandi%20Hills%20with%20golden%20orange%20sky%2C%20silhouette%20of%20hills%20and%20valleys%2C%20misty%20morning%20landscape%2C%20peaceful%20nature%20scene%2C%20dramatic%20lighting%2C%20photography%20masterpiece%2C%20vibrant%20colors%2C%20serene%20atmosphere%2C%20Karnataka%20tourism%2C%20breathtaking%20vista&width=400&height=300&seq=nandi1&orientation=landscape",
-      price: 3200,
-      duration: "Full-Day",
-      pickup: true,
-      chauffeur: "Hindi, English, Kannada",
-      tag: {
-        text: "Nature",
-        color: "green" as const
-      }
-    },
+    // {
+    //   id: "heritage-tour-12hr",
+    //   title: "Extended Bangalore Heritage Tour",
+    //   description: "Complete city tour including Lalbagh, ISKCON & Cubbon Park",
+    //   imageUrl: "https://readdy.ai/api/search-image?query=Lalbagh%20Botanical%20Garden%20Bangalore%20with%20beautiful%20glass%20house%20and%20colorful%20flowers%2C%20botanical%20photography%2C%20serene%20garden%20landscape%2C%20Indian%20heritage%20garden%2C%20vibrant%20flora%2C%20peaceful%20atmosphere%2C%20tourism%20photography%20style%2C%20natural%20lighting&width=400&height=300&seq=lalbagh1&orientation=landscape",
+    //   price: 4200,
+    //   duration: "12 hours",
+    //   pickup: true,
+    //   chauffeur: "Hindi, English, Kannada",
+    //   tag: {
+    //     text: "Extended",
+    //     color: "blue" as const
+    //   }
+    // },
+    // {
+    //   id: "nandi-sunrise",
+    //   title: "Nandi Hills Sunrise Trek",
+    //   description: "Watch the spectacular sunrise from 4,851 feet above sea level",
+    //   imageUrl: "https://readdy.ai/api/search-image?query=Spectacular%20sunrise%20view%20from%20Nandi%20Hills%20with%20golden%20orange%20sky%2C%20silhouette%20of%20hills%20and%20valleys%2C%20misty%20morning%20landscape%2C%20peaceful%20nature%20scene%2C%20dramatic%20lighting%2C%20photography%20masterpiece%2C%20vibrant%20colors%2C%20serene%20atmosphere%2C%20Karnataka%20tourism%2C%20breathtaking%20vista&width=400&height=300&seq=nandi1&orientation=landscape",
+    //   price: 3200,
+    //   duration: "Full-Day",
+    //   pickup: true,
+    //   chauffeur: "Hindi, English, Kannada",
+    //   tag: {
+    //     text: "Nature",
+    //     color: "green" as const
+    //   }
+    // },
     {
       id: "mysore-palace",
-      title: "Mysore Palace & Gardens",
-      description: "Royal heritage tour with magnificent palace architecture",
+      title: "Royal Mysore – Heritage & Gardens Day Tour",
+      description: "Palaces, Temples, Sunset Hills & Musical Fountain Experience",
       imageUrl: "https://readdy.ai/api/search-image?query=Mysore%20Palace%20with%20beautiful%20gardens%2C%20golden%20architecture%20and%20royal%20heritage%20building%2C%20Indian%20palace%20photography%2C%20majestic%20historical%20monument%20with%20intricate%20details%2C%20bright%20daylight%2C%20clear%20blue%20sky%2C%20professional%20travel%20photography%2C%20vibrant%20colors%2C%20detailed%20architecture&width=400&height=300&seq=mysore1&orientation=landscape",
-      price: 4999,
+      price: 5999,
       duration: "Full-Day",
-      pickup: true,
-      chauffeur: "Hindi, English, Kannada",
+      category: "same_day",
       tag: {
         text: "Popular",
-        color: "red" as const
+        color: "purple" as const
       }
     }
   ];
@@ -200,7 +198,7 @@ export default function Home() {
                 {...trip}
               />
               <Link
-                id="tripLink"
+                id={trip.id}
                 to={`/${hotel?.id}/trip/${trip.id}`}
                 className="absolute inset-0 text-transparent"
               >

@@ -7,22 +7,21 @@ interface TripCardProps {
   imageUrl: string;
   price: number;
   duration: string;
-  pickup: boolean;
-  chauffeur: string;
+  category: string;
   tag?: {
     text: string;
-    color: "orange" | "red" | "green" | "blue";
+    color: "orange" | "red" | "green" | "blue" | "purple";
   };
 }
 
 const TripCard = ({
-  // id,
+  id,
   title,
   description,
   imageUrl,
   price,
   duration,
-  pickup,
+  category,
   tag,
 }: TripCardProps) => {
   const tagColors = {
@@ -30,6 +29,7 @@ const TripCard = ({
     red: "bg-red-500 text-white",
     green: "bg-green-500 text-white",
     blue: "bg-blue-500 text-white",
+    purple: "bg-purple-500 text-white"
   };
 
   return (
@@ -68,12 +68,12 @@ const TripCard = ({
             <i className="ri-car-line w-4 h-4 flex items-center justify-center" />
             <span>Private Car</span>
           </div>
-          {pickup && (
+          {/* {pickup && (
             <div className="flex items-center gap-1">
               <i className="ri-map-pin-line w-4 h-4 flex items-center justify-center" />
               <span>Pickup & Drop</span>
             </div>
-          )}
+          )} */}
           <div className="flex items-center gap-1">
             <i className="ri-time-line w-4 h-4 flex items-center justify-center" />
             <span>{duration}</span>
