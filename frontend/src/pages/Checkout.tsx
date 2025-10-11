@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useBookTour from "../hooks/useBookTour";
 import useAuthStore from "../store/authStore";
@@ -28,7 +28,7 @@ export default function Checkout() {
 
     const { hotel } = useAuthStore();
 
-    const [selectedAcType, setSelectedAcType] = useState<"AC" | "Non-AC">("AC");
+    const [selectedAcType] = useState<"AC" | "Non-AC">("AC");
     // const [seatingCapacity, setSeatingCapacity] = useState<number>(0);
     const [guestCount, setGuestCount] = useState<number>(0);
     const [selectedCarType, setSelectedCarType] = useState<CarType["id"] | "">("");

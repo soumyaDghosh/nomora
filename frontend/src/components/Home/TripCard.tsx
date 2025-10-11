@@ -15,13 +15,13 @@ interface TripCardProps {
 }
 
 const TripCard = ({
-  id,
+  // id,
   title,
   description,
   imageUrl,
   price,
   duration,
-  category,
+  // category,
   tag,
 }: TripCardProps) => {
   const tagColors = {
