@@ -5,12 +5,12 @@ import useCreatePayment from "./useCreatePayment";
 
 interface BookTourProps {
     product_type: string;
-    ac_type: string;
     car_type: string;
     date: string;
     time: string;
     price: number;
     listing_id: string;
+    guest_count: number;
 }
 
 interface BookTourResult {
@@ -25,12 +25,12 @@ export default function useBookTour() {
 
     const bookTour = async ({
         product_type,
-        ac_type,
         car_type,
         date,
         time,
         price,
-        listing_id
+        listing_id,
+        guest_count
     }: BookTourProps): Promise<BookTourResult> => {
         try {
             setLoading(true);
@@ -39,12 +39,12 @@ export default function useBookTour() {
                 `${import.meta.env.VITE_SERVER_URL}/api/booking/create`,
                 {
                     product_type,
-                    ac_type,
                     car_type,
                     date,
                     time,
                     price,
-                    listing_id
+                    listing_id,
+                    guest_count
                 },
                 { withCredentials: true }
             );

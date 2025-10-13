@@ -28,10 +28,8 @@ export default function Checkout() {
 
     const { hotel } = useAuthStore();
 
-    const [selectedAcType] = useState<"AC" | "Non-AC">("AC");
-    // const [seatingCapacity, setSeatingCapacity] = useState<number>(0);
-    const [guestCount, setGuestCount] = useState<number>(0);
     const [selectedCarType, setSelectedCarType] = useState<CarType["id"] | "">("");
+    const [guestCount, setGuestCount] = useState(0);
     const [selectedDate, setSelectedDate] = useState<string>("");
     const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>("");
     const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
@@ -130,20 +128,27 @@ export default function Checkout() {
         const carType = trip.carTypes.find((car: CarType) => car.id === selectedCarType);
         if (!carType) return 0;
 
-        const basePrice = selectedAcType === "AC" ? carType.acPrice : carType.nonAcPrice;
+        const basePrice = carType.acPrice;
         const tax = basePrice * trip.taxRate;
 
         return basePrice + tax;
-    }, [selectedCarType, selectedAcType, trip]);
+    }, [selectedCarType, trip]);
 
     const isCheckoutReady = useCallback(() => {
+        if (guestCount === 0) return false;
         if (!selectedCarType || !selectedDate || !selectedTimeSlot || !trip) return false;
+
+        const car = trip.carTypes.find(c => c.id === selectedCarType);
+        if (car) {
+            const capacity = parseInt(car.seats.split('+')[0]);
+            if (guestCount > capacity) return false;
+        }
 
         const slot = trip.timeSlots.find((s: TimeSlot) => s.time === selectedTimeSlot);
         if (!slot || !slot.available) return false;
 
         return isTimeSlotBookable(selectedDate, selectedTimeSlot);
-    }, [selectedCarType, selectedDate, selectedTimeSlot, trip, isTimeSlotBookable]);
+    }, [guestCount, selectedCarType, selectedDate, selectedTimeSlot, trip, isTimeSlotBookable]);
 
     const toggleSection = useCallback((section: keyof typeof expandedSections) => {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -211,9 +216,7 @@ export default function Checkout() {
 
     const { basePrice, tax, total } = useMemo(() => {
         const base = selectedCarTypeData
-            ? (selectedAcType === "AC"
-                ? selectedCarTypeData.acPrice
-                : selectedCarTypeData.nonAcPrice)
+            ? selectedCarTypeData.acPrice
             : 0;
 
         const taxAmount = base * (trip?.taxRate || 0);
@@ -226,7 +229,7 @@ export default function Checkout() {
             total: totalAmount,
             // advanceAmount: advance,
         };
-    }, [selectedCarTypeData, selectedAcType, trip, calculateTotal]);
+    }, [selectedCarTypeData, trip, calculateTotal]);
 
     const enhancedTimeSlots: EnhancedTimeSlot[] = useMemo(() => {
         if (!trip) return [];
@@ -278,12 +281,12 @@ export default function Checkout() {
 
         const { success, bookingId } = await bookTour({
             product_type: trip.product_type,
-            ac_type: selectedAcType,
             car_type: trip.carTypes.filter(type => type.id === selectedCarType)[0].name,
             date: selectedDate,
             time: selectedTimeSlot,
             price: total,
             listing_id: tripId!,
+            guest_count: guestCount
         });
 
         if (success) {
@@ -329,30 +332,28 @@ export default function Checkout() {
                 {/* <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b border-gray-100">
                         <div className="flex items-center gap-3">
-                            <i className="ri-temp-cold-line text-lg text-blue-600" />
-                            <span className="font-medium text-gray-900">Select AC Preference</span>
+                            <i className="ri-user-line text-lg text-blue-600" />
+                            <span className="font-medium text-gray-900">Guest Count</span>
                         </div>
                     </div>
-                    <div className="px-4 pb-4">
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setSelectedAcType("AC")}
-                                className={`flex-1 py-3 px-4 rounded-lg border font-medium text-sm transition-colors cursor-pointer ${selectedAcType === "AC"
-                                    ? "bg-gray-900 text-white border-gray-900"
-                                    : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                                    }`}
-                            >
-                                AC
-                            </button>
-                            <button
-                                onClick={() => setSelectedAcType("Non-AC")}
-                                className={`flex-1 py-3 px-4 rounded-lg border font-medium text-sm transition-colors cursor-pointer ${selectedAcType === "Non-AC"
-                                    ? "bg-gray-900 text-white border-gray-900"
-                                    : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                                    }`}
-                            >
-                                Non-AC
-                            </button>
+                    <div className="p-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-gray-700">Number of Guests</span>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={() => setGuestCount(prev => Math.max(0, prev - 1))}
+                                    className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+                                >
+                                    <i className="ri-subtract-line"></i>
+                                </button>
+                                <span className="font-medium text-lg">{guestCount}</span>
+                                <button
+                                    onClick={() => setGuestCount(prev => Math.min(6, prev + 1))}
+                                    className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
+                                >
+                                    <i className="ri-add-line"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div> */}
@@ -426,7 +427,7 @@ export default function Checkout() {
                                 </div>
                                 <div className="text-right">
                                     <p className="font-semibold text-gray-900">
-                                        {formatPrice(selectedAcType === "AC" ? carType.acPrice : carType.nonAcPrice)}
+                                        {formatPrice(carType.acPrice)}
                                     </p>
                                     <div
                                         className={`w-5 h-5 rounded-full border-2 mt-1 ${selectedCarType === carType.id
@@ -672,7 +673,7 @@ export default function Checkout() {
                 </div> */}
 
                 {/* Your Selection - Now includes seating capacity */}
-                {(selectedDate || selectedTimeSlot || selectedCarType) && (
+                {/* {(selectedDate || selectedTimeSlot || selectedCarType) && (
                     <div className="bg-blue-50 border-2 border-blue-200 px-4 py-3 rounded-lg shadow-sm">
                         <div className="flex items-center gap-3">
                             <i className="ri-calendar-check-line text-blue-600 text-lg" />
@@ -694,25 +695,24 @@ export default function Checkout() {
                                     {selectedCarType && (
                                         <div className="flex items-center gap-2">
                                             <span className="font-medium">Car:</span>
-                                            <span>{selectedCarTypeData?.name} ({selectedAcType}) - {selectedCarTypeData?.seats}</span>
+                                            <span>{selectedCarTypeData?.name} - {selectedCarTypeData?.seats}</span>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
                     <div className="max-w-md mx-auto">
                         {!isCheckoutReady() && (
                             <div className="mb-2 text-center">
                                 <p className="text-xs text-gray-500">
-                                    {!selectedCarType && "Select car type"}
-                                    {!selectedCarType && (!selectedDate || !selectedTimeSlot) && " • "}
-                                    {!selectedDate && "Select date"}
-                                    {!selectedDate && !selectedTimeSlot && " • "}
-                                    {!selectedTimeSlot && "Select time slot"}
+                                    {guestCount === 0 && "Select guest count"}
+                                    {guestCount > 0 && selectedCarTypeData && guestCount > parseInt(selectedCarTypeData.seats.split('+')[0]) && <span className="text-red-500">Guest count cannot be more than the seating capacity of the selected car category</span>}
+                                    {guestCount > 0 && (!selectedCarType || (selectedCarTypeData && guestCount <= parseInt(selectedCarTypeData.seats.split('+')[0]))) && !selectedDate && "Select date"}
+                                    {guestCount > 0 && selectedDate && !selectedTimeSlot && "Select time slot"}
                                     {selectedDate && selectedTimeSlot && !isTimeSlotBookable(selectedDate, selectedTimeSlot) && "Selected slot unavailable - must be 8+ hours ahead"}
                                 </p>
                             </div>
@@ -727,7 +727,7 @@ export default function Checkout() {
                                 {loading && (
                                     <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                                 )}
-                                Pay Now • {total > 0 ? formatPrice(total) : ""}
+                                Confirm Booking • {total > 0 ? formatPrice(total) : ""}
                             </div>
                             {/* Suspicious Button */}
                             <button

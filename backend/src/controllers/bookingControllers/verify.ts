@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { DatabaseError } from "pg";
-import axios from "axios";
 import { pool } from "../../config/db";
+import { sendEmail } from "../../services/email";
 import { getPaymentStatus } from "../../services/payment";
 import { sendWhatsAppMessage } from "../../services/message";
 import { formatBookingDate } from "../../utils/parseDateTime";
@@ -95,13 +95,10 @@ export default async function verifyBooking(req: Request, res: Response) {
             };
 
             if (process.env.NODE_ENV === "production") {
-                axios.post(
-                    "https://api.resend.com/emails",
-                    {
-                        from: "Acme <onboarding@resend.dev>",
-                        to: ["nomoradev@gmail.com"],
-                        subject: "New Booking",
-                        html: `
+                sendEmail({
+                    to: "care@nomora.co.in",
+                    subject: "New Booking",
+                    html: `
 Booking ID: ${booking_id}<br /><br />
 Hotel ID: ${hotel_id}<br />
 Hotel Name: ${hotel_name}<br /><br />
@@ -114,20 +111,14 @@ ${booking.product_type === "airport_transfer" ? `Transfer Type: ${booking.transf
 ${booking.product_type === "airport_transfer" ? `Terminal: ${booking.terminal}<br />` : ""}
 ${booking.product_type === "airport_transfer" ? `Guest Count: ${booking.guest_count}<br /><br />` : ""}
 Car Type: ${booking.product_type === "airport_transfer" ? 'Prime' : booking.car_type}<br />
+AC Type: ${booking.product_type === "airport_transfer" ? 'AC' : booking.ac_type}<br /><br />
 Price: ₹${booking.price}<br />
 Advance: ₹${booking.paid_amount}<br />
 Payment Status: ${booking.payment_status}<br /><br />
 Date: ${formatBookingDate(booking.date)}<br />
 Time: ${booking.time}
 `,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
+                });
             }
 
             if (["sameday", "city_sightseeing"].includes(booking.product_type)) {
