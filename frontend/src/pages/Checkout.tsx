@@ -727,7 +727,7 @@ export default function Checkout() {
                                 {loading && (
                                     <div className="w-5 h-5 border-2 border-white border-t-gray-800 rounded-full animate-spin mr-2" />
                                 )}
-                                Confirm Booking • {total > 0 ? formatPrice(total) : ""}
+                                Pay now • {total > 0 ? formatPrice(total) : ""}
                             </div>
                             {/* Suspicious Button */}
                             <button

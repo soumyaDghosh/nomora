@@ -21,8 +21,8 @@ export default function Transfer() {
     const [guestCount, setGuestCount] = useState<number>(0);
 
     const isFormValid = useCallback(() => {
-        return !!selectedDateTime;
-    }, [selectedDateTime]);
+        return !!selectedDateTime && guestCount > 0;
+    }, [selectedDateTime, guestCount]);
 
     const handleDateTimeSelect = useCallback((date: Date) => {
         setSelectedDateTime(date);
@@ -222,7 +222,6 @@ export default function Transfer() {
                             <i className="ri-calendar-line text-lg text-orange-600" />
                             <div>
                                 <span className="font-medium text-gray-900">Schedule</span>
-                                <p className="text-sm text-gray-600">Book up to 4 hours in advance</p>
                             </div>
                         </div>
                     </div>
@@ -232,6 +231,7 @@ export default function Transfer() {
                             placeholder="Select date and time"
                             value={selectedDateTime}
                         />
+                        <p className="text-xs text-blue-600 mt-2 font-medium">Book up to 4 hours in advance</p>
                     </div>
                 </div>
 
@@ -248,8 +248,8 @@ export default function Transfer() {
                             <span className="text-sm text-gray-600">Number of guests</span>
                             <div className="flex items-center gap-3 pt-4">
                                 <button
-                                    onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                                    disabled={guestCount <= 1}
+                                    onClick={() => setGuestCount(Math.max(0, guestCount - 1))}
+                                    disabled={guestCount <= 0}
                                     className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <i className="ri-subtract-line" />
@@ -282,7 +282,7 @@ export default function Transfer() {
                                     : "bg-gray-300 text-gray-500"
                                     }`}
                             >
-                                Check Fare
+                                {isFormValid() ? "Check Fare" : (guestCount === 0 ? "Select guest count" : "Select date and time")}
                             </div>
                             <button
                                 id="checkFare"

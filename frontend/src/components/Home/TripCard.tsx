@@ -66,22 +66,20 @@ const TripCard = ({
         <div className="flex items-center gap-4  flex-wrap text-xs text-gray-500 mb-3">
           <div className="flex items-center gap-1">
             <i className="ri-car-line w-4 h-4 flex items-center justify-center" />
-            <span>Private Car</span>
+            <span>Private car</span>
           </div>
-          {/* {pickup && (
-            <div className="flex items-center gap-1">
-              <i className="ri-map-pin-line w-4 h-4 flex items-center justify-center" />
-              <span>Pickup & Drop</span>
-            </div>
-          )} */}
+          <div className="flex items-center gap-1">
+            <i className="ri-temp-cold-line w-4 h-4 flex items-center justify-center" />
+            <span>Air-Conditioned</span>
+          </div>
           <div className="flex items-center gap-1">
             <i className="ri-time-line w-4 h-4 flex items-center justify-center" />
             <span>{duration}</span>
           </div>
           <div className="flex items-center gap-1">
-              <i className="ri-temp-cold-line w-4 h-4 flex items-center justify-center" />
-              <span>Air-Conditioned</span>
-            </div>
+            <i className="ri-map-pin-line w-4 h-4 flex items-center justify-center" />
+            <span>Hotel pickup and drop included</span>
+          </div>
         </div>
 
         {/* Price and Action */}

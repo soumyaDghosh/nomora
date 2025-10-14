@@ -5,7 +5,6 @@ import ImageCarousel from "../components/ImageCarousel";
 import { tripData } from "../data/tripData";
 import { badgesData } from "../data/badgesData";
 import { inclusionsData } from "../data/inclusionsData";
-import { whyNomoraData } from "../data/nomoraData";
 import { formatPrice } from "../utils/formatPrice";
 
 export default function Trip() {
@@ -258,13 +257,12 @@ export default function Trip() {
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded-lg flex-shrink-0">
-                                 {/* <i className="ri-contrast-drop-line w-3 h-6 text-gray-600" ri-thermometer-line/> */}
-                                <i className="ri-temp-cold-line w-4 h-4 flex items-center justify-center text-yellow-400" />
+                            <div className="w-8 h-8 flex items-center justify-center bg-cyan-100 rounded-lg flex-shrink-0">
+                                <i className="ri-snowflake-line text-cyan-600 text-lg" />
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="text-xs text-gray-500">AC Type</p>
-                                <p className="text-sm font-medium break-words">Air-Conditioned</p>
+                                <p className="text-xs text-gray-500">Comfort</p>
+                                <p className="text-sm font-medium break-words">AC</p>
                             </div>
                         </div>
                     </div>
@@ -383,16 +381,42 @@ export default function Trip() {
                     Why Nomora
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                    {whyNomoraData.map((item, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                            <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                                <i className={`${item.icon} text-blue-600 text-sm`} />
-                            </div>
-                            <span className="text-xs text-gray-700 font-medium break-words flex-1">
-                                {safeText(item.text, "Service feature")}
-                            </span>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-user-star-line text-blue-600 text-sm" />
                         </div>
-                    ))}
+                        <span className="text-xs text-gray-700 font-medium break-words flex-1">Uniformed chauffeur</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-battery-charge-line text-blue-600 text-sm" />
+                        </div>
+                        <span className="text-xs text-gray-700 font-medium break-words flex-1">Charging ports</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-time-line text-blue-600 text-sm" />
+                        </div>
+                        <span className="text-xs text-gray-700 font-medium break-words flex-1">Chauffeur arrives 30 min early</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-luggage-cart-line text-blue-600 text-sm" />
+                        </div>
+                        <span className="text-xs text-gray-700 font-medium break-words flex-1">Luggage help</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-shield-check-line text-blue-600 text-sm" />
+                        </div>
+                        <span className="text-xs text-gray-700 font-medium break-words flex-1">Clean and well-maintained vehicles</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                            <i className="ri-drop-line text-blue-600 text-sm" />
+                        </div>
+                        <span className="text-xs text-gray-700 font-medium break-words flex-1">Water bottles</span>
+                    </div>
                 </div>
             </div>
 

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import PWAPopup from "../components/PWAPopup";
 
 interface StepProps {
@@ -13,9 +13,33 @@ interface Step5Props {
 export default function Welcome() {
   const { hotelId } = useParams<{ hotelId: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const initialStep = useMemo(() => {
+    const stepFromUrl = Number(searchParams.get("step"));
+    return Number.isFinite(stepFromUrl) && stepFromUrl >= 1 && stepFromUrl <= 5 ? stepFromUrl : 1;
+  }, [searchParams]);
+
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [startX, setStartX] = useState<number | null>(null);
+
+  const goToStep = (step: number) => {
+    const clamped = Math.max(1, Math.min(step, steps.length));
+    setCurrentStep(clamped);
+    const next = new URLSearchParams(searchParams);
+    next.set("step", String(clamped));
+    setSearchParams(next, { replace: true });
+  };
+
+  useEffect(() => {
+    // Keep URL in sync if someone lands without step
+    const stepFromUrl = Number(searchParams.get("step"));
+    const normalized = Number.isFinite(stepFromUrl) && stepFromUrl >= 1 && stepFromUrl <= 5 ? stepFromUrl : 1;
+    if (normalized !== currentStep) {
+      goToStep(normalized);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleContinue = () => {
     localStorage.setItem("doneWelcome", "true");
@@ -42,9 +66,9 @@ export default function Welcome() {
 
     if (Math.abs(diff) > 50) {
       if (diff > 0 && currentStep < steps.length) {
-        setCurrentStep((prev) => prev + 1);
+        goToStep(currentStep + 1);
       } else if (diff < 0 && currentStep > 1) {
-        setCurrentStep((prev) => prev - 1);
+        goToStep(currentStep - 1);
       }
     }
 
@@ -62,8 +86,8 @@ export default function Welcome() {
       {/* Progress Bar */}
       <div className="flex justify-between items-center h-[80px] px-4">
         <div className="flex space-x-2">
-          {[1, 2, 3, 4, 5].map((step) => (
-            <button key={step} onClick={() => setCurrentStep(step)}>
+          {Array.from({ length: steps.length }, (_, i) => i + 1).map((step) => (
+            <button key={step} onClick={() => goToStep(step)}>
               <div
                 className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
                   currentStep >= step
@@ -74,7 +98,7 @@ export default function Welcome() {
             </button>
           ))}
         </div>
-        {currentStep < 5 && (
+        {currentStep < steps.length && (
           <button
             onClick={handleContinue}
             className="text-gray-500 text-sm font-medium cursor-pointer"
@@ -91,9 +115,9 @@ export default function Welcome() {
 
       {/* Bottom Button */}
       <div className="mt-12 sm:mx-auto sm:max-w-sm w-full pb-6 px-6 sm:pb-12 sm:px-0">
-        {currentStep < 5 ? (
+        {currentStep < steps.length ? (
           <button
-            onClick={() => setCurrentStep((prev) => prev + 1)}
+            onClick={() => goToStep(currentStep + 1)}
             className="w-full bg-gray-800 text-white py-4 rounded-2xl text-base font-medium hover:bg-gray-900 transition-colors cursor-pointer"
           >
             Next
@@ -202,7 +226,7 @@ const Step4: React.FC<StepProps> = () => (
         No Price Negotiations
       </h1>
       <p className="text-gray-600 text-base leading-relaxed">
-        We work only with top-quality service partners, offering upfront pricing
+        We work only with best-quality service partners, offering upfront pricing
         and simple terms. No hidden charges, no surprises.
       </p>
     </div>

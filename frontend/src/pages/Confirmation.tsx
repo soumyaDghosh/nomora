@@ -147,7 +147,7 @@ export default function Confirmation() {
                             {isAirportTransfer && (
                                 <div className="flex items-start gap-2">
                                     <i className="ri-map-pin-time-line text-gray-600 text-sm mt-0.5"></i>
-                                    <p className="text-sm text-gray-800">Chauffeur will be assigned 4 hours before pickup {/*Chauffeur will be at pickup 15–30 mins ahead.*/}</p>
+                                    <p className="text-sm text-gray-800">Chauffeur will be assigned 3-4 hours before pickup.</p>
                                 </div>
                             )}
                             {!isAirportTransfer && <div className="flex items-start gap-2">
@@ -156,7 +156,7 @@ export default function Confirmation() {
                             </div>}
                             {isAirportTransfer && <div className="flex items-start gap-2">
                                 <i className="ri-map-pin-time-line text-gray-600 text-sm mt-0.5"></i>
-                                <p className="text-sm text-gray-800">Chauffeur will be at pickup 15-30 min ahead</p>
+                                <p className="text-sm text-gray-800">Chauffeur will be at pickup 15-30 mins ahead.</p>
                             </div>}
                             <div className="flex items-start gap-2">
                                 <i className="ri-notification-line text-gray-600 text-sm mt-0.5"></i>
@@ -312,28 +312,36 @@ export default function Confirmation() {
 
                             <div className="space-y-2">
                                 {isAirportTransfer ? (
-                                    <>
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-gray-600">Base Fare</span>
-                                            <span className="text-gray-900">
-                                                {formatPrice(transfer.baseFare)}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-gray-600">Airport Toll</span>
-                                            <span className="text-gray-900">
-                                                {formatPrice(transfer.airportToll)}
-                                            </span>
-                                        </div>
-                                        <div className="border-t border-gray-200 pt-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium text-gray-900">Total Fare</span>
-                                                <span className="font-semibold text-gray-900">
-                                                    {formatPrice(transfer.baseFare + transfer.airportToll)}
-                                                </span>
+                                    (() => {
+                                        const baseFare = transfer.baseFare;
+                                        const toll = transfer.airportToll;
+                                        const taxAmount = baseFare * 0.05;
+                                        const totalAmount = baseFare + taxAmount + toll;
+                                      
+                                        return (
+                                          <>
+                                            <div className="flex items-center justify-between text-sm">
+                                              <span className="text-gray-600">Base Fare</span>
+                                              <span className="text-gray-900">{formatPrice(baseFare)}</span>
                                             </div>
-                                        </div>
-                                    </>
+                                            <div className="flex items-center justify-between text-sm">
+                                              <span className="text-gray-600">Tax (5%)</span>
+                                              <span className="text-gray-900">{formatPrice(taxAmount)}</span>
+                                            </div>
+                                            <div className="flex items-center justify-between text-sm">
+                                              <span className="text-gray-600">Airport Toll</span>
+                                              <span className="text-gray-900">{formatPrice(toll)}</span>
+                                            </div>
+                                            <div className="border-t border-gray-200 pt-2">
+                                              <div className="flex items-center justify-between">
+                                                <span className="font-medium text-gray-900">Total Fare</span>
+                                                <span className="font-semibold text-gray-900">{formatPrice(totalAmount)}</span>
+                                              </div>
+                                            </div>
+                                          </>
+                                        );
+                                      })()
+                                      
                                 ) : (
                                     <>
                                         <div className="flex items-center justify-between text-sm">

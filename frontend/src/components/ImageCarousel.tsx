@@ -223,7 +223,7 @@ const ImageCarousel = ({
             // Resume auto-play after delay
             modalInteractionTimeoutRef.current = setTimeout(() => {
                 setModalUserInteracting(false);
-                setModalAutoPlay(true);
+                setModalAutoPlay(false);
             }, 2000);
         }
     }, [selectedItemIndex, images]);
@@ -248,7 +248,7 @@ const ImageCarousel = ({
         setSelectedImageIndex(0); // Always start at first image
         setShowModal(true);
         setIsAutoPlaying(false);
-        setModalAutoPlay(true);
+        setModalAutoPlay(false);
         setModalUserInteracting(false);
     }, []);
 
@@ -382,7 +382,7 @@ const ImageCarousel = ({
         // Resume auto-play after delay
         modalInteractionTimeoutRef.current = setTimeout(() => {
             setModalUserInteracting(false);
-            setModalAutoPlay(true);
+            setModalAutoPlay(false);
         }, 2000);
     }, [modalTouchStartX, selectedImageIndex, selectedItemIndex, images, goToModalSlide]);
 
@@ -441,10 +441,10 @@ const ImageCarousel = ({
         } else {
             // reset to original position (animate back)
             setModalDragOffset(0);
-            // resume autoplay after a short delay
+            // keep autoplay disabled inside modal
             modalInteractionTimeoutRef.current = setTimeout(() => {
                 setModalUserInteracting(false);
-                setModalAutoPlay(true);
+                setModalAutoPlay(false);
             }, 300);
         }
 
