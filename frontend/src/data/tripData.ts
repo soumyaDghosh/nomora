@@ -1,29 +1,30 @@
-import { BangaloreSightseeing } from "./itineraries/BangaloreSightseeing";
-import { MysuruSightseeing } from "./itineraries/MysuruSightSeeing";
-
 type Tag = {
     text: string;
     color: "orange" | "red" | "green" | "blue" | "purple";
 };
 
-type GalleryImage = {
-    url: string;
-    label: string;
-};
+export interface GalleryImage {
+  url: string;
+  label: string;
+  significance?: string;
+  description?: string;
+  dontMiss?: string | string[];
+}
 
-type LandmarkImage = {
-    url: string;
-    label: string;
-    category: string;
-    timings: string;
-    duration: string;
-    entryType: string;
-    entryFee: string;
-    significance: string;
-    description: string;
-    dontMiss: string[];
-    gallery: GalleryImage[];
-};
+export interface LandmarkImage {
+  url: string;
+  label: string;
+  significance?: string;
+  description?: string;
+  dontMiss?: string | string[];
+  category?: string;
+  timings?: string;
+  duration?: string;
+  entryType?: string;
+  entryFee?: string;
+  gallery?: GalleryImage[];
+}
+
 
 type ItineraryStop = {
     time: string;
@@ -77,6 +78,7 @@ export type Trip = {
     itinerary: ItineraryStop[];
     carTypes: CarType[];
     timeSlots: TimeSlot[];
+    basePrice?: number;
 };
 
 export const tripData: Record<string, Trip> = {

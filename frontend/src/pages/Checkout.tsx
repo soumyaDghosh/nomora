@@ -153,16 +153,16 @@ export default function Checkout() {
     const toggleSection = useCallback((section: keyof typeof expandedSections) => {
         setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
     }, []);
+    
+    // const formatDateToDDMMYYYY = useCallback((dateString: string) => {
+    //     if (!dateString) return "";
 
-    const formatDateToDDMMYYYY = useCallback((dateString: string) => {
-        if (!dateString) return "";
-
-        const date = parseLocalDate(dateString);
-        const day = date.getDate().toString().padStart(2, "0");
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }, []);
+    //     const date = parseLocalDate(dateString);
+    //     const day = date.getDate().toString().padStart(2, "0");
+    //     const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    //     const year = date.getFullYear();
+    //     return `${day}/${month}/${year}`;
+    // }, []);
 
     // FIXED: Updated custom date selection logic to properly handle T+7 date with IST
     const handleCustomDateSelect = useCallback((dateValue: string) => {
@@ -239,22 +239,22 @@ export default function Checkout() {
         }));
     }, [trip, selectedDate, isTimeSlotBookable]);
 
-    const formatSelectedDate = useCallback((dateString: string) => {
-        if (!dateString) return "";
+    // const formatSelectedDate = useCallback((dateString: string) => {
+    //     if (!dateString) return "";
 
-        const date = parseLocalDate(dateString);
-        const nowIST = getCurrentISTTime();
-        const isToday = date.toDateString() === nowIST.toDateString();
+    //     const date = parseLocalDate(dateString);
+    //     const nowIST = getCurrentISTTime();
+    //     const isToday = date.toDateString() === nowIST.toDateString();
 
-        const tomorrow = new Date(nowIST);
-        tomorrow.setDate(nowIST.getDate() + 1);
-        const isTomorrow = date.toDateString() === tomorrow.toDateString();
+    //     const tomorrow = new Date(nowIST);
+    //     tomorrow.setDate(nowIST.getDate() + 1);
+    //     const isTomorrow = date.toDateString() === tomorrow.toDateString();
 
-        if (isToday) return "Today";
-        if (isTomorrow) return "Tomorrow";
+    //     if (isToday) return "Today";
+    //     if (isTomorrow) return "Tomorrow";
 
-        return date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
-    }, [getCurrentISTTime]);
+    //     return date.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+    // }, [getCurrentISTTime]);
 
     // Get min and max dates for date input (only on client side) using IST
     const getDateLimits = useCallback(() => {
