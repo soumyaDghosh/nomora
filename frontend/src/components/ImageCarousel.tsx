@@ -498,14 +498,13 @@ const ImageCarousel = ({
     const currentImage = currentGallery[selectedImageIndex];
 
     // Format "Don't Miss" into bulleted list with graceful fallbacks
-    const formatDontMiss = useCallback((text: string) => {
-        if (!text) return [];
-        if (text.includes(",") || text.includes(";") || text.includes(" and ")) {
-            const items = text.split(/[,;]|(?:\s+and\s+)/).map(item => item.trim()).filter(item => item);
-            return items;
-        }
-        return [text];
-    }, []);
+    const formatDontMiss = useCallback((text: string | string[] | undefined) => {
+    if (!text) return [];
+    if (Array.isArray(text)) {
+        return text.map(item => item.trim()).filter(Boolean);
+    }
+    return text.split(/[,;]|(?:\s+and\s+)/).map(item => item.trim()).filter(Boolean);
+}, []);
 
     // Render placeholder for missing images
     const renderImagePlaceholder = useCallback((className: string) => (

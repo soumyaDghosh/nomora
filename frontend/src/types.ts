@@ -15,7 +15,7 @@ interface GalleryImage {
     label: string;
     significance?: string;
     description?: string;
-    dontMiss?: string;
+    dontMiss?: string | string[];
 }
 
 export interface ImageData {
