@@ -44,7 +44,8 @@ export default async function createBooking(req: Request, res: Response) {
         if (price === undefined) return res.status(400).json({ message: "price is required" });
         if (["sameday", "city_sightseeing"].includes(product_type)) {
             if (!listing_id) return res.status(400).json({ message: "listing_id is required" });
-            if (!ac_type || !["AC", "Non-AC"].includes(ac_type))
+            const normalizedAcType = ac_type ?? "AC";
+            if (!["AC", "Non-AC"].includes(normalizedAcType))
                 return res.status(400).json({ message: "ac_type must be either 'AC' or 'Non-AC'" });
             if (!car_type || !["Go", "Prime", "Edge", "Max"].includes(car_type))
                 return res.status(400).json({ message: "car_type must be one of: Go, Prime, Edge, Max" });
@@ -130,7 +131,7 @@ export default async function createBooking(req: Request, res: Response) {
             RETURNING id
             `,
             [
-                user_id, product_type, ac_type ?? "AC", car_type ?? "Prime", transfer_type ?? null,
+                user_id, product_type, (ac_type ?? "AC"), car_type ?? "Prime", transfer_type ?? null,
                 terminal ?? null, guest_count ?? null, date, time, price, hotel_id, listing_id ?? null
             ]
         );

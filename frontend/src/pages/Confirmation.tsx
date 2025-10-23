@@ -256,7 +256,7 @@ export default function Confirmation() {
                                     <div className="flex items-start gap-3">
                                         <i className="ri-temp-cold-line text-blue-600 mt-0.5"></i>
                                         <div className="flex-1">
-                                            <span className="text-gray-500 font-medium block mb-1">Prime</span>
+                                            <span className="text-gray-500 font-medium block mb-1">Comfort</span>
                                             <p className="font-medium text-gray-900">
                                                 {isAirportTransfer ? "AC" : booking?.ac_type}
                                             </p>

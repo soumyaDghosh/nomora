@@ -272,7 +272,9 @@ export default function Transfer() {
                     <div className="max-w-md mx-auto">
                         {!isFormValid() && (
                             <div className="mb-2 text-center">
-                                <p className="text-xs text-gray-500">Select date and time</p>
+                                <p className="text-xs text-gray-500">
+                                    {guestCount === 0 ? "Select guest count" : !selectedDateTime ? "Select date and time" : ""}
+                                </p>
                             </div>
                         )}
                         <div className="relative">
@@ -282,7 +284,7 @@ export default function Transfer() {
                                     : "bg-gray-300 text-gray-500"
                                     }`}
                             >
-                                {isFormValid() ? "Check Fare" : (guestCount === 0 ? "Select guest count" : "Select date and time")}
+                                {"Check Fare"}
                             </div>
                             <button
                                 id="checkFare"
