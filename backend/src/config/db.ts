@@ -93,6 +93,9 @@ if (!global.__dbPool__) {
       price NUMERIC(10,2) NOT NULL,
       payment_status VARCHAR(20) NOT NULL DEFAULT 'unpaid'
         CHECK (payment_status IN ('paid', 'unpaid', 'advance-paid', 'refunded')),
+      who_cancelled VARCHAR(20) NOT NULL 
+        CHECK (who_cancelled IN ('customer', 'supplier')),
+      cancellation_reason VARCHAR(50),
       user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       hotel_id UUID NOT NULL REFERENCES hotels(id) ON DELETE SET NULL,
       listing_id VARCHAR(50),

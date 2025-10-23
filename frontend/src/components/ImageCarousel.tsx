@@ -429,7 +429,7 @@ const ImageCarousel = ({
         }
         const endY = e.changedTouches[0].clientY;
         const diff = endY - modalTouchStartY;
-        const threshold = 450; // px threshold to trigger close
+        const threshold = 160; // px threshold to trigger close
 
         if (diff > threshold) {
             // animate out (we can set offset to viewport height for nicer effect)

@@ -204,7 +204,7 @@ export const updateBooking = async (req: Request, res: Response) => {
     const client = await pool.connect();
 
     try {
-        const { booking_id, status, supplier_id, driver_id, vehicle_id } = req.body ?? {};
+        const { booking_id, status, supplier_id, driver_id, vehicle_id, who_cancelled, cancellation_reason } = req.body ?? {};
 
         if (!booking_id) {
             return res.status(400).json({ message: "booking_id is required" });
@@ -245,6 +245,14 @@ export const updateBooking = async (req: Request, res: Response) => {
         if (vehicle_id) {
             updates.push(`vehicle_id = $${paramIndex++}`);
             values.push(vehicle_id);
+        }
+        if (who_cancelled) {
+            updates.push(`who_cancelled = $${paramIndex++}`);
+            values.push(who_cancelled);
+        }
+        if (cancellation_reason) {
+            updates.push(`cancellation_reason = $${paramIndex++}`);
+            values.push(cancellation_reason);
         }
 
         if (updates.length === 0) {
