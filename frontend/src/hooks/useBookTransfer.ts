@@ -9,7 +9,7 @@ interface BookTransferProps {
     terminal: string;
     date: string;
     time: string;
-    guest_count: number | string;
+    guest_count: number;
     price: number;
 }
 

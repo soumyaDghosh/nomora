@@ -141,7 +141,7 @@ export const tripData: Record<string, Trip> = {
                 ]
             },
             {
-                url: "https://readdy.ai/api/search-image?query=Tipu%20Sultan%20Palace%20Indo-Islamic%20architecture%20wooden%20pillars%20heritage%20monument%20historical%20building&width=375&height=260&seq=tipu1&orientation=landscape",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Tipu%20Sultan_s%20Summer%20Palace/Palace%20Architecture.jpg",
                 label: "Tipu Sultan's Summer Palace & Fort",
                 category: "Historical & Heritage Site",
                 timings: "8:30 AM – 5:30 PM, Open Daily",
@@ -160,11 +160,11 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "https://readdy.ai/api/search-image?query=Tipu%20Sultan%20Palace%20exterior%20Indo-Islamic%20architecture%20wooden%20structure%20historical%20monument%20heritage%20building&width=375&height=200&seq=tipu2&orientation=landscape",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Tipu%20Sultan_s%20Summer%20Palace/Palace%20Architecture.jpg",
                         label: "Palace Architecture",
                     },
                     {
-                        url: "https://readdy.ai/api/search-image?query=Tipu%20Sultan%20Palace%20interior%20wooden%20architecture%20Islamic%20designs%20palace%20chambers%20historical%20artifacts&width=375&height=200&seq=tipu3&orientation=landscape",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Tipu%20Sultan_s%20Summer%20Palace/Interior%20Chambers.jpg",
                         label: "Interior Chambers",
                     },
                     {
