@@ -98,11 +98,11 @@ export default async function createBooking(req: Request, res: Response) {
             else {
                 const dupCheck = await client.query(
                     `
-                    SELECT 1 
-                    FROM bookings 
-                    WHERE user_id = $1 
-                        AND hotel_id = $2 
-                        AND listing_id = $3 
+                    SELECT 1
+                    FROM bookings
+                    WHERE user_id = $1
+                        AND hotel_id = $2
+                        AND listing_id = $3
                         AND status IN ('created', 'allocated', 'confirmed', 'assigned')
                     LIMIT 1
                     `,
@@ -121,11 +121,11 @@ export default async function createBooking(req: Request, res: Response) {
         const bookingResult = await client.query(
             `
             INSERT INTO bookings (
-                user_id, product_type, ac_type, car_type, transfer_type, 
+                user_id, product_type, ac_type, car_type, transfer_type,
                 terminal, guest_count, date, time, price, hotel_id, listing_id
             )
             VALUES (
-                $1, $2, $3, $4, $5, 
+                $1, $2, $3, $4, $5,
                 $6, $7, $8, $9, $10, $11, $12
             )
             RETURNING id
@@ -141,7 +141,7 @@ export default async function createBooking(req: Request, res: Response) {
         if (process.env.NODE_ENV !== "production") {
             paymentOrder = await getPaymentOrder({
                 receipt_id: crypto.randomUUID(),
-                amount: Math.round(price * 100)
+                amount: Math.round(price * 0.01 * 100)
             });
         }
 
