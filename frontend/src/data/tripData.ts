@@ -108,7 +108,7 @@ export const tripData: Record<string, Trip> = {
         ],
         images: [
             {
-                url: "https://readdy.ai/api/search-image?query=Beautiful%20historic%20Bangalore%20Palace%20with%20Tudor-style%20architecture%2C%20ornate%20details%20and%20royal%20gardens%2C%20golden%20sunlight%2C%20majestic%20palace%20photography%2C%20heritage%20building&width=375&height=260&seq=palace1&orientation=landscape",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Bangalore%20Palace/Bangalore%20Palace.jpg",
                 label: "Bangalore Palace",
                 category: "Heritage",
                 timings: "10:00 AM – 5:30 PM, Open Daily",
@@ -127,16 +127,16 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                    url: "https://readdy.ai/api/search-image?query=Bangalore%20Palace%20exterior%20Tudor%20architecture%20with%20beautiful%20royal%20gardens%2C%20heritage%20building%20facade%2C%20detailed%20craftsmanship&width=375&height=200&seq=palace2&orientation=landscape",
-                    label: "Palace Exterior"
-                    },
-                    {
-                    url: "https://readdy.ai/api/search-image?query=Bangalore%20Palace%20interior%20with%20royal%20furniture%20ornate%20decorations%20palace%20rooms%20heritage%20artifacts%20vintage%20furnishings&width=375&height=200&seq=palace3&orientation=landscape",
+                    url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Bangalore%20Palace/Royal%20Interior.jpeg",
                     label: "Royal Interior"
                     },
                     {
-                    url: "https://readdy.ai/api/search-image?query=Bangalore%20Palace%20gardens%20with%20peacocks%20royal%20grounds%20landscaped%20gardens%20heritage%20palace%20grounds&width=375&height=200&seq=palace4&orientation=landscape",
-                    label: "Palace Gardens"
+                    url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Bangalore%20Palace/Main%20Floor.jpg",
+                    label: "Main Floor"
+                    },
+                    {
+                    url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Bangalore%20Palace/Royal%20Corridor.jpg",
+                    label: "Royal Corridor"
                     }
                 ]
             },
@@ -168,13 +168,13 @@ export const tripData: Record<string, Trip> = {
                         label: "Interior Chambers",
                     },
                     {
-                        url:"",
+                        url:"https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Tipu%20Sultan_s%20Summer%20Palace/Summer%20Palace.jpg",
                         label: "Summer Palace",
                     },
                 ]
             },
             {
-                url: "https://readdy.ai/api/search-image?query=UB%20City%20Mall%20Bangalore%20modern%20luxury%20architecture%20upscale%20shopping%20complex%20high-end%20retail%20center&width=375&height=260&seq=ub1&orientation=landscape",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/UB%20City/UB%20City%20(Lunch%20Stop).jpg",
                 label: "UB City (Lunch Stop)",
                 category: "Shopping & Dining",
                 timings: "10:00 AM – 10:00 PM, Open Daily",
@@ -193,17 +193,17 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                    url: "https://readdy.ai/api/search-image?query=UB%20City%20mallexterior%20modern%20luxury%20architecture%20Bangalore%20upscale%20shopping%20complex%20contemporary%20design&width=375&height=200&seq=ub2&orientation=landscape",
-                    label: "Luxury Complex"
+                    url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/UB%20City/UB%20City.jpg",
+                    label: "UB City"
                     },
                     {
-                    url: "https://readdy.ai/api/search-image?query=UB%20City%20mall%20interiorluxury%20stores%20modern%20design%20upscale%20shopping%20experience%20high-end%20retail&width=375&height=200&seq=ub3&orientation=landscape",
-                    label: "Fine Dining"
+                    url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/UB%20City/Luxury%20Complex.webp",
+                    label: "Luxury Complex"
                     }
                 ]
             },
             {
-                url: "https://readdy.ai/api/search-image?query=Lalbagh%20Botanical%20Garden%20colorful%20flowers%20lush%20greenery%20240%20acre%20garden%20largest%20botanical%20garden&width=375&height=260&seq=lalbagh1&orientation=landscape",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Lalbagh%20Botanical%20Garden/Glass%20House.jpg",
                 label: "Lalbagh Botanical Garden",
                 category: "Nature & Serenity",
                 timings: "9:00 AM – 6:00 PM, Open Daily",
@@ -226,26 +226,26 @@ export const tripData: Record<string, Trip> = {
                         url: "https://readdy.ai/api/search-image?query=Lalbagh%20Botanical%20Garden%20glass%20house%20conservatory%20flowersbotanical%20specimens%20240%20acre%20garden&width=375&height=200&seq=lalbagh2&orientation=landscape",
                         label: "Glass House",
                     },
+                    // {
+                    //     url: "https://readdy.ai/api/search-image?query=Bull%20Temple%20Bangalore%20large%20Nandi%20statue%20traditional%20architecture%20spiritual%20monument%20Dravidian%20style&width=375&height=200&seq=bull2&orientation=landscape",
+                    //     label: "Bull Temple",
+                    // },
                     {
-                        url: "https://readdy.ai/api/search-image?query=Bull%20Temple%20Bangalore%20large%20Nandi%20statue%20traditional%20architecture%20spiritual%20monument%20Dravidian%20style&width=375&height=200&seq=bull2&orientation=landscape",
-                        label: "Bull Temple",
-                    },
-                    {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Lalbagh%20Botanical%20Garden/Lalbagh%20Lake.jpg",
                         label: "Lalbagh Lake",
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Lalbagh%20Botanical%20Garden/Botanical%20Collections.jpg",
                         label: "Botanical Collections",
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Lalbagh%20Botanical%20Garden/Century-old%20Trees.jpg",
                         label: "Century-old Trees",
                     },
                 ]
             },
             {
-                url: "https://readdy.ai/api/search-image?query=ISKCON%20Temple%20Bangalore%20beautiful%20white%20architecture%20peaceful%20atmosphere%20modern%20temple%20complex%20spiritual%20center&width=375&height=260&seq=iskcon1&orientation=landscape",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/ISKCON%20Temple/Front%20View.jpg",
                 label: "ISKCON Temple",
                 category: "Temple / Spiritual Site",
                 timings: "7:15 am – 1:00 pm & 4:15 pm – 8:20 pm (Weekday)\n7:15 am – 8:20 pm (Weekend)",
@@ -263,21 +263,21 @@ export const tripData: Record<string, Trip> = {
                     "Souvenir Shop: Buy books, incense, and devotional keepsakes."
                 ],
                 gallery: [
-                    {
-                        url: "https://readdy.ai/api/search-image?query=ISKCON%20Temple%20Bangalore%20modern%20architecture%20white%20building%20peaceful%20spiritual%20atmosphere%20Krishna%20temple&width=375&height=200&seq=iskcon2&orientation=landscape",
-                        label: "ISKCON Temple",
-                    },
-                    {
-                        url: "https://readdy.ai/api/search-image?query=St%20Mary%20Basilica%20Bangalore%20Gothic%20architecture%20oldest%20church%20heritagebuilding%20colonial%20architecture&width=375&height=200&seq=mary2&orientation=landscape",
-                        label: "St. Mary\"s Basilica",
-                    },
-                    { "url": "", "label": "Front View" },
-                    { "url": "", "label": "Sunset View" },
-                    { "url": "", "label": "Indoor" }
+                    // {
+                    //     url: "https://readdy.ai/api/search-image?query=ISKCON%20Temple%20Bangalore%20modern%20architecture%20white%20building%20peaceful%20spiritual%20atmosphere%20Krishna%20temple&width=375&height=200&seq=iskcon2&orientation=landscape",
+                    //     label: "ISKCON Temple",
+                    // },
+                    // {
+                    //     url: "https://readdy.ai/api/search-image?query=St%20Mary%20Basilica%20Bangalore%20Gothic%20architecture%20oldest%20church%20heritagebuilding%20colonial%20architecture&width=375&height=200&seq=mary2&orientation=landscape",
+                    //     label: "St. Mary\"s Basilica",
+                    // },
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/ISKCON%20Temple/Front%20View.jpg", label: "Front View" },
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/ISKCON%20Temple/Sunset%20View.jpg", label: "Sunset View" },
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/ISKCON%20Temple/Indoor.jpg", label: "Indoor" }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Visvesvaraya%20Museum/Science%20on%20a%20Sphere.jpg",
                 label: "Visvesvaraya Museum",
                 category: "Science & Technology Museum",
                 timings: "9.30 am – 6 pm, Open Daily",
@@ -297,10 +297,10 @@ export const tripData: Record<string, Trip> = {
                     "Mini Science Park: Outdoor hands-on physics experiments with levers and pulleys."
                 ],
                 gallery: [
-                    { url: "", label: "Science on a Sphere" },
-                    { url: "", label: "Space & Aviation" },
-                    { url: "", label: "Engine Hall" },
-                    { url: "", label: "Museum Exterior" }
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Visvesvaraya%20Museum/Science%20on%20a%20Sphere.jpg", label: "Science on a Sphere" },
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Visvesvaraya%20Museum/Space%20&%20Aviation.jpg", label: "Space & Aviation" },
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Visvesvaraya%20Museum/Engine%20Hall.jpg", label: "Engine Hall" },
+                    { url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Visvesvaraya%20Museum/Museum%20Exterior.jpg", label: "Museum Exterior" }
                 ]
             }
         ],
@@ -435,7 +435,7 @@ export const tripData: Record<string, Trip> = {
         ],
         images: [
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Sri%20Ranganathaswamy%20Temple/Temple.jpg",
                 label: "Sri Ranganathaswamy Temple",
                 category: "Temple / Spiritual Site",
                 timings: "7:00 AM – 1:30 PM & 4:00 PM – 8:00 PM, Open Daily",
@@ -454,17 +454,17 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Sri%20Ranganathaswamy%20Temple/Temple%20Interior.jpeg",
                         label: "Temple Interior"
                     },
                     {
-                        url: "https://readdy.ai/api/search-image?query=Ranganathaswamy%20Temple%20interior%20sanctum%20Vishnu%20deity%20worship%20hall%20devotees%20prayer%20atmosphere&width=375&height=200&seq=temple3&orientation=landscape",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Sri%20Ranganathaswamy%20Temple/Temple%20Gopuram.jpeg",
                         label: "Temple Gopuram"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Daria%20Daulat%20Bagh/Palace%20Gardens.jpeg",
                 label: "Daria Daulat Bagh",
                 category: "Heritage / Palace",
                 timings: "9:00 AM – 5:00 PM, Open Daily",
@@ -483,17 +483,17 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Daria%20Daulat%20Bagh/Palace%20Interior.jpeg",
                         label: "Palace Interior"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Daria%20Daulat%20Bagh/Historic%20Frescoes.jpeg",
                         label: "Historic Frescoes"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Gumbaz-e-Shahi/Gumbaz%20Interior.jpeg",
                 label: "Gumbaz-e-Shahi",
                 category: "Heritage / Monument",
                 timings: "8:00 AM – 6:30 PM, Open Daily",
@@ -512,17 +512,17 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Gumbaz-e-Shahi/Interior%20Tombs.jpeg",
                         label: "Interior Tombs"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Gumbaz-e-Shahi/Garden%20Surroundings.jpeg",
                         label: "Garden Surroundings"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Mysuru%20Palace/Evening%20View.jpg",
                 label: "Mysuru Palace",
                 category: "Heritage / Palace",
                 timings: "10:00 AM – 5:30 PM, Open Daily",
@@ -543,25 +543,25 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Mysuru%20Palace/Palace%20Interior.jpg",
                         label: "Palace Interior"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Mysuru%20Palace/Palace%20Arch.jpg",
                         label: "Palace Arch"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Mysuru%20Palace/Durbar%20Hall.jpg",
                         label: "Durbar Hall"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Mysuru%20Palace/Mysuru%20Palace.jpg",
                         label: "Mysuru Palace"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/GRS%20UpDown/Upside%20Down.jpg",
                 label: "GRS UpDown",
                 category: "Entertainment",
                 timings: "10:30 AM – 7:00 PM, Open Daily",
@@ -581,25 +581,25 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/GRS%20UpDown/Upside%20Down%20Room.jpg",
                         label: "Upside Down Room"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/GRS%20UpDown/Anti-Gravity%20Room.png",
                         label: "Anti-Gravity Room"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/GRS%20UpDown/Giant_s%20Kitchen.png",
                         label: "Giant's Kitchen"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/GRS%20UpDown/Inverted.jpg",
                         label: "Inverted"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Sand%20Sculpture%20Museum/Sand%20Sculptures.jpeg",
                 label: "Sand Sculpture Museum",
                 category: "Art / Museum",
                 timings: "8:30 AM – 6:30 PM, Open Daily",
@@ -618,13 +618,13 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Sand%20Sculpture%20Museum/God%20Sculptures.jpeg",
                         label: "God Sculptures"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Chamundi%20Hills/City%20Panorama%20View.jpg",
                 label: "Chamundi Hills",
                 category: "Temple / Viewpoint",
                 timings: "7:30 AM – 2:00 PM & 3:30 PM – 6:00 PM & 7:30 PM – 9:00 PM, Open Daily",
@@ -643,17 +643,17 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Chamundi%20Hills/Chamundeshwari%20Temple.jpg",
                         label: "Chamundeshwari Temple"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Chamundi%20Hills/Nandi%20Bull%20Statue.jpg",
                         label: "Nandi Bull Statue"
                     }
                 ]
             },
             {
-                url: "",
+                url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Brindavana%20Gardens/Terraced%20Gardens.jpg",
                 label: "Brindavana Gardens",
                 category: "Gardens / Entertainment",
                 timings: "8:00 AM – 9:00 PM, Open Daily",
@@ -672,15 +672,15 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Brindavana%20Gardens/KRS%20Dam%20Backdrop.jpeg",
                         label: "KRS Dam Backdrop"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Brindavana%20Gardens/Gardens%20View.jpeg",
                         label: "Gardens View"
                     },
                     {
-                        url: "",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Brindavana%20Gardens/Musical%20Fountain%20Show.jpeg",
                         label: "Musical Fountain Show"
                     }
                 ]

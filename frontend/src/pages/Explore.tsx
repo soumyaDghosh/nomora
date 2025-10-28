@@ -28,16 +28,16 @@ export default function Explore() {
     const allTrips = [
         {
             id: "8c869966-79b0-4919-b418-33f154f57421",
-            title: "Bangalore Heritage City Tour",
-            description: "Explore Tipu Sultan Palace, Bangalore Fort & Bull Temple",
-            imageUrl: "https://readdy.ai/api/search-image?query=Beautiful%20historic%20Tipu%20Sultan%20Palace%20in%20Bangalore%20with%20Indo-Islamic%20architecture%2C%20ornate%20wooden%20pillars%20and%20arches%2C%20golden%20sunlight%20filtering%20through%2C%20traditional%20Indian%20heritage%20building%2C%20detailed%20craftsmanship%2C%20warm%20ambient%20lighting%2C%20tourism%20photography%20style%2C%20clear%20blue%20sky%2C%20lush%20gardens&width=400&height=300&seq=heritage1&orientation=landscape",
-            price: 3200,
-            duration: "8 hours",
+            title: "Essence of Bangalore – City’s Core Highlights",
+            description: "Experience the Heart of Bangalore, Heritage, Temples & Culture",
+            imageUrl: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Hero%20Image%20_%20on%20the%20card.jpg",
+            price: 3121,
+            duration: "9 hours",
             pickup: true,
             chauffeur: "Hindi, English, Kannada",
             category: "tours",
             tag: {
-                text: "Highlights",
+                text: "Top Pick",
                 color: "orange" as const
             }
         },
@@ -73,17 +73,17 @@ export default function Explore() {
         // },
         {
             id: "a38eba59-6338-4e4d-9fb7-f217309cbdc2",
-            title: "Mysore Palace & Gardens",
-            description: "Royal heritage tour with magnificent palace architecture",
+            title: "Royal Mysore – Heritage & Gardens Day Tour",
+            description: "Palaces, Temples, Sunset Hills & Musical Fountain Experience",
             imageUrl: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Hero%20Image_%20On%20the%20card.jpg",
-            price: 4999,
+            price: 5611,
             duration: "Full-Day",
             pickup: true,
             chauffeur: "Hindi, English, Kannada",
             category: "sameday",
             tag: {
                 text: "Popular",
-                color: "red" as const
+                color: "purple" as const
             }
         }
     ];

@@ -452,7 +452,7 @@ export default function Confirmation() {
                     <i className="ri-shield-check-line text-green-600 text-lg mt-0.5"></i>
                     <div>
                       <p className="text-sm font-medium text-gray-900">
-                        Fixed fare,
+                        Fixed Fare, No Hidden Charges
                       </p>
                     </div>
                   </div>

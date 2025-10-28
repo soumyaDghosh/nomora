@@ -142,7 +142,7 @@ export default function TransferFare() {
                             <div className="flex items-center gap-3">
                                 <i className="ri-calendar-close-line text-blue-600 text-lg mt-0.5" />
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900">Cancel free until 4 hours prior; no refunds after</p>
+                                    <p className="text-sm font-medium text-gray-900">Cancel free until 12 hours before pickup</p>
                                 </div>
                             </div>
                         </div>
