@@ -9,7 +9,9 @@ interface BookTransferProps {
     terminal: string;
     date: string;
     time: string;
-    guest_count: number;
+    // TODO: Unify this as either string or number across the app
+    // number seems to be a better choice for this variable
+    guest_count: number | string;
     price: number;
 }
 
