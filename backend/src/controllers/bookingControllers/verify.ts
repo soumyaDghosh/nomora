@@ -244,7 +244,7 @@ Time: ${booking.time}
             await client.query("COMMIT");
 
             return res.status(400).json({
-                message: `Payment ${status.toLowerCase()}. Please check your bank statement before retrying. If the amount has been deducted, it will be refunded within 3–5 business days, depending on bank’s processing time. `
+                message: `Payment ${status.toLowerCase()}. Payment Failed. Please check your bank statement before retrying. If amount was deducted, it will be auto-refunded within 5–7 business days.`
             });
         }
     }

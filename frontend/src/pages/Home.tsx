@@ -83,11 +83,11 @@ export default function Home() {
 
   const allTrips = [
     {
-      id: "heritage-tour-8hr",
+      id: "8c869966-79b0-4919-b418-33f154f57421",
       title: "Essence of Bangalore – City’s Core Highlights",
       description: "Experience the Heart of Bangalore, Heritage, Temples & Culture",
-      imageUrl: "https://readdy.ai/api/search-image?query=Beautiful%20historic%20Tipu%20Sultan%20Palace%20in%20Bangalore%20with%20Indo-Islamic%20architecture%2C%20ornate%20wooden%20pillars%20and%20arches%2C%20golden%20sunlight%20filtering%20through%2C%20traditional%20Indian%20heritage%20building%2C%20detailed%20craftsmanship%2C%20warm%20ambient%20lighting%2C%20tourism%20photography%20style%2C%20clear%20blue%20sky%2C%20lush%20gardens&width=400&height=300&seq=heritage1&orientation=landscape",
-      price: 3999,
+      imageUrl: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Hero%20Image%20_%20on%20the%20card.jpg",
+      price: 3121,
       duration: "9 hours",
       category: "city_sightseeing",
       tag: {
@@ -124,12 +124,12 @@ export default function Home() {
     //   }
     // },
     {
-      id: "mysore-palace",
+      id: "a38eba59-6338-4e4d-9fb7-f217309cbdc2",
       title: "Royal Mysore – Heritage & Gardens Day Tour",
       description: "Palaces, Temples, Sunset Hills & Musical Fountain Experience",
-      imageUrl: "https://readdy.ai/api/search-image?query=Mysore%20Palace%20with%20beautiful%20gardens%2C%20golden%20architecture%20and%20royal%20heritage%20building%2C%20Indian%20palace%20photography%2C%20majestic%20historical%20monument%20with%20intricate%20details%2C%20bright%20daylight%2C%20clear%20blue%20sky%2C%20professional%20travel%20photography%2C%20vibrant%20colors%2C%20detailed%20architecture&width=400&height=300&seq=mysore1&orientation=landscape",
-      price: 5999,
-      duration: "Full-Day",
+      imageUrl: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Mysore%20Sightseeing/Hero%20Image_%20On%20the%20card.jpg",
+      price: 5611,
+      duration: "Full Day",
       category: "same_day",
       tag: {
         text: "Popular",

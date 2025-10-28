@@ -13,9 +13,6 @@ export interface BeforeInstallPromptEvent extends Event {
 interface GalleryImage {
     url: string;
     label: string;
-    significance?: string;
-    description?: string;
-    dontMiss?: string | string[];
 }
 
 export interface ImageData {
@@ -26,5 +23,8 @@ export interface ImageData {
     duration?: string;
     entryType?: string;
     entryFee?: string;
+    significance?: string;
+    dontMiss?: string | string[];
+    description?: string;
     gallery?: GalleryImage[];
 }

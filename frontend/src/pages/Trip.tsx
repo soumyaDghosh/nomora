@@ -138,7 +138,7 @@ export default function Trip() {
                         {trip.tags.map((tag, index) => (
                             <span
                                 key={index}
-                                className={`px-3 py-1 rounded-full text-xs font-medium break-words ${tag.color === "orange" ? "bg-orange-500 text-white" : "bg-red-500 text-white"}`}
+                                className={`px-3 py-1 rounded-full text-xs font-medium break-words bg-${tag.color}-500 text-white`}
                             >
                                 {safeText(tag.text, "Tag")}
                             </span>
@@ -428,7 +428,7 @@ export default function Trip() {
                         <p className="text-xl font-bold text-gray-900 break-words">
                             {formatPrice(trip.price || 0)}
                         </p>
-                        <p className="text-xs text-gray-500 break-words">Price varies by car type</p>
+                        <p className="text-xs text-gray-500 break-words">Varies by vehicle type</p>
                     </div>
                     <div className="relative w-fit">
                         <div className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 flex-shrink-0 hover:bg-gray-800 transition-colors">

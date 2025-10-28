@@ -11,6 +11,7 @@ interface ImageCarouselProps {
     lazyLoad?: boolean;
 }
 
+
 const ImageCarousel = ({
     images,
     // onImageClick,
@@ -207,6 +208,8 @@ const ImageCarousel = ({
             }, 2000);
         }
     }, [images.length]);
+
+
 
     const goToModalSlide = useCallback((index: number) => {
         const currentGallery = images[selectedItemIndex]?.gallery || [];
@@ -429,7 +432,7 @@ const ImageCarousel = ({
         }
         const endY = e.changedTouches[0].clientY;
         const diff = endY - modalTouchStartY;
-        const threshold = 60; // px threshold to trigger close
+        const threshold = 100; // px threshold to trigger close
 
         if (diff > threshold) {
             // animate out (we can set offset to viewport height for nicer effect)
@@ -526,7 +529,7 @@ const ImageCarousel = ({
             </div>
         );
     }
-
+    
     return (
         <>
             {/* Level 1 - Primary Image Carousel */}
@@ -808,34 +811,34 @@ const ImageCarousel = ({
                             {/* Current Image Details */}
                             {currentImage && (
                                 <div className="space-y-4">
-                                    {currentImage.significance && (
+                                    {currentModalItem.significance && (
                                         <div className="bg-blue-50 rounded-xl p-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <i className="ri-information-line text-blue-600" />
                                                 <h4 className="font-semibold text-blue-900 text-sm">Significance</h4>
                                             </div>
-                                            <p className="text-sm text-blue-800 leading-relaxed break-words">{currentImage.significance}</p>
+                                            <p className="text-sm text-blue-800 leading-relaxed break-words">{currentModalItem.significance}</p>
                                         </div>
                                     )}
 
-                                    {currentImage.description && (
+                                    {currentModalItem.description && (
                                         <div className="bg-gray-50 rounded-xl p-4">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <i className="ri-file-text-line text-gray-600" />
                                                 <h4 className="font-semibold text-gray-900 text-sm">Description</h4>
                                             </div>
-                                            <p className="text-sm text-gray-700 leading-relaxed break-words">{currentImage.description}</p>
+                                            <p className="text-sm text-gray-700 leading-relaxed break-words">{currentModalItem.description}</p>
                                         </div>
                                     )}
 
-                                    {currentImage.dontMiss && (
+                                    {currentModalItem.dontMiss && (
                                         <div className="bg-orange-50 rounded-xl p-4">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <i className="ri-star-line text-orange-600" />
                                                 <h4 className="font-semibold text-orange-900 text-sm">Don't Miss</h4>
                                             </div>
                                             <ul className="space-y-2">
-                                                {formatDontMiss(currentImage.dontMiss).map((item, idx) => (
+                                                {formatDontMiss(currentModalItem.dontMiss).map((item, idx) => (
                                                     <li key={idx} className="flex items-start gap-2 text-sm text-orange-800">
                                                         <i className="ri-checkbox-circle-fill text-orange-600 text-xs mt-1 flex-shrink-0" />
                                                         <span className="leading-relaxed break-words">{item}</span>
