@@ -5,6 +5,7 @@ import { pool } from "../../config/db";
 import { getPaymentOrder } from "../../services/payment";
 import { validateDate, validateTime } from "../../utils/validateDateTime";
 import { validateTripWindow, validateTransferWindow } from "../../utils/validateTrip";
+import {validateBookingWindow} from "../../utils/validateBookingWindow"
 
 const ALLOWED_PRODUCT_TYPES = [
     "sameday",
@@ -52,9 +53,13 @@ export default async function createBooking(req: Request, res: Response) {
             if (!validateDate(date)) return res.status(400).json({ message: "date must be in format YYYY-MM-DD" });
             if (!validateTime(time)) return res.status(400).json({ message: "time must be in format h:mm AM/PM" });
 
-            // NEW LOGIC
-            const windowError = validateTripWindow(date, time);
+            // Validate booking window (T, T+1, T+2...T+7)
+            const windowError = validateBookingWindow(date);
             if (windowError) return res.status(400).json({ message: windowError });
+
+            // NEW LOGIC
+            const tripWindowError = validateTripWindow(date, time);
+            if (tripWindowError) return res.status(400).json({ message: windowError });
         }
         else if (product_type === "airport_transfer") {
             if (!transfer_type || !["Drop to Airport", "Pickup from Airport"].includes(transfer_type))
