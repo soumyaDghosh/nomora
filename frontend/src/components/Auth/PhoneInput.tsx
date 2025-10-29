@@ -110,7 +110,7 @@ const PhoneInput = ({ setTab, phoneNumber, setPhoneNumber }: PhoneInputProps) =>
                     <p className="text-sm text-gray-600">
                         By continuing you agree to our{" "}
                         <Link
-                            to="https://nomora.co.in/privacy.html"
+                            to="/terms"
                             className="text-gray-900 underline"
                             target="_blank"
                         >
@@ -118,7 +118,7 @@ const PhoneInput = ({ setTab, phoneNumber, setPhoneNumber }: PhoneInputProps) =>
                         </Link>
                         {" "}and{" "}
                         <Link
-                            to="https://nomora.co.in/privacy.html"
+                            to="/privacy"
                             className="text-gray-900 underline"
                             target="_blank"
                         >
