@@ -15,14 +15,15 @@ export default function useCreatePayment() {
     const { user } = useAuthStore();
 
     const createPayment = async ({ environment, booking_id, order_id, order_amount }: CreatePaymentProps): Promise<boolean> => {
-        if (environment === "production") {
-            const success = await verifyPayment({
-                environment,
-                booking_id,
-                order_id
-            });
-            return success;
-        }
+        // TODO: In production payment was not asked for.
+        // if (environment === "production") {
+        //     const success = await verifyPayment({
+        //         environment,
+        //         booking_id,
+        //         order_id
+        //     });
+        //     return success;
+        // }
 
         return new Promise((resolve) => {
             let failed = false;
