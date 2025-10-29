@@ -3,7 +3,6 @@ import useAuthStore from "../store/authStore";
 import type { RazorpayPaymentResponse } from "../global";
 
 interface CreatePaymentProps {
-    environment?: string,
     booking_id: string,
     order_id: string,
     order_amount: number
@@ -14,7 +13,7 @@ export default function useCreatePayment() {
 
     const { user } = useAuthStore();
 
-    const createPayment = async ({ environment, booking_id, order_id, order_amount }: CreatePaymentProps): Promise<boolean> => {
+    const createPayment = async ({ booking_id, order_id, order_amount }: CreatePaymentProps): Promise<boolean> => {
         // TODO: In production payment was not asked for.
         // if (environment === "production") {
         //     const success = await verifyPayment({

@@ -51,8 +51,9 @@ export default function useBookTransfer() {
                 { withCredentials: true }
             );
 
-            const { environment, booking_id, order_id, order_amount } = response.data;
-            const success = await createPayment({ environment, booking_id, order_id, order_amount });
+            // NOTE: backend returns environment also, but it is not extracted here
+            const { booking_id, order_id, order_amount } = response.data;
+            const success = await createPayment({ booking_id, order_id, order_amount });
 
             if (success) {
                 return {
