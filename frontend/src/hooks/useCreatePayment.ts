@@ -72,6 +72,7 @@ export default function useCreatePayment() {
                 handler: async function (response: RazorpayPaymentResponse) {
                     if (failed) return resolve(false);
                     const success = await verifyPayment({
+                        environment: "production",
                         booking_id,
                         order_id,
                         payment_id: response.razorpay_payment_id,
@@ -97,6 +98,7 @@ export default function useCreatePayment() {
                 failed = true;
                 rzp.off("payment.failed", handler);
                 verifyPayment({
+                    environment: "production",
                     booking_id,
                     order_id,
                     ...(response?.error?.metadata?.payment_id
