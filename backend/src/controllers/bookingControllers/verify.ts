@@ -22,33 +22,34 @@ export default async function verifyBooking(req: Request, res: Response) {
 
         await client.query("BEGIN");
 
-        if (environment === "production") {
-            const bookingResult = await client.query(
-                `
-                SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
-                FROM bookings
-                WHERE id = $1
-                `,
-                [booking_id]
-            );
+        // NOTE: Disabled a different logic for prod
+        // if (environment === "production") {
+        //     const bookingResult = await client.query(
+        //         `
+        //         SELECT id, status, product_type, listing_id, price, payment_status, ac_type, car_type, transfer_type, terminal, guest_count, date, time
+        //         FROM bookings
+        //         WHERE id = $1
+        //         `,
+        //         [booking_id]
+        //     );
 
-            if (bookingResult.rows.length === 0) {
-                await client.query("ROLLBACK");
-                return res.status(404).json({ message: "Booking not found" });
-            }
+        //     if (bookingResult.rows.length === 0) {
+        //         await client.query("ROLLBACK");
+        //         return res.status(404).json({ message: "Booking not found" });
+        //     }
 
-            const booking = bookingResult.rows[0];
+        //     const booking = bookingResult.rows[0];
 
-            return res.status(201).json({
-                message: "Booked successfully",
-                booking
-            });
-        }
+        //     return res.status(201).json({
+        //         message: "Booked successfully",
+        //         booking
+        //     });
+        // }
 
         const paymentResult = await client.query(
             `
-            SELECT status 
-            FROM payments 
+            SELECT status
+            FROM payments
             WHERE booking_id = $1 AND order_id = $2 AND payment_id = $3
             FOR UPDATE
             `,
