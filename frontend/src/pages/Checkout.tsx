@@ -661,17 +661,23 @@ export default function Checkout() {
                     <div className="text-xs text-gray-400 mt-1">
                       Select date first
                     </div>
-                  )}
+                  ) }
                 </button>
               ))}
             </div>
-            {getBookingErrorMessage(
-              selectedDate,
-              currentDateString,
-              tomorrowDateString,
-              currentHours,
-              currentMinutes
-            )}
+            {
+              (selectedDate==currentDateString ?
+              <div className="bg-red-50 border border-red-300 rounded-lg px-4 py-3">
+                <p className="text-red-700 text-sm">
+                  Same-day bookings aren’t available. Please select later date.
+                </p>
+              </div>: (selectedDate == tomorrowDateString && (currentHours>20 || (currentHours==20 && currentMinutes>=5))) ?
+              <div className="bg-red-50 border border-red-300 rounded-lg px-4 py-3">
+                <p className="text-red-700 text-sm">
+                  Bookings for tomorrow’s morning slots are allowed until 8:00 PM today. Please select a later date.
+                </p>
+              </div> : null)
+            }
           </div>
         </div>
 
