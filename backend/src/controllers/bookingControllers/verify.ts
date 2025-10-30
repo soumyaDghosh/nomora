@@ -172,7 +172,7 @@ export default async function verifyBooking(req: Request, res: Response) {
                 //     { delay: 10 * 1000, attempts: 1 }
                 // );
             }
-            else if (booking.product_type === "airport_tranfer") {
+            else if (booking.product_type === "airport_transfer") {
                 // sendWhatsAppMessage("guest_airport_booking_confirmation", req.user?.phone!, {
                 //     body_1: {
                 //         type: "text",
