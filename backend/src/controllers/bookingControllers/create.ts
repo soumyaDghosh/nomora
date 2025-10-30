@@ -139,7 +139,7 @@ export default async function createBooking(req: Request, res: Response) {
 
         let paymentOrder = await getPaymentOrder({
             receipt_id: crypto.randomUUID(),
-            amount: Math.round(price * 0.01 * 100)
+            amount: Math.round(price * 100)
         });
 
         await client.query("COMMIT");
