@@ -95,32 +95,32 @@ export default async function verifyBooking(req: Request, res: Response) {
                 paid_amount: processedAmount,
             };
 
-            if (process.env.NODE_ENV === "production") {
-                sendEmail({
-                    to: "care@nomora.co.in",
-                    subject: "New Booking",
-                    html: `
-Booking ID: ${booking_id}<br /><br />
-Hotel ID: ${hotel_id}<br />
-Hotel Name: ${hotel_name}<br /><br />
-User ID: ${req.user?.id}<br />
-User Phone: ${req.user?.phone}<br /><br />
-Product Type: ${booking.product_type}<br />
-${booking.product_type !== "airport_transfer" ? `Listing ID: ${booking.listing_id}<br />` : ""}
-<br />
-${booking.product_type === "airport_transfer" ? `Transfer Type: ${booking.transfer_type}<br />` : ""}
-${booking.product_type === "airport_transfer" ? `Terminal: ${booking.terminal}<br />` : ""}
-${booking.product_type === "airport_transfer" ? `Guest Count: ${booking.guest_count}<br /><br />` : ""}
-Car Type: ${booking.product_type === "airport_transfer" ? 'Prime' : booking.car_type}<br />
-AC Type: ${booking.product_type === "airport_transfer" ? 'AC' : booking.ac_type}<br /><br />
-Price: ₹${booking.price}<br />
-Advance: ₹${booking.paid_amount}<br />
-Payment Status: ${booking.payment_status}<br /><br />
-Date: ${formatBookingDate(booking.date)}<br />
-Time: ${booking.time}
-`,
-                });
-            }
+//             if (process.env.NODE_ENV === "production") {
+//                 sendEmail({
+//                     to: "care@nomora.co.in",
+//                     subject: "New Booking",
+//                     html: `
+// Booking ID: ${booking_id}<br /><br />
+// Hotel ID: ${hotel_id}<br />
+// Hotel Name: ${hotel_name}<br /><br />
+// User ID: ${req.user?.id}<br />
+// User Phone: ${req.user?.phone}<br /><br />
+// Product Type: ${booking.product_type}<br />
+// ${booking.product_type !== "airport_transfer" ? `Listing ID: ${booking.listing_id}<br />` : ""}
+// <br />
+// ${booking.product_type === "airport_transfer" ? `Transfer Type: ${booking.transfer_type}<br />` : ""}
+// ${booking.product_type === "airport_transfer" ? `Terminal: ${booking.terminal}<br />` : ""}
+// ${booking.product_type === "airport_transfer" ? `Guest Count: ${booking.guest_count}<br /><br />` : ""}
+// Car Type: ${booking.product_type === "airport_transfer" ? 'Prime' : booking.car_type}<br />
+// AC Type: ${booking.product_type === "airport_transfer" ? 'AC' : booking.ac_type}<br /><br />
+// Price: ₹${booking.price}<br />
+// Advance: ₹${booking.paid_amount}<br />
+// Payment Status: ${booking.payment_status}<br /><br />
+// Date: ${formatBookingDate(booking.date)}<br />
+// Time: ${booking.time}
+// `,
+//                 });
+//             }
 
             if (["sameday", "city_sightseeing"].includes(booking.product_type)) {
                 const trip = tripData[booking.listing_id];
