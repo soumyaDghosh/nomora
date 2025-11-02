@@ -138,7 +138,7 @@ export default async function createBooking(req: Request, res: Response) {
         const bookingId = bookingResult.rows[0].id;
 
         let paymentOrder = await getPaymentOrder({
-            receipt_id: crypto.randomUUID(),
+            receipt_id: bookingId.toString(),
             amount: Math.round(price * 100)
         });
 

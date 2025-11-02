@@ -7,6 +7,7 @@ import { formatPrice } from "../utils/formatPrice";
 import { toast } from "sonner";
 import { tripPricingAndChargesData } from "../data/tripPricingAndChargesData";
 import { tripTermsData } from "../data/tripTermsData";
+import { getBookingErrorMessage } from "../components/Checkout/BookingErrorMessage";
 
 type EnhancedTimeSlot = TimeSlot & {
   isBookable: boolean;
@@ -43,6 +44,33 @@ export default function Checkout() {
     tripTerms: true,
   });
 
+  // Function to get current IST time
+  const getCurrentISTTime = useCallback(() => {
+    const now = new Date();
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    const istTime = new Date(utc + istOffset);
+
+    return istTime;
+  }, []);
+
+  const currentDate = useMemo(() => getCurrentISTTime(), [getCurrentISTTime]);
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const currentDay = String(currentDate.getDate()).padStart(2, "0");
+  const currentHours = currentDate.getHours();
+  const currentMinutes = currentDate.getMinutes();
+  const currentDateString = `${currentYear}-${currentMonth}-${currentDay}`;
+
+  const tomorrowDate = new Date(currentDate);
+  tomorrowDate.setDate(currentDate.getDate() + 1);
+
+  const tomorrowYear = tomorrowDate.getFullYear();
+  const tomorrowMonth = String(tomorrowDate.getMonth() + 1).padStart(2, "0");
+  const tomorrowDay = String(tomorrowDate.getDate()).padStart(2, "0");
+
+  const tomorrowDateString = `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`;
+
   const pricingAndChargesData = tripPricingAndChargesData[tripId ?? ""];
   const termsData = tripTermsData[tripId ?? ""];
 
@@ -56,11 +84,11 @@ export default function Checkout() {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
 
-      const dayName = date.toLocaleDateString("en-IN", { weekday: "short" });
+      const dayName = date.toLocaleDateString("en-IN", { weekday: "short", timeZone: "Asia/Kolkata" });
       const dayNumber = date.getDate();
-      const monthName = date.toLocaleDateString("en-IN", { month: "short" });
+      const monthName = date.toLocaleDateString("en-IN", { month: "short", timeZone: "Asia/Kolkata" });
       const isToday = i === 0;
-      const dateString = date.toISOString().split("T")[0];
+      const dateString = date.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 
       const isBookable = i <= 7;
 
@@ -75,6 +103,7 @@ export default function Checkout() {
       });
     }
 
+
     return dates;
   }, []);
 
@@ -83,17 +112,6 @@ export default function Checkout() {
     const [year, month, day] = dateString.split("-").map(Number);
     return new Date(year, month - 1, day);
   };
-
-  // Function to get current IST time
-  const getCurrentISTTime = useCallback(() => {
-    // Create IST time
-    const now = new Date();
-    const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
-    const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
-    const istTime = new Date(utc + istOffset);
-
-    return istTime;
-  }, []);
 
   // NEW LOGIC
   // FIXED: Updated time slot booking logic to properly handle T+7 date with IST time
@@ -138,7 +156,7 @@ export default function Checkout() {
       const hoursDiff =
         (selectedDate.getTime() - nowIST.getTime()) / (1000 * 60 * 60);
 
-      //                       this logic ensure that if the time is more than 8 we can select from t+2 day and if it nearly to 8 it allows upto 8:05 PM
+      // this logic ensure that if the time is more than 8 we can select from t+2 day and if it nearly to 8 it allows upto 8:05 PM
       return (
         hoursDiff >= 8 &&
         (new Date().getHours() < 20 ||
@@ -619,7 +637,7 @@ export default function Checkout() {
               </span>
             </div>
           </div>
-          <div className="px-4 pb-4">
+          <div className="px-4 pb-4 space-y-4">
             <div className="grid grid-cols-3 gap-2">
               {enhancedTimeSlots.map((slot) => (
                 <button
@@ -639,16 +657,21 @@ export default function Checkout() {
                   }`}
                 >
                   {slot.time}
-                  {!selectedDate ? (
+                  {!selectedDate && (
                     <div className="text-xs text-gray-400 mt-1">
                       Select date first
                     </div>
-                  ) : !slot.isBookable && slot.available ? (
-                    <div className="text-xs text-red-400 mt-1">Too soon</div>
-                  ) : null}
+                  )}
                 </button>
               ))}
             </div>
+            {getBookingErrorMessage(
+              selectedDate,
+              currentDateString,
+              tomorrowDateString,
+              currentHours,
+              currentMinutes
+            )}
           </div>
         </div>
 

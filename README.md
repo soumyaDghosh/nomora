@@ -14,36 +14,10 @@ git push origin dev
 ```
 
 ### 2. Promote to *uat* (for testing)
-```
-git checkout uat
-git pull origin uat
+Create a Pull Request from `dev` branch to `uat` branch. Use this [link](https://github.com/Nomora-Dev/Nomora-App/compare/uat...dev) to easily raise a PR. Write this as commit message `many: promote dev to uat` if there are multiple commits.
 
-# bring latest dev into uat
-git merge dev
-
-git push origin uat
-```
-
-### 3. Switch to *dev* after pushing to *uat*
-```
-git checkout dev
-git pull origin dev
-```
-
-### 4. Promote to *prod* only from *uat* (for release)
-```
-git checkout prod
-git pull origin prod
-
-# bring tested code into prod
-git merge uat
-
-git push origin prod
-
-# change branch back to dev
-git checkout dev
-git pull origin dev
-```
+### 3. Promote to *prod* only from *uat* (for release)
+Create a Pull Request from `uat` branch to `prod` branch. Use this [link](https://github.com/Nomora-Dev/Nomora-App/compare/prod...uat) to easily raise a PR. Write this as commit message `many: promote uat to prod` if there are multiple commits.
 
 ## Redis
 ```

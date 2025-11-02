@@ -1,2 +1,5 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css");
 @import "tailwindcss";
+[data-sonner-toaster][data-y-position="bottom"] {
+    bottom: 70px !important;
+}

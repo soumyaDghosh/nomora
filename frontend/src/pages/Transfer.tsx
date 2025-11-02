@@ -231,7 +231,7 @@ export default function Transfer() {
                             placeholder="Select date and time"
                             value={selectedDateTime}
                         />
-                        <p className="text-xs text-blue-600 mt-2 font-medium">Book up to 4 hours in advance</p>
+                        <p className="text-xs text-blue-600 mt-2 font-medium">Book at least 4 hours in advance</p>
                     </div>
                 </div>
 

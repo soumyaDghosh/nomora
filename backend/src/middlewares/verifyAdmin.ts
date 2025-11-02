@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { pool } from "../config/db";
+import { getEnvList } from "../utils/getEnvList";
 
 interface JwtPayload {
     id: string;
@@ -22,8 +23,10 @@ export const verifyAdmin = async (req: Request, res: Response, next: NextFunctio
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        else if (user.phone !== process.env.ADMIN_PHONE) {
-            return res.status(401).json({ message: "Forbidden: Admins only" });
+
+        const adminPhoneList = getEnvList("ADMIN_PHONE");
+        if (!adminPhoneList.includes(String(user.phone))) {
+            return res.status(403).json({ message: "Forbidden: Admins only" });
         }
 
         req.user = user;

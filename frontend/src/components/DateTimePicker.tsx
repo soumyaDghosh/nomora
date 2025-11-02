@@ -257,15 +257,15 @@ const DateTimePicker = ({
         const istTime = getCurrentISTTime();
         const timeDiff = selectedDateTime.getTime() - istTime.getTime();
         const hoursDiff = timeDiff / (1000 * 60 * 60);
-        const hour = selectedDateTime.getHours();
-        if (!(hour >= 6 && hour <20)) {
-            return 'Pickups between 8:00 PM and 6:00 AM are not available.';
+        const pickupHour = selectedDateTime.getHours();
+        if (!(pickupHour >= 6 && pickupHour <22)) {
+            return 'Pickups between 10:00 PM and 6:00 AM are not available.';
         }
 
 
 
         if (hoursDiff < 4) {
-            return 'Booking must be at least 4 hours in advance';
+            return 'Pickup must be scheduled at least 4 hours in advance.';
         }
 
         const todayStart = new Date(istTime.getFullYear(), istTime.getMonth(), istTime.getDate());
@@ -274,6 +274,18 @@ const DateTimePicker = ({
 
         if (daysDiff > 7) {
             return 'Booking cannot be more than 7 days in advance';
+        }
+        const tomorrowStart = new Date(todayStart);
+        tomorrowStart.setDate(todayStart.getDate() + 1);
+
+        const isPickupToday = selectedDateStart.getTime() === todayStart.getTime();
+        const isPickupTomorrowMorning = selectedDateStart.getTime() === tomorrowStart.getTime() && pickupHour < 10;
+
+        const currentHour = istTime.getHours();
+
+        //Special booking window for Today (T) OR Tomorrow (T+1) with pickup before 10 AM
+        if ((isPickupToday || isPickupTomorrowMorning) && (currentHour < 6 || currentHour >= 20)) {
+            return 'Bookings for today and tomorrow morning are only allowed between 6:00 AM and 8:00 PM.';
         }
 
         return '';

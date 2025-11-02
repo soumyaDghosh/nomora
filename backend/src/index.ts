@@ -3,13 +3,11 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
-import { Logtail } from "@logtail/node";
-import { LogtailTransport } from "@logtail/winston";
-import winston from "winston";
 import hotelRoutes from "./routes/hotelRoutes"
 import authRoutes from "./routes/authRoutes"
 import bookingRoutes from "./routes/bookingRoutes"
 import adminRoutes from "./routes/adminRoutes"
+import { httpLogger } from "./middlewares/logging";
 
 const app = express();
 app.use(express.json());
@@ -20,6 +18,9 @@ app.use(cors({
 }));
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// Use the httpLogger middleware for all requests
+app.use(httpLogger);
 
 // const logtail = new Logtail(process.env.SOURCE_TOKEN!, {
 //   endpoint: process.env.INGEST_HOST

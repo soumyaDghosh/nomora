@@ -1,0 +1,63 @@
+name: Deploy Nomora App
+
+on:
+  push:
+    branches:
+      - prod
+      - uat
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name == 'prod' && 'Production' || 'UAT' }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Create .env
+        working-directory: frontend
+        run: |
+          # These secrets (e.g., VPS_SERVER) are now provided by the
+          # GitHub Environment selected above.
+          echo "VITE_SERVER_URL=${{ secrets.VPS_SERVER }}" > .env
+          echo "VITE_RAZORPAY_KEY_ID=${{ secrets.RAZORPAY_KEY_ID }}" >> .env
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          # VPS_SSH_KEY, VPS_HOST, and VPS_USER also come from the environment
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          # VPS_DIR, VPS_USER, and VPS_HOST are all environment-specific
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ${{ secrets.VPS_DIR }}/frontend ${{ secrets.VPS_DIR }}/backend"
+
+          # Deploy frontend dist -> frontend folder (replace completely)
+          rsync -avz --delete \
+            frontend/dist/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DIR }}/frontend/
+
+          # Deploy backend folder -> backend (KEEP node_modules & .env)
+          rsync -avz --delete --exclude node_modules --exclude .env \
+            backend/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_DIR }}/backend/
+
+          # Install backend dependencies and restart pm2
+          # VPS_PM2_APP is the environment-specific name (e.g., 'nomora-prod' or 'nomora-dev')
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash -lc 'source /root/.nvm/nvm.sh && cd ${{ secrets.VPS_DIR }}/backend && npm install && pm2 restart ${{ secrets.VPS_PM2_APP }}'"

@@ -2,10 +2,23 @@ import "dotenv/config";
 import { messageQueue } from "../queues/messageQueue";
 import { pool } from "../config/db";
 import { sendWhatsAppMessage } from "../services/message";
+import { sendBookingConfirmationEmail } from "../services/email";
 
 messageQueue.isReady()
     .then(() => console.log("Message worker running"))
     .catch((err) => console.error("Failed to connect to message queue:", err));
+
+messageQueue.process("booking_confirmation_email", async (job) => {
+    try {
+        await sendBookingConfirmationEmail(job.data);
+
+        console.log(`Booking confirmation email sent for booking ${job.data.bookingId}`);
+    }
+    catch (err) {
+        console.error(`Error sending booking confirmation email for ${job.data.bookingId}:`, err);
+        throw err;
+    }
+});
 
 messageQueue.process("guest_tour_assignment_reminder", async (job) => {
     const { bookingId, phone, title, duration, bookingDateTime, hotelName, carType, carSeat, acType } = job.data;

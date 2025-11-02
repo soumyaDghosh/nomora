@@ -223,7 +223,7 @@ export const tripData: Record<string, Trip> = {
                 ],
                 gallery: [
                     {
-                        url: "https://readdy.ai/api/search-image?query=Lalbagh%20Botanical%20Garden%20glass%20house%20conservatory%20flowersbotanical%20specimens%20240%20acre%20garden&width=375&height=200&seq=lalbagh2&orientation=landscape",
+                        url: "https://nomora-itinerary-images.blr1.digitaloceanspaces.com/Bangalore%20Sightseeing/Lalbagh%20Botanical%20Garden/Glass%20House.jpg",
                         label: "Glass House",
                     },
                     // {
