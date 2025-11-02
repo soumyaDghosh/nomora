@@ -10,8 +10,6 @@ createRoot(document.getElementById("root")!).render(
         <Toaster
             duration={5000}
             position="bottom-center"
-            mobileOffset={70}
-            offset={70}
             toastOptions={{
                 style: {
                     display: "flex",
